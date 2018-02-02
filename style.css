@@ -1,0 +1,60 @@
+html, body {
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 85%;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 140%;
+  font-weight: normal;
+  background-color: #1e445d;
+  color: #d2dade;
+  padding: 9px;
+  margin: 0;
+}
+  h1 a {
+	color: #d2dade;
+  }
+	h1 a:hover {
+	  color: #fff;
+	}
+
+ul {
+  background-color: #d2dade;
+  margin: 0;
+  padding: 16px;
+}
+  
+  ul li {
+	list-style-type: none;
+	margin: 9px;
+	font-size: 120%;
+  }
+	ul li a {
+	  background-color: #35516c;
+	  color: #d2dade;
+	  text-decoration: none;
+	  padding: 3px 9px;
+	}
+	  ul li a:hover {
+		background-color: #1e445d;
+		color: #fff;
+	  }
+	
+h2 {
+  font-weight: normal;
+  background-color: #35516c;
+  color: #d2dade;
+  padding: 6px;
+  margin: 0;
+}
+
+.formulas {
+  font-size: 180%;
+  padding: 20px;
+}
+
+.formula {
+  margin-bottom: 16px;
+}
