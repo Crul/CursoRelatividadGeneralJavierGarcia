@@ -61,6 +61,14 @@ h2 {
   padding: 20px;
 }
 
+.grupo-formulas {
+  display: inline-block;
+  padding: 0 3%;
+  vertical-align: top;
+  border: dotted 1px #ccc;
+  margin-bottom: 8px;
+}
+
 .formula {
   margin-bottom: 16px;
 }
