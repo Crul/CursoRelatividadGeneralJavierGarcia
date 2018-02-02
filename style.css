@@ -51,10 +51,14 @@ h2 {
 }
 
 .formulas {
-  font-size: 180%;
+  font-size: 150%;
   padding: 20px;
 }
 
 .formula {
   margin-bottom: 16px;
+}
+
+.katex-display {
+  text-align: left;
 }
