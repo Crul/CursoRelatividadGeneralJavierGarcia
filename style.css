@@ -99,4 +99,8 @@ h2 {
   background-color: #d2dade;
   margin: 0;
   font-size: 80%;
+}
 
+@media print {
+    ul, h3, h2 a { display: none; }
+}
