@@ -79,7 +79,7 @@
     </div>
     <div class="grupo-formulas">
       <span class="formula formula-titulo">
-        Longitud innitesimal de una curva (parametrizada)
+        Longitud infitesimal de una curva (parametrizada)
       </span>
       <span class="formula">
         ds = \sqrt{g_{ij} \space \frac{dx^i}{d\lambda} \space \frac{dx^j}{d\lambda}} \space d \lambda
@@ -298,9 +298,11 @@
       $('.formula-titulo').each(function(i, elem) {
         elem.innerHTML = elem.innerHTML.trim().replace(/ /g, ' \\space ');
       });
+      
       $('.formula').each(function(i, elem) {
         katex.render(elem.innerText, elem, katexOptions);
       });
+      
     }
   </script>
 </body>
