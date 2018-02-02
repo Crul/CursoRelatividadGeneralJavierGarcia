@@ -1,0 +1,3 @@
+# Repositorio de fórmulas para el [Curso de Relatividad General](https://www.youtube.com/playlist?list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25) de [Javier García](https://www.youtube.com/user/jamesjamesbondbond)
+
+Work in progress
