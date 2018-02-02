@@ -89,14 +89,10 @@
     $(document).ready(bootstrap);
     
     function bootstrap() {
-      //$('.formulas').
-      
       $('.formula').each(function(i, elem) {
         katex.render(elem.innerText, elem);
       })
     }
-    
-    
   </script>
 </body>
 </html>
