@@ -79,7 +79,6 @@ h2 {
 
 .grupo-formulas {
   display: inline-block;
-  padding: 0 3%;
   vertical-align: top;
   border: dotted 1px #ccc;
   margin-bottom: 8px;
@@ -91,4 +90,13 @@ h2 {
 
 .katex-display {
   text-align: left;
+  padding: 0 10px;
+  margin: 6px 12px;
 }
+
+.formula-titulo .katex-display {
+  padding: 4px;
+  background-color: #d2dade;
+  margin: 0;
+  font-size: 80%;
+

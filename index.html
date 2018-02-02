@@ -45,7 +45,54 @@
   
   <h2 id="capitulo-1">Capítulo 1 - <a target="_blank" href="https://www.youtube.com/watch?v=OQA0X381OSY&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=3">Ver en Youtube</a></h2>
   <div class="capitulo-1 formulas">
-    Work in progress
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        Base de T_pM
+      </span>
+      <span class="formula">
+        \{e_1, e_2, ..., e_N\}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        Métrica de T_pM
+      </span>
+      <span class="formula">
+        g_{ij} = e_i \cdot e_j
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        Longitud infinitesimal de una curva
+      </span>
+      <span class="formula">
+        ds = \sqrt{g_{ij} \space dx^i \space dx^j}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        Parametrización de una curva
+      </span>
+      <span class="formula">
+        x^i(\lambda)
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        Longitud innitesimal de una curva (parametrizada)
+      </span>
+      <span class="formula">
+        ds = \sqrt{g_{ij} \space \frac{dx^i}{d\lambda} \space \frac{dx^j}{d\lambda}} \space d \lambda
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        Longitud de una curva (parametrizada)
+      </span>
+      <span class="formula">
+        s = \int_{\lambda_1}^{\lambda_2} \sqrt{g_{ij} \space \frac{dx^i}{d\lambda} \space \frac{dx^j}{d\lambda}} \space d \lambda
+      </span>
+    </div>
   </div>
   
   <h2 id="capitulo-2">Capítulo 2 - <a target="_blank" href="https://www.youtube.com/watch?v=d6aCQ2V1thc&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=5">Ver en Youtube</a></h2>
@@ -117,9 +164,13 @@
     $(document).ready(bootstrap);
     
     function bootstrap() {
+    
+      $('.formula-titulo').each(function(i, elem) {
+        elem.innerHTML = elem.innerHTML.trim().replace(/ /g, ' \\space ');
+      });
       $('.formula').each(function(i, elem) {
         katex.render(elem.innerText, elem, katexOptions);
-      })
+      });
     }
   </script>
 </body>
