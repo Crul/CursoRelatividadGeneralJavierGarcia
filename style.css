@@ -59,6 +59,7 @@ ul {
     }
   
 h2 {
+  font-size: 100%;
   font-weight: normal;
   background-color: #35516c;
   color: #d2dade;
@@ -74,7 +75,7 @@ h2 {
 
 .formulas {
   font-size: 150%;
-  padding: 20px;
+  padding: 6px;
 }
 
 .grupo-formulas {
@@ -84,14 +85,13 @@ h2 {
   margin-bottom: 8px;
 }
 
-.formula {
-  margin-bottom: 16px;
-}
-
 .katex-display {
-  text-align: left;
   padding: 0 10px;
-  margin: 6px 12px;
+  margin: 12px 12px 0 12px;
+}
+	
+.formula  .katex-display {
+  padding-bottom: 12px;
 }
 
 .formula-titulo .katex-display {
