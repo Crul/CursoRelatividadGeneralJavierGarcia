@@ -49,6 +49,12 @@ h2 {
   padding: 6px;
   margin: 0;
 }
+  h2 a {
+    color: #d2dade;
+  }
+    h2 a:hover {
+      color: #fff;
+    }
 
 .formulas {
   font-size: 150%;
