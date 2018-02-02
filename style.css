@@ -20,6 +20,22 @@ h1 {
     color: #fff;
   }
 
+h3 {
+  font-size: 90%;
+  font-weight: normal;
+  background-color: #35516c;
+  color: #1e445d;
+  padding: 6px;
+  text-align: right;
+  margin: 0;
+}
+  h3 a {
+    color: #d2dade;
+  }
+  h3 a:hover {
+    color: #fff;
+  }
+
 ul {
   background-color: #d2dade;
   margin: 0;
