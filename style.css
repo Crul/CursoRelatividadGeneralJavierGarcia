@@ -48,6 +48,8 @@ ul {
     font-size: 120%;
   }
   ul li a {
+    display: inline-block;
+    width: 106px;
     background-color: #35516c;
     color: #d2dade;
     text-decoration: none;
