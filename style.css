@@ -101,6 +101,22 @@ h2 {
   font-size: 80%;
 }
 
+.spoiler-btn {
+  display: block;
+  cursor: pointer;
+  text-align: center;
+  padding: 24px 12px;
+  background-color: #d6d6d6;
+}
+  .spoiler-btn:hover {
+    color: #d6d6d6;
+    background-color: #505050;
+  }
+
+.spoiler {
+  display: none;
+}
+
 @media print {
     ul, h3, h2 a { display: none; }
 }

@@ -57,6 +57,10 @@
       <a href="#capitulo-9">Capítulo 9</a>
       <a target="_blank" href="https://www.youtube.com/watch?v=eAD6xUGVubc&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=12">Ver en Youtube</a>
     </li>
+    <li>
+      <a href="#capitulo-10">Capítulo 10</a>
+      <a target="_blank" href="https://www.youtube.com/watch?v=qpvqnvJkyeo&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=13">Ver en Youtube</a>
+    </li>
   </ul>
   
   <h2 id="capitulo-1">Capítulo 1 - <a target="_blank" href="https://www.youtube.com/watch?v=OQA0X381OSY&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=3">Ver en Youtube</a></h2>
@@ -444,6 +448,29 @@
     </div>
   </div>
 
+  <h2 id="capitulo-10">Capítulo 10 - <a target="_blank" href="https://www.youtube.com/watch?v=qpvqnvJkyeo&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=13">Ver en Youtube</a></h2>
+  <div class="capitulo-10 formulas">
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        (10.1) Solución al ejercicio del Capítulo 9
+      </span>
+      <span id="capitulo10SpoilerBtn" class="spoiler-btn">
+        Click para mostrar la solución
+      </span>
+      <span class="formula spoiler">
+        \ddot{x} 
+        - \frac{b}{ \left( 1 + \frac{b}{y} \right) y^2}
+        \dot{x} \dot{y} = 0
+      </span>
+      <span class="formula spoiler">
+        \ddot{y} 
+        - \frac{b}{2y^2} \left(1 + \frac{b}{y} \right) \left( \dot{x} \right) ^2
+        + \frac{b}{ 2 \left( 1 + \frac{b}{y} \right) y^2}
+        \left( \dot{y} \right) ^2 = 0
+      </span>
+    </div>
+  </div>
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js" integrity="sha384-O4hpKqcplNCe+jLuBVEXC10Rn1QEqAmX98lKAIFBEDxZI0a+6Z2w2n8AEtQbR4CD" crossorigin="anonymous"></script>
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
@@ -462,6 +489,11 @@
       
       $('.formula').each(function(i, elem) {
         katex.render(elem.innerText, elem, katexOptions);
+      });
+
+      $('#capitulo10SpoilerBtn').click(function() {
+        $('#capitulo10SpoilerBtn').hide();
+        $('.capitulo-10 .spoiler').show();
       });
       
     }
