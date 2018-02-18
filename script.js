@@ -40,7 +40,7 @@ function addButton(index, h2Elem) {
 
 function openFormulasOnClick(index, menuOptElem) {
   var formulasLink = $(menuOptElem).find('a')[0];
-  $(formulasLink).click(openFormulas);
+  $(formulasLink).mousedown(openFormulas);
 }
 
 function addVideoLink(index, menuOptElem) {
