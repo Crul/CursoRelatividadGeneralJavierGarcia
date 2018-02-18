@@ -20,6 +20,7 @@ function bootstrap() {
   $('.formula').each(renderFormula);
   $('.formulas').fadeIn();
   $('h2').each(addButton);
+  $('#menu li').each(openFormulasOnClick);
   $('#menu li').each(addVideoLink);
   $('#capitulo10SpoilerBtn').click(showCapitulo10);
   $('html, body').css('min-height', 0);
@@ -37,6 +38,11 @@ function addButton(index, h2Elem) {
   $(h2Elem).prepend(gotoTopBtn.clone());
 }
 
+function openFormulasOnClick(index, menuOptElem) {
+  var formulasLink = $(menuOptElem).find('a')[0];
+  $(formulasLink).click(openFormulas);
+}
+
 function addVideoLink(index, menuOptElem) {
   var menuLinks = $(menuOptElem).find('a');
   var videoLink = $(menuLinks[1]).clone();
@@ -49,10 +55,16 @@ function showCapitulo10() {
   $('.capitulo-10 .spoiler').fadeIn();
 }
 
+function openFormulas(ev) {
+  var formulasId = ev.currentTarget.href.match(/#(.*)/)[1];
+  var formulasElem = $('.' + formulasId);
+  if (!formulasElem.is(':visible'))
+    formulasElem.slideDown();
+}
+
 function toggleFormulas(ev) {
   var formulasElem = $('.' + ev.currentTarget.parentElement.id);
   var isHiding = formulasElem.is(':visible');
   formulasElem.slideToggle();
   $(ev.currentTarget).html(isHiding ? openSymbol : closeSymbol);
 }
-
