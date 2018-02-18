@@ -61,6 +61,10 @@
       <a href="#capitulo-10">Capítulo 10</a>
       <a target="_blank" href="https://www.youtube.com/watch?v=qpvqnvJkyeo&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=13">Ver en Youtube</a>
     </li>
+    <li>
+      <a href="#capitulo-11">Capítulo 11</a>
+      <a target="_blank" href="https://www.youtube.com/watch?v=Zsw0jocNYbA&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=14">Ver en Youtube</a>
+    </li>
   </ul>
   
   <h2 id="capitulo-1">Capítulo 1 - <a target="_blank" href="https://www.youtube.com/watch?v=OQA0X381OSY&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=3">Ver en Youtube</a></h2>
@@ -471,6 +475,117 @@
     </div>
   </div>
   
+  <h2 id="capitulo-11">Capítulo 11 - <a target="_blank" href="https://www.youtube.com/watch?v=Zsw0jocNYbA&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=14">Ver en Youtube</a></h2>
+  <div class="capitulo-11 formulas">
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        (11.1) Coordenadas esféricas
+      </span>
+      <span class="formula">
+        x = R \sin \theta \cos \phi
+      </span>
+      <span class="formula">
+        y = R \sin \theta \sin \phi
+      </span>
+      <span class="formula">
+        z = R \cos \theta
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        (11.2) Base coordenada en coordenadas esféricas
+      </span>
+      <span class="formula">
+        e_R = \sin \theta \cos \phi e_x + \sin \theta \sin \phi e_y + \cos \theta e_z
+      </span>
+      <span class="formula">
+        e_{\theta} = R \cos \theta \cos \phi e_x + R \cos \theta \cos \phi e_y - R \sin \theta e_z
+      </span>
+      <span class="formula">
+        e_{\phi} = -R \sin \theta \sin \phi e_x + R \sin \theta \cos \phi e_y
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        (11.3) Métrica en coordenadas esféricas
+      </span>
+      <span class="formula">
+        g_{ij} = \left( \begin{matrix}
+          1 & 0   & 0 \\
+          0 & R^2 & 0 \\
+          0 & 0   & R^2 \sin^2 \theta
+        \end{matrix} \right)
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        (11.4) Inversa de la métrica en coordenadas esféricas
+      </span>
+      <span class="formula">
+        g^{ij} = \left( \begin{matrix}
+          1 & 0             & 0 \\
+          0 & \frac{1}{R^2} & 0 \\
+          0 & 0             & \frac{1}{R^2 \sin^2 \theta}
+        \end{matrix} \right)
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        (11.5) Base dual en coordenadas esféricas
+      </span>
+      <span class="formula">
+        e^R = e_R
+      </span>
+      <span class="formula">
+        e^{\theta} = \frac{1}{R^2} e_{\theta}
+      </span>
+      <span class="formula">
+        e^{\phi} = \frac{e_{\phi}}{R^2 \sin^2 \theta}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        (11.6) Símbolos de Christoffel
+      </span>
+      <span class="formula">
+        \frac{\partial e_i}{\partial j} \equiv \Gamma^k_{ij} e_k
+      </span>
+      <span class="formula formula-titulo">
+        Para coordenadas esféricas:
+      </span>
+      <span class="formula">
+        \Gamma^R_{\theta \theta} = - R
+      </span>
+      <span class="formula">
+        \Gamma^{\theta}_{\theta \theta} = - \sin \theta \cos \theta
+      </span>
+      <span class="formula">
+        \Gamma^{\phi}_{\phi \theta} = \Gamma^{\phi}_{\theta \phi} = \frac{\cos \theta}{\sin \theta}
+      </span>
+      <span class="formula">
+        \Gamma^R_{\phi \phi} = - R \sin^2 \theta
+      </span>
+      <span class="formula">
+        \Gamma^{\theta}_{\theta R} = \Gamma^{\theta}_{R \theta} =\Gamma^{\phi}_{\phi R} =\Gamma^{\phi}_{R \phi} = \frac{1}{R}
+      </span>
+      <span class="formula">
+        resto \space \Gamma^k_{ij} = 0
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula formula-titulo">
+        (11.7) Derivada covariante (Definición)
+      </span>
+      <span class="formula">
+        \bigtriangledown_i A^k \equiv
+        \left[
+        \frac{\partial A^k}{\partial x^i}
+        + \Gamma^k_{ij} A^j
+        \right]
+      </span>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js" integrity="sha384-O4hpKqcplNCe+jLuBVEXC10Rn1QEqAmX98lKAIFBEDxZI0a+6Z2w2n8AEtQbR4CD" crossorigin="anonymous"></script>
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
