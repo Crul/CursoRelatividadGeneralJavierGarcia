@@ -58,8 +58,12 @@ function showCapitulo10() {
 function openFormulas(ev) {
   var formulasId = ev.currentTarget.href.match(/#(.*)/)[1];
   var formulasElem = $('.' + formulasId);
-  if (!formulasElem.is(':visible'))
-    formulasElem.slideDown();
+  if (!formulasElem.is(':visible')) {
+    formulasElem.show();
+    $('#' + formulasId)
+      .find('.toggle-formulas-btn')
+      .html(closeSymbol);
+  }
 }
 
 function toggleFormulas(ev) {
