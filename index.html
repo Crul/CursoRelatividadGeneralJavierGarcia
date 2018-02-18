@@ -576,14 +576,11 @@
         katex.render(elem.innerText, elem, katexOptions);
       });
 
-      $('#capitulo10SpoilerBtn').click(function() {
-        $('#capitulo10SpoilerBtn').hide();
-        $('.capitulo-10 .spoiler').show();
-      });
-      
       addButtons();
 
       $('#menu li').each(addVideoLink);
+
+      $('#capitulo10SpoilerBtn').click(showCapitulo10);
     }
 
     function addButtons() {
@@ -609,6 +606,11 @@
       var videoLink = $(menuLinks[1]).clone();
       var capitulo = menuLinks[0].href.match(/#(.*)/)[1];
       $('#' + capitulo).append(' - ').append(videoLink);
+    }
+
+    function showCapitulo10() {
+      $('#capitulo10SpoilerBtn').hide();
+      $('.capitulo-10 .spoiler').show();
     }
 
     function toggleFormulas(ev) {
