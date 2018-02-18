@@ -13,10 +13,12 @@ var toggleFormulasBtn = $('<span>')
   .html(closeSymbol)
   .addClass('toggle-formulas-btn');
 
+$('.formulas').hide();
 $(document).ready(bootstrap);
 
 function bootstrap() {
   $('.formula').each(renderFormula);
+  $('.formulas').fadeIn();
   $('h2').each(addButton);
   $('#menu li').each(addVideoLink);
   $('#capitulo10SpoilerBtn').click(showCapitulo10);
@@ -43,13 +45,13 @@ function addVideoLink(index, menuOptElem) {
 
 function showCapitulo10() {
   $('#capitulo10SpoilerBtn').hide();
-  $('.capitulo-10 .spoiler').show();
+  $('.capitulo-10 .spoiler').fadeIn();
 }
 
 function toggleFormulas(ev) {
   var formulasElem = $('.' + ev.currentTarget.parentElement.id);
   var isHiding = formulasElem.is(':visible');
-  formulasElem.toggle();
+  formulasElem.slideToggle();
   $(ev.currentTarget).html(isHiding ? openSymbol : closeSymbol);
 }
 
