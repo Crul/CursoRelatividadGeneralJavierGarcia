@@ -4,6 +4,10 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 4280px;
+  background-color: #d6d6d6;
+}
+body {
+  margin-bottom: 50%;
 }
 
 h1 {
@@ -79,6 +83,7 @@ h2 {
 .formulas {
   font-size: 150%;
   padding: 6px;
+  background-color: #FFF;
 }
 
 .grupo-formulas {
