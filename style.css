@@ -96,11 +96,14 @@ h2 {
   padding-bottom: 12px;
 }
 
-.formula-titulo .katex-display {
+.formula-titulo {
+  display: block;
   padding: 4px;
   background-color: #d2dade;
   margin: 0;
-  font-size: 80%;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 90%;
+  text-align: center;
 }
 
 .spoiler-btn {
