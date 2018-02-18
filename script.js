@@ -22,6 +22,7 @@ function bootstrap() {
   $('h2').each(addButton);
   $('#menu li').each(addVideoLink);
   $('#capitulo10SpoilerBtn').click(showCapitulo10);
+  $('html, body').css('min-height', 0);
 }
 
 function renderFormula(i, elem) {
