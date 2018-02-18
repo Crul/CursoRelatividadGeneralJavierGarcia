@@ -559,66 +559,8 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js" integrity="sha384-O4hpKqcplNCe+jLuBVEXC10Rn1QEqAmX98lKAIFBEDxZI0a+6Z2w2n8AEtQbR4CD" crossorigin="anonymous"></script>
-
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-  
-  <script>
-    // https://github.com/Khan/KaTeX
-    var katexOptions = { displayMode: true };
-    var closeSymbol = '&#128449;';
-    var openSymbol = '&#128448;';
-    var gotoTopSymbol = '&uarr;';
-    
-    $(document).ready(bootstrap);
-    
-    function bootstrap() {
-      $('.formula').each(function(i, elem) {
-        katex.render(elem.innerText, elem, katexOptions);
-      });
+  <script type="text/javascript" src="script.js?v=20180218"></script>
 
-      addButtons();
-
-      $('#menu li').each(addVideoLink);
-
-      $('#capitulo10SpoilerBtn').click(showCapitulo10);
-    }
-
-    function addButtons() {
-      $('h2').each(function (index, h2Elem) {
-        var toggleFormulasBtn = $('<span>')
-          .html(closeSymbol)
-          .addClass('toggle-formulas-btn')
-          .click(toggleFormulas);
-
-        $(h2Elem).prepend(toggleFormulasBtn);
-
-        var gotoTopBtn = $('<a>')
-          .attr('href', '#top')
-          .html(gotoTopSymbol)
-          .addClass('goto-top-btn');
-
-        $(h2Elem).prepend(gotoTopBtn);
-      });
-    }
-
-    function addVideoLink(index, menuOptElem) {
-      var menuLinks = $(menuOptElem).find('a');
-      var videoLink = $(menuLinks[1]).clone();
-      var capitulo = menuLinks[0].href.match(/#(.*)/)[1];
-      $('#' + capitulo).append(' - ').append(videoLink);
-    }
-
-    function showCapitulo10() {
-      $('#capitulo10SpoilerBtn').hide();
-      $('.capitulo-10 .spoiler').show();
-    }
-
-    function toggleFormulas(ev) {
-      var formulasElem = $('.' + ev.currentTarget.parentElement.id);
-      var isHiding = formulasElem.is(':visible');
-      $(ev.currentTarget).html(isHiding ? openSymbol : closeSymbol);
-      formulasElem.toggle();
-    }
-  </script>
 </body>
 </html>
