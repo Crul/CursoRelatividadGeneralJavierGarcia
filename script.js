@@ -24,6 +24,9 @@ function bootstrap() {
   $('#menu li').each(addVideoLink);
   $('#capitulo10SpoilerBtn').click(showCapitulo10);
   $('html, body').css('min-height', 0);
+  var hash = location.hash;
+  location.hash = '';
+  location.hash = hash;
 }
 
 function renderFormula(i, elem) {
