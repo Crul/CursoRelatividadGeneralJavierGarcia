@@ -3,7 +3,7 @@ html, body {
   font-size: 85%;
   margin: 0;
   padding: 0;
-  min-height: 4280px;
+  min-height: 10000px;
   background-color: #d6d6d6;
 }
 body {
@@ -93,13 +93,14 @@ h2 {
   margin-bottom: 8px;
 }
 
-.katex-display {
-  padding: 0 10px;
+.formula .katex-display {
+  padding: 0 10px 12px 10px;
   margin: 12px 12px 0 12px;
 }
-	
-.formula  .katex-display {
-  padding-bottom: 12px;
+
+.formula-texto .katex-display{
+  font-size: 80%;
+  padding: 0;
 }
 
 .formula-titulo {
