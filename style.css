@@ -41,8 +41,12 @@ h3 {
     color: #fff;
   }
 
-ul {
+#menu {
   background-color: #d2dade;
+}
+
+ul {
+  display: inline-block;
   margin: 0;
   padding: 16px;
 }
