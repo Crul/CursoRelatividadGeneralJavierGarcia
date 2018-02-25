@@ -6,7 +6,7 @@ var gotoTopSymbol = '&uarr;';
 
 var gotoTopBtn = $('<a>')
   .attr('href', '#top')
-  .html(gotoTopSymbol)
+  .html(gotoTopSymbol + ' Menú')
   .addClass('goto-top-btn');
 
 var toggleFormulasBtn = $('<span>')
