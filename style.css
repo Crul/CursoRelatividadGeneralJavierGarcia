@@ -10,6 +10,15 @@ body {
   margin-bottom: 50%;
 }
 
+::selection {
+  color: #fff;
+  background: #ee7700;
+}
+::-moz-selection {
+  color: #fff;
+  background: #ee7700;
+}
+
 h1 {
   font-size: 140%;
   font-weight: normal;
@@ -160,7 +169,6 @@ h2 {
   padding: 2px 0 0 0;
   text-align: center;
   margin-right: 6px;
-  font-weight: bold;
   color: #d2dade;
   background-color: #35516c;
   border: solid 1px #d2dade;
@@ -170,6 +178,7 @@ h2 {
 }
 .goto-top-btn {
   float: right;
+  width: 60px;
 }
   .toggle-formulas-btn:hover,
   .goto-top-btn:hover {
