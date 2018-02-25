@@ -41,12 +41,20 @@ h3 {
     color: #fff;
   }
 
+#topContent {
+  display: table;
+  width: 100%;
+}
+
 #menu {
   background-color: #d2dade;
+  display: table-row;
 }
 
 ul {
-  display: inline-block;
+  display: table-cell;
+  min-width: 280px;
+  width: 280px;
   margin: 0;
   padding: 16px;
 }
@@ -76,6 +84,7 @@ h2 {
   color: #d2dade;
   padding: 6px;
   margin: 0 0 2px 0;
+  clear: both;
 }
   h2 a {
     color: #d2dade;
@@ -83,6 +92,31 @@ h2 {
     h2 a:hover {
       color: #fff;
     }
+
+.fold-buttons {
+  display: table-cell;
+  text-align: right;
+  vertical-align: bottom;
+  padding: 0 16px 16px 0;
+}
+
+.fold-buttons > div {
+  display: inline-block;
+  width: 108px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 3px;
+  color: #35516c;
+  border: solid 1px #35516c;
+  padding: 5px;
+  margin-bottom: 8px;
+  vertical-align: bottom;
+}
+  .fold-buttons > div:hover {
+    color: #d2dade;
+    border: solid 1px #1e445d;
+    background-color: #1e445d;
+  }
 
 .formulas {
   font-size: 150%;
@@ -158,6 +192,23 @@ h2 {
 
 .spoiler {
   display: none;
+}
+
+@media screen and (max-width: 778px) {
+  #topContent, #menu {
+    display: block;
+  }
+
+  ul {
+    display: inline-block;
+  }
+
+  .fold-buttons {
+    display: inline-block;
+    width: 100%;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
 }
 
 @media print {

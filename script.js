@@ -18,10 +18,13 @@ $(document).ready(bootstrap);
 
 function bootstrap() {
   $('.formula').each(renderFormula);
-  $('.formulas').fadeIn();
+  var formulasElems = $('.formulas');
+  formulasElems.fadeIn();
   $('h2').each(addButton);
   $('#menu li').each(openFormulasOnClick);
   $('#menu li').each(addVideoLink);
+  $("#unfoldAllBtn").click(getFoldingAllFn(formulasElems, false));
+  $("#foldAllBtn").click(getFoldingAllFn(formulasElems, true));
   $('#capitulo10SpoilerBtn').click(showCapitulo10);
   $('html, body').css('min-height', 0);
   var hash = location.hash;
@@ -51,6 +54,22 @@ function addVideoLink(index, menuOptElem) {
   var videoLink = $(menuLinks[1]).clone();
   var capitulo = menuLinks[0].href.match(/#(.*)/)[1];
   $('#' + capitulo).append(' - ').append(videoLink);
+}
+
+function getFoldingAllFn(formulasElems, fold) {
+
+  function setFoldingAll() {
+    var capitulosFoldButtons = $('h2 > span');
+    if (fold) {
+      formulasElems.slideUp();
+      capitulosFoldButtons.html(openSymbol);
+    } else {
+      formulasElems.slideDown();
+      capitulosFoldButtons.html(closeSymbol);
+    }
+  }
+  
+  return setFoldingAll;
 }
 
 function showCapitulo10() {
