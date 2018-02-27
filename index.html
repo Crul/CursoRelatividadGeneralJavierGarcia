@@ -77,6 +77,10 @@
           <a href="#capitulo-13">Capítulo 13</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=u4xDlmZuP3k&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=16">Ver en Youtube</a>
         </li>
+        <li>
+          <a href="#capitulo-14">Capítulo 14</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=dgn9wyFJWMA&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25&index=17">Ver en Youtube</a>
+        </li>
       </ul>
       <div class="fold-buttons">
         <div id="unfoldAllBtn">
@@ -677,6 +681,73 @@
       </span>
       <span class="formula">
         \text{ Conexión métrica } \Gamma \Leftrightarrow \nabla g = 0
+      </span>
+    </div>
+  </div>
+
+  <h2 id="capitulo-14">Capítulo 14</h2>
+  <div class="capitulo-14 formulas">
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (14.1) Derivada de un vector<br>
+        respecto a una coordenada
+      </span>
+      <span class="formula">
+        \frac{\partial e_\alpha}{\partial x^\beta} =
+          \Gamma_{\alpha \beta}^\gamma e_\gamma
+      </span>
+      <span class="formula">
+        \frac{\partial e^\alpha}{\partial x^\beta} =
+          - \Gamma_{\gamma \beta}^\alpha e^\gamma
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (14.2) Derivada covariante de un Tensor tipo (2,0)
+      </span>
+      <span class="formula">
+        \nabla_\gamma T^{\alpha \beta} \equiv
+          \partial_\gamma T^{\alpha \beta}
+          + \Gamma_{\sigma \gamma}^\alpha T^{\sigma \beta}
+          + \Gamma_{\delta \gamma}^\beta T^{\alpha \delta}
+      </span>
+      <span class="formula-titulo">
+        (14.3) Derivada covariante de un Tensor tipo (0,2)
+      </span>
+      <span class="formula">
+        \nabla_\gamma T_{\alpha \beta} \equiv
+          \partial_\gamma T_{\alpha \beta}
+          - \Gamma_{\alpha \gamma}^\sigma T_{\sigma \beta}
+          - \Gamma_{\beta \gamma}^\delta T_{\alpha \delta}
+      </span>
+      <span class="formula-titulo">
+        (14.4) Derivada covariante de un Tensor tipo (1,1)
+      </span>
+      <span class="formula">
+        \nabla_\gamma {T^\alpha}_\beta \equiv
+          \partial_\gamma {T^\alpha}_\beta
+          + \Gamma_{\sigma \gamma}^\alpha {T^\sigma}_\beta
+          - \Gamma_{\gamma \beta}^\delta {T^\alpha}_\delta
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (14.5) Tensor de Riemann
+      </span>
+      <span class="formula">
+        \mathbb{R} = {R^\alpha}_{\beta \gamma \delta} \space
+          e_\alpha \otimes e^\beta \otimes e^\gamma \otimes e^\delta
+      </span>
+      <span class="formula-titulo">
+        (14.6) Derivada covariante del Tensor de Riemann
+      </span>
+      <span class="formula">
+        \nabla_\sigma {R^\alpha}_{\beta \gamma \delta} =
+          \partial_\sigma {R^\alpha}_{\beta \gamma \delta}
+          + \Gamma_{\omega \sigma}^\alpha {R^\omega}_{\beta \gamma \delta}
+          - \Gamma_{\beta \sigma}^\rho {R^\alpha}_{\rho \gamma \delta}
+          - \Gamma_{\gamma \sigma}^\phi {R^\alpha}_{\beta \phi \delta}
+          - \Gamma_{\delta \sigma}^\theta {R^\alpha}_{\beta \gamma \theta}
       </span>
     </div>
   </div>
