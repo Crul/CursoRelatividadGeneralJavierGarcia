@@ -222,5 +222,18 @@ h2 {
 }
 
 @media print {
-    ul, h3, h2 a { display: none; }
+
+  body {
+    margin-bottom: 0;
+  }
+
+  ul, h3, h2 a,
+  .spoiler-btn,
+  .fold-buttons, .goto-top-btn, .toggle-formulas-btn {
+    display: none;
+  }
+
+  .spoiler {
+    display: block;
+  }
 }
