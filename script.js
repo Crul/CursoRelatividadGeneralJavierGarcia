@@ -53,7 +53,7 @@ function addVideoLink(index, menuOptElem) {
   var menuLinks = $(menuOptElem).find('a');
   var videoLink = $(menuLinks[1]).clone();
   var capitulo = menuLinks[0].href.match(/#(.*)/)[1];
-  $('#' + capitulo).append(' - ').append(videoLink);
+  $('#' + capitulo).append(videoLink);
 }
 
 function getFoldingAllFn(formulasElems, fold) {
