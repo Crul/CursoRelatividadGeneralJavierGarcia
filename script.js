@@ -31,6 +31,8 @@ function bootstrap() {
     .each(addUnfoldEvent)
     .each(addVideoLink);
 
+  $('.formulas-title').mousedown(unfoldTarget);
+
   $("#foldAllBtn").click(foldAll);
   $("#unfoldAllBtn").click(unfoldAll);
 
