@@ -94,11 +94,18 @@ h2 {
   font-size: 120%;
   font-weight: normal;
   background-color: #35516c;
-  color: #d2dade;
   padding: 6px;
   margin: 0 0 2px 0;
   clear: both;
 }
+  h2 a.formulas-title {
+    color: #d2dade;
+    text-decoration: none;
+    vertical-align: middle;
+  }
+    h2 a.formulas-title:hover {
+      color: #fff;
+    }
 
 .fold-buttons {
   display: table-cell;
