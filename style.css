@@ -64,7 +64,7 @@ ul {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  height: 200px;
+  height: 110px; /* =27x4 */
   margin: 0;
   padding: 16px;
   vertical-align: top;
@@ -72,7 +72,7 @@ ul {
   
   ul li {
     list-style-type: none;
-    margin: 4px 16px 4px 4px;
+    margin: 2px 16px 2px 4px;
     font-size: 120%;
   }
   ul li a {
@@ -80,14 +80,17 @@ ul {
     background-color: #35516c;
     color: #d2dade;
     text-decoration: none;
-    padding: 3px 9px;
+    padding: 2px 8px;
+    border: solid 1px #d2dade;
   }
     ul li a:first-child {
       width: 106px;
+      margin-right: -3px;
     }
     ul li a:hover {
       background-color: #1e445d;
       color: #fff;
+      border: solid 1px #fff;
     }
   
 h2 {
@@ -213,6 +216,12 @@ h2 {
   display: none;
 }
 
+@media screen and (max-width: 1000px) {
+  ul {
+    height: 165px; /* =27x6 */
+  }
+}
+
 @media screen and (max-width: 840px) {
   #topContent, #menu {
     display: block;
@@ -234,7 +243,7 @@ h2 {
 
 @media screen and (max-width: 582px) {
   ul {
-    height: 260px;
+    height: 220px; /* =27x8 */
   }
 }
 
