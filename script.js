@@ -3,29 +3,39 @@ var katexOptions = { displayMode: true };
 var closeSymbol = '&#128449;';
 var openSymbol = '&#128448;';
 var gotoTopSymbol = '&uarr;';
+var toggleFormulasCssClass = 'toggle-formulas-btn';
 
 var gotoTopBtn = $('<a>')
   .attr('href', '#top')
   .html(gotoTopSymbol + ' Menú')
   .addClass('goto-top-btn');
 
+var toggleFormulasBtnElems;
 var toggleFormulasBtn = $('<span>')
   .html(closeSymbol)
-  .addClass('toggle-formulas-btn');
+  .addClass(toggleFormulasCssClass);
 
-$('.formulas').hide();
+var formulasElems = $('.formulas').hide();
+
 $(document).ready(bootstrap);
 
 function bootstrap() {
   $('.formula').each(renderFormula);
-  var formulasElems = $('.formulas');
   formulasElems.fadeIn();
-  $('h2').each(addButton);
-  $('#menu li').each(openFormulasOnClick);
-  $('#menu li').each(addVideoLink);
-  $("#unfoldAllBtn").click(getFoldingAllFn(formulasElems, false));
-  $("#foldAllBtn").click(getFoldingAllFn(formulasElems, true));
-  $('#capitulo10SpoilerBtn').click(showCapitulo10);
+
+  toggleFormulasBtnElems = $('h2')
+    .each(addGotoTopBtn)
+    .map(addToggleBtn);
+
+  $('#menu li')
+    .each(addUnfoldEvent)
+    .each(addVideoLink);
+
+  $("#foldAllBtn").click(foldAll);
+  $("#unfoldAllBtn").click(unfoldAll);
+
+  $('.spoiler-btn').click(showSpoiler);
+
   $('html, body').css('min-height', 0);
   var hash = location.hash;
   location.hash = '';
@@ -36,61 +46,62 @@ function renderFormula(i, elem) {
   katex.render(elem.innerText, elem, katexOptions);
 }
 
-function addButton(index, h2Elem) {
-  toggleFormulasBtn.clone()
-    .click(toggleFormulas)
-    .prependTo(h2Elem);
-
+function addGotoTopBtn(index, h2Elem) {
   $(h2Elem).prepend(gotoTopBtn.clone());
 }
 
-function openFormulasOnClick(index, menuOptElem) {
+function addToggleBtn(index, h2Elem) {
+   return toggleFormulasBtn
+    .clone()
+    .click(toggleFolding)
+    .prependTo(h2Elem)[0];
+}
+
+function addUnfoldEvent(index, menuOptElem) {
   var formulasLink = $(menuOptElem).find('a')[0];
-  $(formulasLink).mousedown(openFormulas);
+  $(formulasLink).mousedown(unfoldTarget);
 }
 
 function addVideoLink(index, menuOptElem) {
   var menuLinks = $(menuOptElem).find('a');
-  var videoLink = $(menuLinks[1]).clone();
-  var capitulo = menuLinks[0].href.match(/#(.*)/)[1];
-  $('#' + capitulo).append(videoLink);
+  var videoLink = $(menuLinks[1]).clone().addClass('view-video-btn');
+  var capituloId = getIdFromHref(menuLinks[0]);
+  $('#' + capituloId).append(videoLink);
 }
 
-function getFoldingAllFn(formulasElems, fold) {
-
-  function setFoldingAll() {
-    var capitulosFoldButtons = $('h2 > span');
-    if (fold) {
-      formulasElems.slideUp();
-      capitulosFoldButtons.html(openSymbol);
-    } else {
-      formulasElems.slideDown();
-      capitulosFoldButtons.html(closeSymbol);
-    }
-  }
-  
-  return setFoldingAll;
+function foldAll() {
+  formulasElems.slideUp();
+  toggleFormulasBtnElems.html(openSymbol);
 }
 
-function showCapitulo10() {
-  $('#capitulo10SpoilerBtn').hide();
-  $('.capitulo-10 .spoiler').fadeIn();
+function unfoldAll() {
+  formulasElems.slideDown();
+  toggleFormulasBtnElems.html(closeSymbol);
 }
 
-function openFormulas(ev) {
-  var formulasId = ev.currentTarget.href.match(/#(.*)/)[1];
+function unfoldTarget(ev) {
+  var formulasId = getIdFromHref(ev.currentTarget);
   var formulasElem = $('.' + formulasId);
   if (!formulasElem.is(':visible')) {
     formulasElem.show();
     $('#' + formulasId)
-      .find('.toggle-formulas-btn')
+      .find('.' + toggleFormulasCssClass)
       .html(closeSymbol);
   }
 }
 
-function toggleFormulas(ev) {
+function toggleFolding(ev) {
   var formulasElem = $('.' + ev.currentTarget.parentElement.id);
   var isHiding = formulasElem.is(':visible');
   formulasElem.slideToggle();
   $(ev.currentTarget).html(isHiding ? openSymbol : closeSymbol);
+}
+
+function showSpoiler(ev) {
+  $(ev.currentTarget).hide();
+  $(ev.currentTarget.parentElement).find('.spoiler').fadeIn();
+}
+
+function getIdFromHref(elem) {
+  return elem.href.match(/#(.*)/)[1];
 }
