@@ -243,6 +243,10 @@ h2 {
     margin-bottom: 0;
   }
 
+  a {
+    text-decoration: none;
+  }
+
   ul, h3,
   .spoiler-btn,
   .fold-buttons,
