@@ -5,17 +5,17 @@ var openSymbol = '&#128448;';
 var gotoTopSymbol = '&uarr;';
 var toggleFormulasCssClass = 'toggle-formulas-btn';
 
-var gotoTopBtn = $('<a>')
+var formulasElems = $('.formulas').hide();
+
+var gotoTopBtnTmpl = $('<a>')
   .attr('href', '#top')
   .html(gotoTopSymbol + ' Menú')
   .addClass('goto-top-btn');
 
 var toggleFormulasBtnElems;
-var toggleFormulasBtn = $('<span>')
+var toggleFormulasBtnTmpl = $('<span>')
   .html(closeSymbol)
   .addClass(toggleFormulasCssClass);
-
-var formulasElems = $('.formulas').hide();
 
 $(document).ready(bootstrap);
 
@@ -28,13 +28,13 @@ function bootstrap() {
     .map(addToggleBtn);
 
   $('#menu li')
+    .map(getMenuLinks)
     .each(addUnfoldEvent)
     .each(addVideoLink);
 
+  $('#foldAllBtn').click(foldAll);
+  $('#unfoldAllBtn').click(unfoldAll);
   $('.formulas-title').mousedown(unfoldTarget);
-
-  $("#foldAllBtn").click(foldAll);
-  $("#unfoldAllBtn").click(unfoldAll);
 
   $('.spoiler-btn').click(showSpoiler);
 
@@ -49,26 +49,33 @@ function renderFormula(i, elem) {
 }
 
 function addGotoTopBtn(index, h2Elem) {
-  $(h2Elem).prepend(gotoTopBtn.clone());
+  $(h2Elem).prepend(gotoTopBtnTmpl.clone());
 }
 
 function addToggleBtn(index, h2Elem) {
-   return toggleFormulasBtn
+   return toggleFormulasBtnTmpl
     .clone()
     .click(toggleFolding)
     .prependTo(h2Elem)[0];
 }
 
-function addUnfoldEvent(index, menuOptElem) {
-  var formulasLink = $(menuOptElem).find('a')[0];
-  $(formulasLink).mousedown(unfoldTarget);
+function getMenuLinks(index, menuOptElem) {
+  var menuLinks = $(menuOptElem).find('a');
+
+  return {
+    formulasLink: menuLinks[0],
+    videoLink: menuLinks[1]
+  };
 }
 
-function addVideoLink(index, menuOptElem) {
-  var menuLinks = $(menuOptElem).find('a');
-  var videoLink = $(menuLinks[1]).clone().addClass('view-video-btn');
-  var capituloId = getIdFromHref(menuLinks[0]);
-  $('#' + capituloId).append(videoLink);
+function addUnfoldEvent(index, menuLinks) {
+  $(menuLinks.formulasLink).mousedown(unfoldTarget);
+}
+
+function addVideoLink(index, menuLinks) {
+  var formulasId = getIdFromHref(menuLinks.formulasLink);
+  var videoLink = $(menuLinks.videoLink).clone().addClass('view-video-btn');
+  $('#' + formulasId).append(videoLink);
 }
 
 function foldAll() {
@@ -86,9 +93,7 @@ function unfoldTarget(ev) {
   var formulasElem = $('.' + formulasId);
   if (!formulasElem.is(':visible')) {
     formulasElem.show();
-    $('#' + formulasId)
-      .find('.' + toggleFormulasCssClass)
-      .html(closeSymbol);
+    $('#' + formulasId + ' .' + toggleFormulasCssClass).html(closeSymbol);
   }
 }
 
