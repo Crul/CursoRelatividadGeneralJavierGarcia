@@ -64,7 +64,7 @@ ul {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  height: 110px; /* =27x4 */
+  height: 136px; /* =27x5 */
   margin: 0;
   padding: 16px;
   vertical-align: top;
@@ -168,6 +168,25 @@ h2 {
   text-align: center;
 }
 
+.no-formula {
+  font-family: "Times New Roman", Times, serif;
+  display: inline-block;
+  padding: 2px 6px;
+  background-color: #ddd;
+}
+  a.no-formula {
+    padding: 4px 9px;
+    background-color: #d2dade;
+    color: #00f;
+  }
+  a.no-formula:visited {
+    color: #00f;
+  }
+  a.no-formula:hover {
+    background-color: #00f;
+    color: #fff;
+  }
+
 .view-video-btn,
 .toggle-formulas-btn,
 .goto-top-btn {
@@ -243,7 +262,7 @@ h2 {
 
 @media screen and (max-width: 582px) {
   ul {
-    height: 220px; /* =27x8 */
+    height: 248px; /* =27x9 */
   }
 }
 
