@@ -167,6 +167,14 @@ h2 {
   font-size: 90%;
   text-align: center;
 }
+  .formula-titulo .formula .katex-display {
+    display: inline;
+    margin: 0;
+    padding: 0;
+  }
+  .formula-titulo .formula .katex {
+    font-size: 1em;
+  }
 
 .no-formula {
   font-family: "Times New Roman", Times, serif;
