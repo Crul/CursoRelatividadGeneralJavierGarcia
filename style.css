@@ -148,6 +148,10 @@ h2 {
   margin-bottom: 8px;
 }
 
+.subgrupo-formulas .formula {
+  display: inline-block;
+}
+
 .formula .katex-display {
   padding: 0 10px 12px 10px;
   margin: 12px 12px 0 12px;
