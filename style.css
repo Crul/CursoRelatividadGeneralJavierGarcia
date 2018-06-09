@@ -148,7 +148,7 @@ h2 {
   margin-bottom: 8px;
 }
 
-.subgrupo-formulas .formula {
+.subgrupo-formulas > .formula {
   display: inline-block;
 }
 
