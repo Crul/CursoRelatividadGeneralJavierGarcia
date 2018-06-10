@@ -148,6 +148,10 @@ h2 {
   margin-bottom: 8px;
 }
 
+.subgrupo-formulas {
+  display: block;
+}
+
 .subgrupo-formulas > .formula {
   display: inline-block;
 }
