@@ -163,7 +163,7 @@ h2 {
 
 .formula-texto .katex-display {
   font-size: 80%;
-  padding: 0;
+  padding-bottom: 6px;
 }
 
 .subgrupo-formulas + .subgrupo-formulas .katex-display,
