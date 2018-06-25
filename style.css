@@ -64,7 +64,7 @@ ul {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  height: 219px; /* =27x8+3 | 8 = 30/4 */
+  height: 219px; /* =27x8+3 | 8 = 31/4 */
   margin: 0;
   padding: 16px;
   vertical-align: top;
@@ -210,6 +210,22 @@ h2 {
     color: #fff;
   }
 
+.wolfram-alpha-link {
+  display: block;
+  text-align: center;
+  font-size: 66%;
+  padding: 6px;
+}
+
+  .wolfram-alpha-link a {
+    color: #d2dade;
+    text-decoration: none;
+  }
+    .wolfram-alpha-link a:hover {
+      color: #35516c;
+      text-decoration: underline;
+    }
+
 .view-video-btn,
 .toggle-formulas-btn,
 .goto-top-btn {
@@ -260,7 +276,7 @@ h2 {
 
 @media screen and (max-width: 1000px) {
   ul {
-    height: 273px; /* =27x9+3 | 10 = 30/3 */
+    height: 300px; /* =27x11+3 | 11 = 31/3 */
   }
 }
 
@@ -285,7 +301,7 @@ h2 {
 
 @media screen and (max-width: 582px) {
   ul {
-    height: 408px; /* =27x14+3 | 15 = 30/2 */
+    height: 435px; /* =27x16+3 | 16 = 31/2 */
   }
 }
 
