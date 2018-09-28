@@ -64,7 +64,7 @@ ul {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  height: 246px; /* =27x9+3 | 9 = 34/4 */
+  height: 246px; /* =27x9+3 | 9 = 35/4 */
   margin: 0;
   padding: 16px;
   vertical-align: top;
@@ -276,7 +276,7 @@ h2 {
 
 @media screen and (max-width: 1000px) {
   ul {
-    height: 327px; /* =27x12+3 | 12 = 34/3 */
+    height: 327px; /* =27x12+3 | 12 = 35/3 */
   }
 }
 
@@ -301,7 +301,7 @@ h2 {
 
 @media screen and (max-width: 582px) {
   ul {
-    height: 462px; /* =27x17+3 | 17 = 34/2 */
+    height: 489px; /* =27x18+3 | 18 = 35/2 */
   }
 }
 
