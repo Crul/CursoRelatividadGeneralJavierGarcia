@@ -340,7 +340,8 @@ h2 {
     display: none;
   }
 
+  .formulas,
   .spoiler {
-    display: block;
+    display: block !important;
   }
 }

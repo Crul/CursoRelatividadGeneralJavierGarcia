@@ -5,7 +5,7 @@ var openSymbol = '&#128448;';
 var gotoTopSymbol = '&uarr;';
 var toggleFormulasCssClass = 'toggle-formulas-btn';
 
-var formulasElems = $('.formulas').hide();
+var formulasElems = $('.formulas');
 
 var gotoTopBtnTmpl = $('<a>')
   .attr('href', '#top')
