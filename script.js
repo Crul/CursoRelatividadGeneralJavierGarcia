@@ -14,14 +14,13 @@ var gotoTopBtnTmpl = $('<a>')
 
 var toggleFormulasBtnElems;
 var toggleFormulasBtnTmpl = $('<span>')
-  .html(closeSymbol)
+  .html(openSymbol)
   .addClass(toggleFormulasCssClass);
 
 $(document).ready(bootstrap);
 
 function bootstrap() {
   $('.formula').each(renderFormula);
-  formulasElems.fadeIn();
 
   toggleFormulasBtnElems = $('h2')
     .each(addGotoTopBtn)
@@ -39,9 +38,19 @@ function bootstrap() {
   $('.spoiler-btn').click(showSpoiler);
 
   $('html, body').css('min-height', 0);
+  
+  handleInitialSection();
+}
+
+function handleInitialSection() {
   var hash = location.hash;
   location.hash = '';
   location.hash = hash;
+
+  if (hash && hash != 'top') {
+    $(hash.replace('#', '.')).slideToggle();
+    $(hash + ' .' + toggleFormulasCssClass).html(closeSymbol);
+  }
 }
 
 function renderFormula(i, elem) {
