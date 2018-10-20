@@ -56,12 +56,23 @@ h3 {
   }
 
 #topContent {
+  background-color: #d2dade;
   display: table;
   width: 100%;
 }
 
+  #topContent a.no-formula {
+    background-color: #ffffff88;
+    margin: 8px 20px 18px 20px;
+    font-size: 125%;
+    text-align: center;
+  }
+    #topContent a.no-formula:hover {
+      background-color: #00f;
+      color: #fff;
+    }
+
 #menu {
-  background-color: #d2dade;
   display: table-row;
 }
 
