@@ -19,6 +19,11 @@ body {
   background: #ee7700;
 }
 
+.only-for-print {
+  display: none;
+  font-size: 14px;
+}
+
 h1 {
   font-size: 140%;
   font-weight: normal;
@@ -66,7 +71,7 @@ ul {
   flex-wrap: wrap;
   height: 273px; /* =27x10+3 | 10 = 39/4 */
   margin: 0;
-  padding: 16px;
+  padding: 16px 16px 4px 16px;
   vertical-align: top;
 }
   
@@ -114,7 +119,7 @@ h2 {
   display: table-cell;
   text-align: right;
   vertical-align: bottom;
-  padding: 0 16px 16px 0;
+  padding-right: 16px;
 }
 
 .fold-buttons > div {
@@ -126,7 +131,6 @@ h2 {
   color: #35516c;
   border: solid 1px #35516c;
   padding: 5px;
-  margin-bottom: 8px;
   vertical-align: bottom;
 }
   .fold-buttons > div:hover {
@@ -336,10 +340,12 @@ h2 {
   .fold-buttons,
   .view-video-btn,
   .goto-top-btn,
-  .toggle-formulas-btn {
+  .toggle-formulas-btn,
+  .wolfram-alpha-link {
     display: none;
   }
 
+  .only-for-print,
   .formulas,
   .spoiler {
     display: block !important;
