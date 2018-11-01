@@ -4,13 +4,17 @@ var closeSymbol = '&#128449;';
 var openSymbol = '&#128448;';
 var gotoTopSymbol = '&uarr;';
 var toggleFormulasCssClass = 'toggle-formulas-btn';
+var titleRightBtnsCssClass = 'title-right-btns';
 
 var formulasElems = $('.formulas').hide();
 
-var gotoTopBtnTmpl = $('<a>')
+var gotoTopBtn = $('<a>')
   .attr('href', '#top')
   .html(gotoTopSymbol + ' Menú')
   .addClass('goto-top-btn');
+var gotoTopBtnTmpl = $('<div>')
+  .addClass(titleRightBtnsCssClass)
+  .append(gotoTopBtn);
 
 var toggleFormulasBtnElems;
 var toggleFormulasBtnTmpl = $('<span>')
@@ -84,7 +88,7 @@ function addUnfoldEvent(index, menuLinks) {
 function addVideoLink(index, menuLinks) {
   var formulasId = getIdFromHref(menuLinks.formulasLink);
   var videoLink = $(menuLinks.videoLink).clone().addClass('view-video-btn');
-  $('#' + formulasId).append(videoLink);
+  $('#' + formulasId + ' .' + titleRightBtnsCssClass).append(videoLink);
 }
 
 function foldAll() {

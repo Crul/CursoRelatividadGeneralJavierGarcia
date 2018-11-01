@@ -116,6 +116,7 @@ h2 {
   padding: 6px;
   margin: 0 0 2px 0;
   clear: both;
+  min-height: 24px;
 }
   h2 a.formulas-title {
     color: #d2dade;
@@ -251,6 +252,9 @@ h2 {
       text-decoration: underline;
     }
 
+.title-right-btns {
+  float: right;
+}
 .view-video-btn,
 .toggle-formulas-btn,
 .goto-top-btn {
@@ -270,6 +274,9 @@ h2 {
 }
 .view-video-btn {
   margin-left: 9px;
+}
+.toggle-formulas-btn {
+  float: left;
 }
 .goto-top-btn {
   float: right;
