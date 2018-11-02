@@ -333,7 +333,7 @@ h2 {
 
 @media screen and (max-width: 582px) {
   ul {
-    height: 570px; /* =54x22+3 | 22 = 43/2 */
+    height: 597px; /* =54x22+3 | 22 = 43/2 */
   }
 }
 
