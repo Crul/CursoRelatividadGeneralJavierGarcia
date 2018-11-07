@@ -19,13 +19,14 @@ form div.form-group {
     margin-bottom: .5rem;
 }
 form div.form-group.form-check {
-    padding-top: 25px;
+    padding-top: 1.5rem;
 }
 form div.form-group label {
     margin-bottom: .1rem;
 }
 form div.row button {
     float: right;
+    margin-top: .8rem;
     margin-bottom: .5rem;
 }
 .form-control:disabled, .form-control[readonly] {

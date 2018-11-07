@@ -11,21 +11,53 @@ var POTENTIAL_PLOT_MAX_X = 1e4;
 
 var G = 6.674E-11;
 
-var initial_conditions = {
-    input_format: 'L-E-vr',
-    time_resolution: 0.1, simulation_time: 500,
-    si_units: true,
-    M: 5.97e+24, R: 6371000.0, m: 500.0,
-    r: undefined, phi: 0.0, vr: 0.0, vr_sign: undefined, vphi: undefined,
-    L: 26719623532036.336, E: -13897619421.33626
-};
-
-initial_conditions = {
-    input_format: 'r-vr-vphi',
-    time_resolution: 0.1, simulation_time: 500,
-    si_units: false,
-    r: 8.0, phi: 0.0, vr: 0.0, vphi: 0.035
-};
+var defaultInitialConditions = [
+    {
+        name: 'Velocidad de Escape (caso 1)',
+        input_format: 'r-vr-vphi',
+        si_units: false,
+        time_resolution: 0.1, simulation_time: 500,
+        r: 16.0, phi: 0.0, vr: 2.0, vphi: 0.0
+    },
+    {
+        name: 'Colisión (caso 2)',
+        input_format: 'r-vr-vphi',
+        si_units: false,
+        time_resolution: 0.1, simulation_time: 500,
+        r: 16.0, phi: 0.0, vr: 0.0, vphi: 0.0
+    },
+    {
+        name: 'Parábola (caso 3)',
+        input_format: 'L-E-vphi',
+        si_units: false,
+        time_resolution: 0.1, simulation_time: 5000,
+        phi: 0.0, vphi: 0.01, vr_sign: 1.0,
+        L: 9.48, E: 0.0,
+    },
+    {
+        name: 'Hipérbola (caso 4)',
+        input_format: 'r-vr-vphi',
+        si_units: false,
+        time_resolution: 0.1, simulation_time: 500,
+        r: 16.0, phi: 0.0, vr: 0.0, vphi: 0.08,
+    },
+    {
+        name: 'Órbita Elíptica (caso 5)',
+        input_format: 'r-vr-vphi',
+        si_units: false,
+        time_resolution: 0.1, simulation_time: 500,
+        r: 8.0, phi: 0.0, vr: 0.0, vphi: 0.035
+    },
+    {
+        name: 'Órbita Circular en SI (caso 6)',
+        input_format: 'L-E-vr',
+        time_resolution: 0.1, simulation_time: 500,
+        si_units: true,
+        M: 5.97e+24, R: 6371000.0, m: 500.0,
+        phi: 0.0, vr: 0.0,
+        L: 26719623532036.336, E: -13897619421.33626,
+    }
+];
 
 function run(initial_conditions) {
     var R, b;
@@ -523,13 +555,25 @@ function saveRun() {
 }
 
 function bootstrapApp() {
-    alert("¿Qué haces aquí? Espero que seas uno de los Obi Four Kenobi.\nEn ese caso: di amigo (o haz click en OK) y entra :).\nSi no lo eres: ESTAS NO SON LAS WEBS QUE ESTÁS BUSCANDO.");
+    alert(
+        "¿Qué haces aquí? Espero que seas uno de los Obi Four Kenobi.\n" +
+        "En ese caso: di amigo (o haz click en OK) y entra :).\n" +
+        "Si no lo eres: ESTAS NO SON LAS WEBS QUE ESTÁS BUSCANDO."
+    );
     
-    setFormData(initial_conditions);
+    var defaultFormDataOpts = defaultInitialConditions.map(function(data){
+        return $('<option>').attr('value', data.name).html(data.name);
+    });
+    $('#defaultFormData')
+        .append(defaultFormDataOpts)
+        .val(defaultInitialConditions[0].name);
+    
+    onDefaultFormDataChange();
     saveRun();
     onInputFormatChange();
 
     $('#inputFormat').change(onInputFormatChange);
+    $('#defaultFormData').change(onDefaultFormDataChange);
 
     $("#runBtn").click(saveRun);
 }
@@ -598,7 +642,7 @@ function getFormData(data) {
     }
 }
 
-function onInputFormatChange(a, b, c) {
+function onInputFormatChange() {
     var inp = $('#inputFormat');
     var val = inp.val();
     $('form input').prop("disabled", false);
@@ -623,4 +667,19 @@ function onInputFormatChange(a, b, c) {
             alert("Datos de Entrada (" + val + ") incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò");
         
     }
+}
+
+function onDefaultFormDataChange() {
+    var initialConditionsName = $('#defaultFormData').val();
+    
+    var filteredIC = defaultInitialConditions
+        .filter(function(ic) { return ic.name == initialConditionsName });
+
+    if (filteredIC.length != 1) {
+        alert("ERROR: Condiciones iniciales no encontradas (" + initialConditionsName + ") ... ¿Cómo has conseguido que ocurra esto? Ó_ò")
+        return;
+    }
+    
+    setFormData(filteredIC[0]);
+    saveRun();
 }
