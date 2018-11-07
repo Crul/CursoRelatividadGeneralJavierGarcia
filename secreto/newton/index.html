@@ -1,0 +1,140 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Simulador de Gravedad Newtoniana</title>
+  <meta name="description" content="Simulador de Gravedad Newtoniana">
+  <meta name="author" content="obi-four-kenobi">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css?v=1.0">
+
+</head>
+
+<body>
+
+   <!-- time_resolution, simulation_time, si_units, M, R, m, t, r, phi, vr, vr_sign, vphi, L, E -->
+
+  <div class="container">
+  
+    <form class="form">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="inputFormat">Datos de entrada</label>
+            <select id="inputFormat" class="form-control form-control-sm">
+              <option value="r-vr-vphi">r, vr, vphi</option>
+              <option value="L-E-r">L, E, r</option>
+              <option value="L-E-vr">L, E, vr</option>
+              <option value="L-E-vphi">L, E, vphi</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="siUnits">
+            <label class="form-check-label" for="siUnits">Unidades SI</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="timeResolution">Duración paso (seg)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Duración paso (seg)" id="timeResolution">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="simulationTime">Tiempo simul. (seg)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Tiempo simulación (seg)" id="simulationTime">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="M">Masa del Planeta (kg)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Masa del Planeta (kg)" id="M">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="R">Radio del Planeta (m)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Radio del Planeta (m)" id="R">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="m">Masa de la Nave (kg)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Masa de la Nave (kg)" id="m">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="r">r inicial</label>
+            <input type="number" class="form-control form-control-sm" placeholder="r inicial" id="r">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vr">vr inicial</label>
+            <input type="number" class="form-control form-control-sm" placeholder="vr inicial" id="vr">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vrSign">signo vr inicial</label>
+            <input type="number" class="form-control form-control-sm" placeholder="signo vr inicial" id="vrSign">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="phi">phi inicial</label>
+            <input type="number" class="form-control form-control-sm" placeholder="phi inicial" id="phi">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vphi">vphi inicial</label>
+            <input type="number" class="form-control form-control-sm" placeholder="vphi inicial" id="vphi">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="L">valor L</label>
+            <input type="number" class="form-control form-control-sm" placeholder="valor L" id="L">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="E">valor E</label>
+            <input type="number" class="form-control form-control-sm" placeholder="valor E" id="E">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button type="button" id="runBtn" class="btn btn-warning">SIMULAR</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="row">
+      <div class="col-sm">
+        <div id="potentialPlot"></div>
+      </div>
+      <div class="col-sm">
+        <div id="trajectoryPlot"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <!-- https://plot.ly/javascript/ -->
+  <!-- https://github.com/plotly/plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="main.js"></script>
+</body>
+</html>

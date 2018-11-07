@@ -1,0 +1,33 @@
+html, body {
+    background-color: #000;
+}
+
+#potentialPlot,
+#trajectoryPlot {
+    height: 500px;
+}
+
+form {
+   font-size: 80%; 
+}
+form .row {
+   background-color: rgb(30, 68, 93);
+   color: rgb(210, 218, 222);
+}
+
+form div.form-group {
+    margin-bottom: .5rem;
+}
+form div.form-group.form-check {
+    padding-top: 25px;
+}
+form div.form-group label {
+    margin-bottom: .1rem;
+}
+form div.row button {
+    float: right;
+    margin-bottom: .5rem;
+}
+.form-control:disabled, .form-control[readonly] {
+    background-color: #7c7d80;
+}
