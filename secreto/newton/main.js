@@ -580,6 +580,7 @@ function bootstrapApp() {
 
 function setFormData(data) {
     $("#inputFormat").val(data.input_format);
+    onInputFormatChange();
     $("#siUnits").prop("checked", data.si_units);
     $("#timeResolution").val(data.time_resolution);
     $("#simulationTime").val(data.simulation_time);
