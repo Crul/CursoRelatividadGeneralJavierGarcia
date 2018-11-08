@@ -35,7 +35,7 @@ var defaultInitialConditions = [
         input_format: 'L-E-vphi',
         si_units: false,
         time_resolution: 0.1, simulation_time: 5000,
-        phi: 0.0, vphi: 0.01, vr_sign: 1.0,
+        phi: 1.0, vphi: 0.001, vr_sign: -1.0,
         L: 9.48, E: 0.0,
     },
     {
@@ -306,7 +306,9 @@ function fill_missing_initial_conditions(initial_conditions) {
             if (vphi !== undefined) throw "ERROR: You cannot specify vphi if you specify L, E and r";
 
             vphi = L/Math.pow(r, 2);
-            vr = vr_sign * Math.sqrt(Math.abs(2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r)));
+            var vr_abs_square = 2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r);
+            if (vr_abs_square < 0) throw "ERROR: Condiciones iniciales incorrectas";
+            vr = vr_sign * Math.sqrt(vr_abs_square);
 
         } else if (vr !== undefined) {
             if (r !== undefined) throw "ERROR: You cannot specify r if you specify L, E and vr";
@@ -339,7 +341,9 @@ function fill_missing_initial_conditions(initial_conditions) {
             if (Math.abs(vr_sign) !== 1) throw "ERROR: vr_sign should be 1.0 or -1.0";
 
             r = Math.sqrt(Math.abs(L / vphi));
-            vr = vr_sign * Math.sqrt(Math.abs(2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r)));
+            var vr_abs_square = 2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r);
+            if (vr_abs_square < 0) throw "ERROR: Condiciones iniciales incorrectas";
+            vr = vr_sign * Math.sqrt(vr_abs_square);
         }
 
     } else {
