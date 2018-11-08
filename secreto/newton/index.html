@@ -25,7 +25,7 @@
           <div class="form-group">
             <label for="inputFormat">Datos de entrada</label>
             <select id="inputFormat" class="form-control form-control-sm">
-              <option value="r-vr-vphi">r, vr, vphi</option>
+              <option value="r-vr-vphi" selected>r, vr, vphi</option>
               <option value="L-E-r">L, E, r</option>
               <option value="L-E-vr">L, E, vr</option>
               <option value="L-E-vphi">L, E, vphi</option>
@@ -85,7 +85,8 @@
         <div class="col">
           <div class="form-group">
             <label for="vrSign">signo vr inicial</label>
-            <input type="number" class="form-control form-control-sm" placeholder="signo vr inicial" id="vrSign">
+            <input type="number" class="form-control form-control-sm" placeholder="signo vr inicial" id="vrSign"
+                   step="2" min="-1" max="1">
           </div>
         </div>
         <div class="col">
@@ -118,6 +119,15 @@
           <div class="form-group">
             <label for="defaultFormData">Configuraciones predeterminadas</label>
             <select id="defaultFormData" class="form-control form-control-sm">
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="method">Método</label>
+            <select id="method" class="form-control form-control-sm">
+              <option value="runge-kutta" selected>Runge-Kutta (más preciso)</option>
+              <option value="euler">Euler (más rápido)</option>
             </select>
           </div>
         </div>

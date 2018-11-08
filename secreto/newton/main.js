@@ -10,6 +10,10 @@ var POTENTIAL_PLOT_RESOLUTION = 1e2;
 var POTENTIAL_PLOT_MAX_X = 1e4;
 
 var G = 6.674E-11;
+var move_point_by_method = {
+    'euler': move_point_euler,
+    'runge-kutta': move_point_runge_kutta,
+}
 
 var defaultInitialConditions = [
     {
@@ -80,12 +84,13 @@ function run(initial_conditions) {
     var radiuses = get_radiuses(L, E);
     var step_data = initialize_step_data(r, vr, phi, radiuses);
 
-    var dt    = initial_conditions.time_resolution;
-    var steps = initial_conditions.simulation_time / initial_conditions.time_resolution;
+    var method = initial_conditions.method;
+    var dt     = initial_conditions.time_resolution;
+    var steps  = initial_conditions.simulation_time / initial_conditions.time_resolution;
     var points = { x: [], y: [], phi: [], r: [] };
 
     for (var i=0; i < steps; i++) {
-        step_data = run_step(E, L, radiuses, dt, step_data);
+        move_point_by_method[method](radiuses, step_data, E, L, dt);
 
         var r = step_data.r;
         var r_step_value = r;
@@ -122,54 +127,135 @@ function run(initial_conditions) {
     };
 }
 
-function run_step(E, L, radiuses, dt, step_data) {
+function move_point_euler(radiuses, step_data, E, L, dt) {
+    // Euler
+    // y_n+1 = y_n + h * f(t_n, y_n)
+    var r = step_data.r;
+    var vr_sign = step_data.vr_sign;
     var r1 = radiuses.r1;
     var r2 = radiuses.r2;
-    var r = step_data.r;
-    var phi = step_data.phi;
-    var r_sign = step_data.r_sign;
-
-    var vphi = L / (Math.pow(r, 2));
-    var value_inside_sqrt_of_vr = 2*Math.abs(E - get_newton_potential(r,L));
-    var vr = r_sign * Math.sqrt(value_inside_sqrt_of_vr);
     var is_closed_orbit = !(r1 === undefined || r2 === undefined);
-
+    
+    step_data.vphi = L / (Math.pow(r, 2));
+    var value_inside_sqrt_of_vr = 2*Math.abs(E - get_newton_potential(r,L));
+    step_data.vr = vr_sign * Math.sqrt(value_inside_sqrt_of_vr);
+    
     var is_r_below_minimum_radius = (r1 !== undefined) && (r <= r1);
     if (is_r_below_minimum_radius) { // There is a minimum radius and we are below;
-        step_data.r_sign = 1;
-        step_data.r = r + INFINITESIMAL;
-        vr = Math.abs(vr);
-        if (is_closed_orbit)
-            move_point(step_data, vr, vphi, dt);
+        step_data.vr_sign = 1;
+        step_data.r  = r + INFINITESIMAL;
+        step_data.vr = Math.abs(step_data.vr);
+        if (is_closed_orbit) {
+            step_data.r   += step_data.vr * dt;
+            step_data.phi += step_data.vphi * dt;
+        }
     }
 
     var is_r_above_maximum_radius = (r2 !== undefined) && (r >= r2);
     if (is_r_above_maximum_radius) { // There is a maximum radius and we are below;
-        step_data.r_sign = -1;
-        step_data.r = r - INFINITESIMAL;
-        vr = -Math.abs(vr);
-        if (is_closed_orbit)
-            move_point(step_data, vr, vphi, dt);
+        step_data.vr_sign = -1;
+        step_data.r  = r - INFINITESIMAL;
+        step_data.vr = -Math.abs(step_data.vr);
+        if (is_closed_orbit) {
+            step_data.r   += step_data.vr * dt;
+            step_data.phi += step_data.vphi * dt;
+        }
     }
 
     var is_inside_ellipse_radiuses = is_closed_orbit && (r > r1 && r < r2);
     var is_open_trajectory_over_threshold = (!is_closed_orbit) && (r >= INFINITESIMAL);
-
-    if (is_inside_ellipse_radiuses || is_open_trajectory_over_threshold)
-        move_point(step_data, vr, vphi, dt);
-
-    return step_data;
+    if (is_inside_ellipse_radiuses || is_open_trajectory_over_threshold) {
+        step_data.r   += step_data.vr * dt;
+        step_data.phi += step_data.vphi * dt;
+    }
 }
 
-function move_point(step_data, vr, vphi, dt) {
-    step_data.r += vr * dt;
-    step_data.phi += vphi * dt;
+function move_point_runge_kutta(radiuses, step_data, E, L, dt) {
+    /* Runge-Kutta
+    k_1 = h * f(t_n, y_n)
+    k_2 = h * f(t_n + h/2, y_n + k1/2)
+    k_3 = h * f(t_n + h/2, y_n + k2/2)
+    k_4 = h * f(t_n + h, y_n + k3)
+    y_n+1 = y_n + (k1 + 2*k_2 + 2*k3 + k4)     */
+    
+    var r = step_data.r;
+    var deltas = calc_runge_kutta(dt, r, step_data.vr_sign, E, L);
+    
+    var r1 = radiuses.r1;
+    var r2 = radiuses.r2;
+    var is_closed_orbit = !(r1 === undefined || r2 === undefined);
+    
+    var is_r_below_minimum_radius = (r1 !== undefined) && (r <= r1);
+    if (is_r_below_minimum_radius) { // There is a minimum radius and we are below;
+        step_data.vr_sign = 1;
+        step_data.r  = r + 1e-9;
+        if (is_closed_orbit) {
+            deltas = calc_runge_kutta(dt, r, step_data.vr_sign, E, L);
+            step_data.r   += deltas.r;
+            step_data.phi += deltas.phi;
+        }
+    }
+
+    var is_r_above_maximum_radius = (r2 !== undefined) && (r >= r2);
+    if (is_r_above_maximum_radius) { // There is a maximum radius and we are below;
+        step_data.vr_sign = -1;
+        step_data.r  = r - 1e-9;
+        if (is_closed_orbit) {
+            deltas = calc_runge_kutta(dt, r, step_data.vr_sign, E, L);
+            step_data.r   += deltas.r;
+            step_data.phi += deltas.phi;
+        }
+    }
+    
+    var is_inside_ellipse_radiuses = is_closed_orbit && (r > r1 && r < r2);
+    var is_open_trajectory_over_threshold = (!is_closed_orbit) && (r >= INFINITESIMAL);
+    if (is_inside_ellipse_radiuses || is_open_trajectory_over_threshold) {
+        step_data.r   += deltas.r;
+        step_data.phi += deltas.phi;
+    }
+}
+
+function calc_runge_kutta(dt, r, vr_sign, E, L) {
+    var h = dt;
+    var f_value_k1 = f_for_runge_kutta(r, vr_sign, E, L);
+    var k1_vr = h * f_value_k1.vr;
+    var k1_vphi = h * f_value_k1.vphi;
+        
+    var f_value_k2 = f_for_runge_kutta(r + k1_vr/2, vr_sign, E, L);
+    var k2_vr = h * f_value_k2.vr;
+    var k2_vphi = h * f_value_k2.vphi;
+    
+    var f_value_k3 = f_for_runge_kutta(r + k2_vr/2, vr_sign, E, L);
+    var k3_vr = h * f_value_k3.vr;
+    var k3_vphi = h * f_value_k3.vphi;
+    
+    var f_value_k4 = f_for_runge_kutta(r + k3_vr, vr_sign, E, L);
+    var k4_vr = h * f_value_k4.vr;
+    var k4_vphi = h * f_value_k4.vphi;
+    
+    var delta_r = get_value_from_runge_kutta_ks(k1_vr, k2_vr, k3_vr, k4_vr);
+    var delta_phi = get_value_from_runge_kutta_ks(k1_vphi, k2_vphi, k3_vphi, k4_vphi);
+    var deltas = { r: delta_r, phi: delta_phi };
+    
+    return deltas;
+}
+
+function f_for_runge_kutta(r, vr_sign, E, L) {
+    var vphi = L / (Math.pow(r, 2));
+    var value_inside_sqrt_of_vr = 2*Math.abs(E - get_newton_potential(r, L));
+    var vr = vr_sign * Math.sqrt(value_inside_sqrt_of_vr);
+
+    return { vphi: vphi, vr: vr };
+}
+
+function get_value_from_runge_kutta_ks(k1, k2, k3, k4) {
+    return (k1 + 2*k2 + 2*k3 + k4) / 6;
 }
 
 function initialize_step_data(r, vr, phi, radiuses) {
     var r1 = radiuses.r1;
     var r2 = radiuses.r2;
-    var r_sign = undefined;
+    var vr_sign = undefined;
 
     var is_there_any_radius = !(r1 === undefined && r2 === undefined);
     if (is_there_any_radius && vr == 0) {
@@ -177,24 +263,25 @@ function initialize_step_data(r, vr, phi, radiuses) {
         if (is_closed_orbit) { // casos 5, 6;
             var d1 = Math.abs(r-r1);
             var d2 = Math.abs(r-r2);
-            r_sign = (d1 > d2 ? -1 : 1);
+            vr_sign = (d1 > d2 ? -1 : 1);
         } else {
             if (r1 === undefined)  // caso 2;
-                r_sign = -1;
+                vr_sign = -1;
             else  // caso 4;
-                r_sign = 1;
+                vr_sign = 1;
         }
 
-        r = r + r_sign * INFINITESIMAL;
+        r = r + vr_sign * INFINITESIMAL;
 
     } else { // casos 1, 3;
-        r_sign = vr / Math.abs(vr);
+        vr_sign = vr / Math.abs(vr);
     }
 
-    return { r: r, phi: phi, r_sign: r_sign };
+    return { r: r, phi: phi, vr_sign: vr_sign };
 }
 
 function fill_missing_initial_conditions(initial_conditions) {
+    var method = initial_conditions.method || 'runge-kutta';
     var r = initial_conditions.r;
     var vr = initial_conditions.vr;
     var vr_sign = initial_conditions.vr_sign;
@@ -206,8 +293,10 @@ function fill_missing_initial_conditions(initial_conditions) {
     if (r !== undefined && vr !== undefined && vphi !== undefined) {
         if (L !== undefined) throw "ERROR: You cannot specify L if you specify r, vr and vphi";
         if (E !== undefined) throw "ERROR: You cannot specify E if you specify r, vr and vphi";
+        if (vr != 0 && vr_sign !== undefined) throw "ERROR: You cannot specify vr_sign if you specify vr and is not 0";
         L = vphi * Math.pow(r, 2);
         E = (Math.pow(vr, 2) / 2) + get_newton_potential(r,L);
+        vr_sign = vr/Math.abs(vr);
 
     } else if (L !== undefined && E !== undefined) {
 
@@ -222,6 +311,7 @@ function fill_missing_initial_conditions(initial_conditions) {
         } else if (vr !== undefined) {
             if (r !== undefined) throw "ERROR: You cannot specify r if you specify L, E and vr";
             if (vphi !== undefined) throw "ERROR: You cannot specify vphi if you specify L, E and vr";
+            if (vr != 0 && vr_sign !== undefined) throw "ERROR: You cannot specify vr_sign if you specify vr and is not 0";
 
             var cuad_eq_a = (E - (Math.pow(vr, 2))/2);
             var cuad_eq_b = 1;
@@ -241,6 +331,7 @@ function fill_missing_initial_conditions(initial_conditions) {
             );
             r = Math.max(r_1, r_2);
             vphi = L/Math.pow(r, 2);
+            vr_sign = vr/Math.abs(vr);
 
         } else if (vphi !== undefined) {
             if (r !== undefined) throw "ERROR: You cannot specify r if you specify L, E and vphi";
@@ -264,6 +355,7 @@ function fill_missing_initial_conditions(initial_conditions) {
     }
 
     Object.assign(initial_conditions, {
+        method: method,
         r: r,
         vr: vr,
         vr_sign: vr_sign,
@@ -566,7 +658,7 @@ function bootstrapApp() {
     });
     $('#defaultFormData')
         .append(defaultFormDataOpts)
-        .val(defaultInitialConditions[0].name);
+        .val(defaultInitialConditions[4].name);
     
     onDefaultFormDataChange();
     saveRun();
@@ -574,6 +666,7 @@ function bootstrapApp() {
 
     $('#inputFormat').change(onInputFormatChange);
     $('#defaultFormData').change(onDefaultFormDataChange);
+    $('#vr').change(onVrChange);
 
     $("#runBtn").click(saveRun);
 }
@@ -590,6 +683,7 @@ function setFormData(data) {
     $("#r").val(data.r);
     $("#vr").val(data.vr);
     $("#vrSign").val(data.vr_sign);
+    onVrChange();
     $("#phi").val(data.phi);
     $("#vphi").val(data.vphi);
     $("#L").val(data.L);
@@ -599,27 +693,33 @@ function setFormData(data) {
 function getFormData(data) {
     var inp = $('#inputFormat');
     var val = inp.val();
-    var r, vr, vphi, L, E;
+    var r, vr, vphi, L, E, vrSign;
     switch (val) {
         case "r-vr-vphi":
             r = Number($('#r').val());
             vr = Number($('#vr').val());
             vphi = Number($('#vphi').val());
+            if (vr == 0)
+                vrSign = Number($('#vrSign').val());
             break;
         case "L-E-r":
             L = Number($('#L').val());
             E = Number($('#E').val());
             r = Number($('#r').val());
+            vrSign = Number($('#vrSign').val());
             break;
         case "L-E-vr":
             L = Number($('#L').val());
             E = Number($('#E').val());
             vr = Number($('#vr').val());
+            if (vr == 0)
+                vrSign = Number($('#vrSign').val());
             break;
         case "L-E-vphi":
             L = Number($('#L').val());
             E = Number($('#E').val());
             vphi = Number($('#vphi').val());
+            vrSign = Number($('#vrSign').val());
             break;
         default:
             alert("Datos de Entrada (" + val + ") incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò");   
@@ -635,22 +735,34 @@ function getFormData(data) {
         m       : Number($("#m").val()),
         r       : r,
         vr      : vr,
-        vr_sign : Number($("#vrSign").val()),
+        vr_sign : vrSign,
         phi     : Number($("#phi").val()),
         vphi    : vphi,
         L       : L,
         E       : E,
+        method  : $("#method").val(),
     }
 }
 
+function onVrChange() {
+    var inputFormat = $('#inputFormat').val();
+    var vr = Number($('#vr').val());
+    var isVrSignNeeded = (vr == 0 || inputFormat.indexOf("vr") < 0);
+    var vrSignInput = $('#vrSign');
+    vrSignInput.prop("disabled", !isVrSignNeeded);
+    var vrSign = Number(vrSignInput.val());
+    if (vrSign != 1 && vrSign != -1)
+        vrSignInput.val(1);
+}
+
 function onInputFormatChange() {
-    var inp = $('#inputFormat');
-    var val = inp.val();
+    var val = $('#inputFormat').val();
     $('form input').prop("disabled", false);
     switch (val) {
         case "r-vr-vphi":
             $('#L').prop("disabled", true);
             $('#E').prop("disabled", true);
+            $('#vrSign').prop("disabled", true);
             break;
         case "L-E-r":
             $('#vr').prop("disabled", true);
@@ -659,6 +771,7 @@ function onInputFormatChange() {
         case "L-E-vr":
             $('#r').prop("disabled", true);
             $('#vphi').prop("disabled", true);
+            $('#vrSign').prop("disabled", true);
             break;
         case "L-E-vphi":
             $('#r').prop("disabled", true);
