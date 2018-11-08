@@ -1,5 +1,5 @@
 var PLOT_POTENCIAL_CHART = true;
-var INFINITESIMAL = 1e-6;
+var INFINITESIMAL = 1e-9;
 var E_THRESHOLD_TO_BE_CONSIDERED_ZERO = 1e-7;
 
 var BISECTION_ERROR_THERSHOLD = 1e-7;
@@ -179,18 +179,25 @@ function move_point_runge_kutta(radiuses, step_data, E, L, dt) {
     y_n+1 = y_n + (k1 + 2*k_2 + 2*k3 + k4)     */
     
     var r = step_data.r;
-    var deltas = calc_runge_kutta(dt, r, step_data.vr_sign, E, L);
+    var deltas = calc_runge_kutta(dt, step_data.r, step_data.vr_sign, E, L);
     
     var r1 = radiuses.r1;
     var r2 = radiuses.r2;
     var is_closed_orbit = !(r1 === undefined || r2 === undefined);
     
+    var is_inside_ellipse_radiuses = is_closed_orbit && (r > r1 && r < r2);
+    var is_open_trajectory_over_threshold = (!is_closed_orbit) && (r >= INFINITESIMAL);
+    if (is_inside_ellipse_radiuses || is_open_trajectory_over_threshold) {
+        step_data.r   += deltas.r;
+        step_data.phi += deltas.phi;
+    }
+
     var is_r_below_minimum_radius = (r1 !== undefined) && (r <= r1);
     if (is_r_below_minimum_radius) { // There is a minimum radius and we are below;
         step_data.vr_sign = 1;
-        step_data.r  = r + 1e-9;
+        step_data.r += INFINITESIMAL;
         if (is_closed_orbit) {
-            deltas = calc_runge_kutta(dt, r, step_data.vr_sign, E, L);
+            deltas = calc_runge_kutta(dt, step_data.r, step_data.vr_sign, E, L);
             step_data.r   += deltas.r;
             step_data.phi += deltas.phi;
         }
@@ -199,19 +206,12 @@ function move_point_runge_kutta(radiuses, step_data, E, L, dt) {
     var is_r_above_maximum_radius = (r2 !== undefined) && (r >= r2);
     if (is_r_above_maximum_radius) { // There is a maximum radius and we are below;
         step_data.vr_sign = -1;
-        step_data.r  = r - 1e-9;
+        step_data.r -= INFINITESIMAL;
         if (is_closed_orbit) {
-            deltas = calc_runge_kutta(dt, r, step_data.vr_sign, E, L);
+            deltas = calc_runge_kutta(dt, step_data.r, step_data.vr_sign, E, L);
             step_data.r   += deltas.r;
             step_data.phi += deltas.phi;
         }
-    }
-    
-    var is_inside_ellipse_radiuses = is_closed_orbit && (r > r1 && r < r2);
-    var is_open_trajectory_over_threshold = (!is_closed_orbit) && (r >= INFINITESIMAL);
-    if (is_inside_ellipse_radiuses || is_open_trajectory_over_threshold) {
-        step_data.r   += deltas.r;
-        step_data.phi += deltas.phi;
     }
 }
 
@@ -628,7 +628,6 @@ function check_initial_conditions_in_si(initial_conditions) {
 function range(start, end) {
   return Array(end - start + 1).fill().map(function(_, idx) { return start + idx; });
 }
-
 
 $(document).ready(bootstrapApp);
 
