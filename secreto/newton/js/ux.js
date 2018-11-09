@@ -1,3 +1,5 @@
+var MAX_POINTS_TO_PRINT = 200;
+
 $(document).ready(bootstrapApp);
 
 var lastManuallySetHash = '';
@@ -163,7 +165,7 @@ function printPointsData(points, dataLength) {
     var theadCells = pointTypes.map(function(pointType) { return $('<td>').html(pointType); });
     var thead = $('<thead>').append($('<tr>').append(theadCells));
 
-    var tbodyRows = range(0, dataLength).map(function(i) {
+    var tbodyRows = range(0, Math.min(dataLength, MAX_POINTS_TO_PRINT)).map(function(i) {
         return pointsRow = $('<tr>').append(
             pointTypes.map(function(pointType) {
                 return $('<td>').html(points[pointType][i]);
@@ -174,7 +176,18 @@ function printPointsData(points, dataLength) {
     });
 
 
-    var tbody = $('<thead>').append(tbodyRows);
+    var tbody = $('<tbody>').append(tbodyRows);
+    
+    if (dataLength > MAX_POINTS_TO_PRINT) {
+        tbody.append(
+            $('<tr>').append(
+                $('<td>')
+                    .prop('colspan', pointTypes.length)
+                    .addClass('not-all-data-printed-msg')
+                    .append('Sólo se muestran los primeros ' + MAX_POINTS_TO_PRINT + ' valores')
+            )
+        );
+    }
 
     $('#pointsDataTable').append(thead).append(tbody);
     $('#pointsDataTableDiv').fadeIn();

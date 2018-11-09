@@ -1,5 +1,18 @@
+html {
+    overflow-y: scroll;
+}
 html, body {
     background-color: #000;
+}
+
+input[type=checkbox],
+select,
+label {
+    cursor: pointer;
+}
+
+input[readonly] {
+    cursor: not-allowed;
 }
 
 .error-msg {
@@ -45,10 +58,25 @@ form div.row button {
 
 #pointsDataTableDiv {
     overflow: auto;
-    max-height: 200px;
+    max-height: 600px;
+    margin-bottom: 72px;
 }
 
 #pointsDataTable {
     width: 100%;
     color: #fff;
+}
+
+#pointsDataTable tr td {
+    padding-left: 8px;
+}
+
+#pointsDataTable thead tr td {
+    padding-right: 12px;
+    border-bottom: solid 1px #CCC;
+    background-color: #333;
+}
+.not-all-data-printed-msg {
+    text-align: center;
+    background-color: #333;
 }
