@@ -214,7 +214,7 @@ function onInitialConditionsChange(ev) {
         if (ex.name != 'InvalidInitialConditionsError')
             throw ex;
         
-        $('form input[readonly='readonly']').val('');
+        $('form input[readonly="readonly"]').val('');
         $('#potentialPlot').append($('<div>').addClass('error-msg').html(ex.message));
     }
 }
