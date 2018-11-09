@@ -32,3 +32,13 @@ form div.row button {
 .form-control:disabled, .form-control[readonly] {
     background-color: #7c7d80;
 }
+
+#pointsDataTableDiv {
+    overflow: auto;
+    max-height: 200px;
+}
+
+#pointsDataTable {
+    width: 100%;
+    color: #fff;
+}
