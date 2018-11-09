@@ -2,6 +2,15 @@ html, body {
     background-color: #000;
 }
 
+.error-msg {
+    background-color: #330000;
+    color: #FF4444;
+    border: solid 1px #FFFF00;
+    text-align: center;
+    padding: 18px 36px;
+    margin-top: 12px;
+}
+
 #potentialPlot,
 #trajectoryPlot {
     height: 500px;
@@ -31,6 +40,7 @@ form div.row button {
 }
 .form-control:disabled, .form-control[readonly] {
     background-color: #7c7d80;
+    color: #fff;
 }
 
 #pointsDataTableDiv {
