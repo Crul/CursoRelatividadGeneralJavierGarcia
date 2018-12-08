@@ -178,7 +178,8 @@ h2 {
   display: block;
 }
 
-.subgrupo-horiz-formulas > .formula {
+.subgrupo-horiz-formulas > .formula,
+.subgrupo-horiz-formulas > .wolfram-alpha-link {
   display: inline-block;
 }
 
@@ -244,11 +245,11 @@ h2 {
 }
 
   .wolfram-alpha-link a {
-    color: #d2dade;
+    color: #35516c;
     text-decoration: none;
   }
     .wolfram-alpha-link a:hover {
-      color: #35516c;
+      color: #1e445d;
       text-decoration: underline;
     }
 
