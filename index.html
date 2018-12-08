@@ -196,6 +196,10 @@
           <a href="#capitulo-37">Capítulo 37</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=HGL9q8jDWYw&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
         </li>
+        <li>
+          <a href="#capitulo-38">Capítulo 38</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=EJATEyvRlVI&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
+        </li>
       </ul>
       </ul>
       <div class="fold-buttons">
@@ -2405,6 +2409,176 @@
       <span class="formula">
         r \left( \phi \right) = \frac{L^2}
             { G M m^2 \left( 1 + \varepsilon \cos \phi \right) }
+      </span>
+    </div>
+  </div>
+
+  <h2 id="capitulo-38"><a href="#capitulo-38" class="formulas-title">Capítulo 38: Órbitas en Schwarzschild (1/3)</a></h2>
+  <div class="capitulo-38 formulas">
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (38.1) Para expresar la <a href="#capitulo-34">fórmula (34.1)</a>
+        <br/>en unidades adimensionales, definimos:
+      </span>
+      <span class="subgrupo-horiz-formulas">
+        <span class="formula">
+          \hat{r} \equiv \frac{r}{a}
+        </span>
+        <span class="formula">
+          \left[ \hat{r} \right] = 1
+        </span>
+      <span class="formula">
+        a \equiv \frac{2GM}{c^2}
+      </span>
+      </span>
+      <span class="subgrupo-horiz-formulas">
+        <span class="formula">
+          \hat{t} \equiv \frac{ct}{a}
+        </span>
+        <span class="formula">
+          \left[ \hat{t} \right] = 1
+        </span>
+        <span class="formula">
+          c = 1
+        </span>
+      </span>
+      <span class="subgrupo-horiz-formulas">
+        <span class="formula">
+          \hat{\tau} \equiv \frac{c\tau}{a}
+        </span>
+        <span class="formula">
+          \left[ \hat{\tau} \right] = 1
+        </span>
+        <span class="formula">
+          GM = 1
+        </span>
+      </span>
+      <span class="formula-titulo">
+        De esta forma la fórmula no depende de c, G, M, m:
+      </span>
+      <span class="formula">
+        d \hat{\tau}^2 = 
+        \left( 1 - \frac{1}{\hat{r}} \right) d \hat{t}^2
+        - \frac{1}{ 1 - \frac{1}{\hat{r}} } d \hat{r}^2
+        - \hat{r}^2 d\phi^2
+      </span>
+      <span class="formula-titulo">
+        Que, a partir de ahora, simplificaremos sin los <i title="acentos circunflejos">gorritos</i>,
+        <br/>teniendo en cuenta que tendremos que aplicar las
+        <br/>definiciones de arriba para obtener los valores en el S.I.
+      </span>
+      <span class="formula">
+        d \tau^2 = 
+        \left( 1 - \frac{1}{r} \right) d t^2
+        - \frac{1}{ 1 - \frac{1}{r} } d r^2
+        - r^2 d\phi^2
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (38.2) Vectores de Killing
+        <br/>Tomando las coordenadas:
+      </span>
+      <span class="formula">
+        \left( x^0, x^1, x^3 \right) = \left( ct, r, \phi \right)
+      </span>
+      <span class="formula-titulo">
+        Usando la <a href="#capitulo-27">fórmula (27.4)</a> y,
+        <br/>teniendo en cuenta la restricción
+        <br/>&theta; = &pi; / 2,
+        <br/>el vector de killing que queda es:
+      </span>
+      <span class="formula">
+        \underline{\xi} = e_{3}
+      </span>
+      <span class="formula-titulo">
+        Además, el killing temporal es:
+      </span>
+      <span class="formula">
+        \underline{\xi} = e_{0}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (38.3) Usando la <a href="#capitulo-26">fórmula (26.5)</a>
+        <br/>con los killings:
+      </span>
+      <span class="formula">
+        \frac{dt}{d \tau} =
+        \frac{E}{
+          mc^2 \left( 1 - \frac{a}{r} \right)
+        }
+      </span>
+      <span class="formula">
+        \frac{d \phi}{d \tau} =
+        \frac{L}{mr^2}
+      </span>
+      <span class="formula-titulo">
+        En S.I. ya que aparecen m, c y a
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (38.4) Las versiones adimensionales
+        <br/>de la energía y el momento angular:
+      </span>
+      <span class="formula">
+        \hat{E} = \frac{E}{mc^2}
+      </span>
+      <span class="formula">
+        \hat{L} = \frac{L}{mac}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (38.5) Expresando las fórmulas (38.3)
+        <br/>en unidades adimensionales:
+      </span>
+      <span class="formula">
+        \frac{dt}{d \tau} =
+        \frac{E}{
+          \left( 1 - \frac{1}{r} \right)
+        }
+      </span>
+      <span class="formula">
+        \frac{d \phi}{d \tau} =
+        \frac{L}{r^2}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (38.6) Definiendo &epsilon; (constante):
+      </span>
+      <span class="formula">
+        \varepsilon \equiv E^2 - 1
+      </span>
+      <span class="formula-titulo">
+        Obtenemos:
+      </span>
+      <span class="formula">
+        \varepsilon = 
+          \left( \frac{dr}{d\tau} \right) ^2
+          + \frac{L^2}{r^2}
+          - \frac{1}{r}
+          - \frac{L^2}{r^3}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (38.7)
+      </span>
+      <span class="formula">
+        \frac{ d^2 \hat{u} }{ d \phi^2 } + \hat{u}
+          = \frac{1}{ 2 \hat{L} ^2 }
+          + \frac{ 3 \hat{u}^2 }{2}
+      </span>
+      <span class="formula-titulo">
+        En unidades del S.I.:
+      </span>
+      <span class="formula">
+        \frac{ d^2 u }{ d \phi^2 } + u
+          = \frac{GMm^2}{L^2}
+          + \frac{3GM}{c^2} u^2
       </span>
     </div>
   </div>
