@@ -38,6 +38,7 @@ function bootstrap() {
   $('#foldAllBtn').click(foldAll);
   $('#unfoldAllBtn').click(unfoldAll);
   $('.formulas-title').mousedown(unfoldTarget);
+  $('.formula-link').mousedown(unfoldTarget);
 
   $('.spoiler-btn').click(showSpoiler);
 
