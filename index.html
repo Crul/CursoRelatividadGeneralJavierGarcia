@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="favicon.png" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.css" integrity="sha384-VEnyslhHLHiYPca9KFkBB3CMeslnM9CzwjxsEbZTeA21JBm7tdLwKoZmCt3cZTYD" crossorigin="anonymous" />
-  <link rel="stylesheet" href="style.css?v=20181218c" />
+  <link rel="stylesheet" href="style.css?v=20181219" />
 </head>
 
 <body>
@@ -215,6 +215,10 @@
         <li>
           <a href="#capitulo-42">Capítulo 42</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=kXBsFVugS2E&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
+        </li>
+        <li>
+          <a href="#capitulo-43">Capítulo 43</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=CWTVzMPiZOE&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
         </li>
       </ul>
       </ul>
@@ -3046,9 +3050,108 @@
     </div>
   </div>
 
+  <h2 id="capitulo-43"><a href="#capitulo-43" class="formulas-title">Capítulo 43: Aceleración de un observador estático</a></h2>
+  <div class="capitulo-43 formulas">
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (43.1) Un observador está definido a partir de
+        <br/>una base ortonormal de 4 cuadri-vectores:  
+      </span>
+      <span class="formula">
+        \{ \alpha_0, \alpha_1, \alpha_2, \alpha_3 \}
+      </span>
+      <span class="formula">
+        \alpha_0 \cdot \alpha_0 = -1
+      </span>
+      <span class="formula">
+        \alpha_1 \cdot \alpha_1 = \alpha_2 \cdot \alpha_2 = \alpha_3 \cdot \alpha_3 = 1
+      </span>
+      <span class="formula">
+        \alpha_i \cdot \alpha_j = 0, i \neq j
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (43.2) La base coordenada
+        <br/>corresponde a un observador lejano:
+      </span>
+      <span class="formula">
+        \{ e_0, e_1, e_2, e_3 \}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (43.3) Un observador estático debe cumplir:
+      </span>
+      <span class="formula formula-texto">
+        r \text{ fija, }
+        \phi \text{ fija, }
+        \theta \text{ fija}
+      </span>
+      <span class="formula formula-texto">
+        \text{para todo instante } t
+      </span>
+      <span class="formula-titulo">
+        Lo cual no sigue ninguna geodésica,
+        <br/>por lo que es necesario que
+        <br/>experimente una aceleración
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (43.4) Espaciotiempo estático
+      </span>
+      <div class="texto">
+        Aquel en el que existen unas coordenadas
+        <br/>en las cuales los coeficientes de la
+        <br/>métrica no dependen del tiempo
+      </div>
+      <span class="formula-titulo">
+        o lo que es equivalente:
+      </span>
+      <div class="texto">
+        Existe un Killing temporal
+      </div>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (43.5) Cuadrivelocidad de
+        <br/>un observador estático
+      </span>
+      <span class="formula">
+        \underline{u} = \frac{1}{ \sqrt{ 1 - \frac{1}{r} } } e_0
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (43.6) Aceleración experimentada
+        <br/>por un observador estático
+        <br/>expresado en la base coordenada
+        <br/>(unidades adimensionales):
+      </span>
+      <span class="formula">
+        \underline{a} = \frac{1}{2r^2} e_1
+      </span>
+      <span class="formula-titulo">
+        Expresado en la base del observador
+        <br/>(unidades adimensionales):
+      </span>
+      <span class="formula">
+        \underline{a} = \frac{1}{2r^2} \frac{1}{ \sqrt{ 1 - \frac{1}{r} } } \overline{e}_1
+      </span>
+      <span class="formula-titulo">
+        Expresado en la base del observador
+        <br/>(unidades del S.I.):
+      </span>
+      <span class="formula">
+        a = \frac{GM}{r^2} \frac{1}{ \sqrt{ 1 - \frac{2GM}{c^2 r} } }
+      </span>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js" integrity="sha384-O4hpKqcplNCe+jLuBVEXC10Rn1QEqAmX98lKAIFBEDxZI0a+6Z2w2n8AEtQbR4CD" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script type="text/javascript" src="script.js?v=20181218c"></script>
+  <script type="text/javascript" src="script.js?v=20181219"></script>
 
 </body>
 </html>
