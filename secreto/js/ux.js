@@ -1,6 +1,38 @@
 var MAX_POINTS_TO_PRINT = 200;
 
+var runFnByPhysics = {
+    'newton-euler': function() { return runNewton(movePointEuler); },
+    'newton-runge-kutta': function() { return runNewton(movePointRungeKutta); },
+    'schwarzschild-inaki': runSchwarzschildInaki,
+    'schwarzschild-javier': runSchwarzschildJavier,
+};
+
+var fillMissingInitialConditionsFnByPhysics = {
+    'newton-euler': fillMissingInitialConditionsNewton,
+    'newton-runge-kutta': fillMissingInitialConditionsNewton,
+    'schwarzschild-inaki': fillMissingInitialConditionsSchwarzschild,
+    'schwarzschild-javier': fillMissingInitialConditionsSchwarzschild,
+};
+
+var plotPotentialChartFnByPhysics = {
+    'newton-euler': plotNewtonPotentialChart,
+    'newton-runge-kutta': plotNewtonPotentialChart,
+    'schwarzschild-inaki': plotSchwarzschildPotentialChart,
+    'schwarzschild-javier': plotSchwarzschildPotentialChart,
+};
+
 $(document).ready(bootstrapApp);
+
+function run() {
+    onInitialConditionsChange(true);
+    var physics = $('#physics').val();
+    try {
+        var results = runFnByPhysics[physics]();
+        console.debug(results);
+    } catch(ex) {
+        handleException(ex);
+    }   
+}
 
 var lastManuallySetHash = '';
 function bootstrapApp() {
@@ -25,7 +57,11 @@ function bootstrapApp() {
     }
 
     $('#inputFormat').change(onInputFormatChange).change(onInitialConditionsChange);
-    $('#defaultFormData').change(onDefaultFormDataChange).change(onInitialConditionsChange).change(run);
+    $('#defaultFormData')
+        .change(onDefaultFormDataChange)
+        .change(onInitialConditionsChange)
+        .change(run);
+
     $('#showPointsData').change(onShowPointsDataChange);
     $('#r').change(onInitialConditionsChange);
     $('#vr').change(onVrChange).change(onInitialConditionsChange);
@@ -39,6 +75,7 @@ function bootstrapApp() {
 }
 
 function setFormData(data, doNotSetHash) {
+    $('#physics').val(data.physics);
     $('#inputFormat').val(data.inputFormat);
     onInputFormatChange(true);
     $('#siUnits').prop('checked', data.siUnits || false);
@@ -55,6 +92,7 @@ function setFormData(data, doNotSetHash) {
     $('#vphi').val(data.vphi);
     $('#L').val(data.L);
     $('#E').val(data.E);
+    $('#showPointsData').prop('checked', data.showPointsData);
 
     if (!doNotSetHash)
         setHash(data);
@@ -66,7 +104,7 @@ function onHashChange() {
     var values = {};
     var hash = window.location.hash.substring(1);
     if (lastManuallySetHash == hash) return;
-    
+
     hash.split('&').forEach(function(token) {
         var tokenItems = token.split('=');
         var value = (tokenItems.length > 1 && tokenItems[1] != '' ? tokenItems[1] : undefined);
@@ -94,6 +132,8 @@ function setHash(data) {
         + '&' + getHashValue(data, 'vphi')
         + '&' + getHashValue(data, 'L')
         + '&' + getHashValue(data, 'E')
+        + '&' + getHashValue(data, 'physics')
+        + '&' + getHashValue(data, 'showPointsData')
         + '';
 
     window.location.hash = lastManuallySetHash;
@@ -142,10 +182,12 @@ function getFormData(data) {
     }
 
     return {
+        physics        : $('#physics').val(),
         inputFormat    : $('#inputFormat').val(),
         siUnits        : $('#siUnits').is(':checked'),
         timeResolution : Number($('#timeResolution').val()),
         simulationTime : Number($('#simulationTime').val()),
+        showPointsData : Number($('#showPointsData').is(':checked')),
         M       : Number($('#M').val()),
         R       : Number($('#R').val()),
         m       : Number($('#m').val()),
@@ -156,7 +198,6 @@ function getFormData(data) {
         vphi    : vphi,
         L       : L,
         E       : E,
-        method  : $('#method').val(),
     }
 }
 
@@ -175,9 +216,8 @@ function printPointsData(points, dataLength) {
         return pointsRow;
     });
 
-
     var tbody = $('<tbody>').append(tbodyRows);
-    
+
     if (dataLength > MAX_POINTS_TO_PRINT) {
         tbody.append(
             $('<tr>').append(
@@ -196,6 +236,7 @@ function printPointsData(points, dataLength) {
 function onInitialConditionsChange(ev) {
     try {
         $('#runBtn').prop('disabled', true);
+        $('#trajectoryPlot').html('');
         $('#potentialPlot').html('');
         var data = processInitialConditions();
 
@@ -224,11 +265,7 @@ function onInitialConditionsChange(ev) {
 
         if (!ev) run();
     } catch(ex) {
-        if (ex.name != 'InvalidInitialConditionsError')
-            throw ex;
-        
-        $('form input[readonly="readonly"]').val('');
-        $('#potentialPlot').append($('<div>').addClass('error-msg').html(ex.message));
+        handleException(ex);
     }
 }
 
@@ -288,6 +325,9 @@ function onDefaultFormDataChange() {
 }
 
 function onShowPointsDataChange() {
+    var doNotRun = true;
+    onInitialConditionsChange(doNotRun);
+
     var showPointsData = $('#showPointsData').is(':checked');
     if (!showPointsData) {
         $('#pointsDataTableDiv').fadeOut();
@@ -299,4 +339,13 @@ function onShowPointsDataChange() {
         printPointsData(lastRunPoints, lastRunPoints.x.length);
     }
     $('#pointsDataTableDiv').fadeIn();
+}
+
+function handleException(ex) {
+    if (ex.name != 'InvalidInitialConditionsError')
+        throw ex;
+
+    $('form input[readonly="readonly"]').val('');
+    $('#trajectoryPlot').html('');
+    $('#trajectoryPlot').append($('<div>').addClass('error-msg').html(ex.message));
 }

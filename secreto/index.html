@@ -9,7 +9,7 @@
   <meta name="author" content="obi-four-kenobi">
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="styles.css?v=1.3">
+  <link rel="stylesheet" href="styles.css?v=20181212">
 
 </head>
 
@@ -134,10 +134,12 @@
         </div>
         <div class="col">
           <div class="form-group">
-            <label for="method">Método</label>
-            <select id="method" class="form-control form-control-sm">
-              <option value="runge-kutta" selected>Runge-Kutta (más preciso)</option>
-              <option value="euler">Euler (más rápido)</option>
+            <label for="physics">Física</label>
+            <select id="physics" class="form-control form-control-sm">
+              <option value="newton-euler">Newton (Euler)</option>
+              <option value="newton-runge-kutta">Newton (Runge-Kutta)</option>
+              <option value="schwarzschild-inaki">Schwarzschild (Iñaki)</option>
+              <option value="schwarzschild-javier" selected>Schwarzschild (Javier)</option>
             </select>
           </div>
         </div>
@@ -178,10 +180,13 @@
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-  <script src="js/common.js?v=1.3"></script>
-  <script src="js/euler.js?v=1.3"></script>
-  <script src="js/rungeKutta.js?v=1.3"></script>
-  <script src="js/newton.js?v=1.3"></script>
-  <script src="js/ux.js?v=1.3"></script>
+  <script src="js/common.js?v=20181212"></script>
+  <script src="js/euler.js?v=20181212"></script>
+  <script src="js/rungeKutta.js?v=20181212"></script>
+  <script src="js/newton.js?v=20181212"></script>
+  <script src="js/schwarzschild-common.js?v=20181212"></script>
+  <script src="js/schwarzschild-inaki.js?v=20181212"></script>
+  <script src="js/schwarzschild-javier.js?v=20181212"></script>
+  <script src="js/ux.js?v=20181212"></script>
 </body>
 </html>

@@ -1,39 +1,6 @@
-var lastRunResult, lastRunPoints;
-var movePointFnByMethod = {
-    'euler': movePointEuler,
-    'runge-kutta': movePointRungeKutta,
-}
+var lastRunPoints;
 
-function InvalidInitialConditionsError(message) {
-    this.name = 'InvalidInitialConditionsError';
-    this.message = (message || '');
-    return this;
-}
-InvalidInitialConditionsError.prototype = Error.prototype;
-
-function processInitialConditions() {
-    var initialConditions = getFormData();
-    if (initialConditions.siUnits) {
-        var R = initialConditions.R;
-        checkInitialConditionsInSi(initialConditions);
-        setHash(initialConditions);
-        var b = getB(initialConditions.M, R);
-        siToBel(b, initialConditions);
-    } else {
-        setHash(initialConditions);
-    }
-
-    fillMissingInitialConditions(initialConditions);
-
-    var L = initialConditions.L;
-    var E = initialConditions.E;
-
-    plotPotentialChart(L, E);
-    
-    return initialConditions;
-}
-
-function run(initialConditions) {
+function runNewton(movePointFn) {
     var initialConditions = getFormData();
     $('#pointsDataTable').html('');
 
@@ -54,7 +21,7 @@ function run(initialConditions) {
         setHash(initialConditions);
     }
 
-    fillMissingInitialConditions(initialConditions);
+    fillMissingInitialConditionsNewton(initialConditions);
 
     var r = initialConditions.r;
     var phi = initialConditions.phi;
@@ -62,11 +29,9 @@ function run(initialConditions) {
     var L = initialConditions.L;
     var E = initialConditions.E;
 
-    plotPotentialChart(L, E);
     var radiuses = getRadiuses(L, E);
-    var stepData = initializeStepData(r, vr, phi, radiuses);
+    var stepData = initializeStepDataNewton(r, vr, phi, radiuses);
 
-    var method = initialConditions.method;
     var dt     = initialConditions.timeResolution;
     var steps  = initialConditions.simulationTime / initialConditions.timeResolution;
     var points = {
@@ -84,7 +49,7 @@ function run(initialConditions) {
     }
 
     for (var i=0; i < steps; i++) {
-        movePointFnByMethod[method](radiuses, stepData, E, L, dt, getNewtonPotential);
+        movePointFn(radiuses, stepData, E, L, dt, getNewtonPotential);
 
         var r = stepData.r;
         var rStepValue = r;
@@ -115,7 +80,8 @@ function run(initialConditions) {
     }
 
     lastRunPoints = points;
-    lastRunResult = {
+
+    return {
         caso: getCaso(L, E),
         x: points.x,
         y: points.y,
@@ -130,11 +96,113 @@ function run(initialConditions) {
         radiuses: [radiuses.r1, radiuses.r2],
         analiticRadiuses: [radiuses.analiticR1, radiuses.analiticR2],
     };
-
-    return lastRunResult;
 }
 
-function initializeStepData(r, vr, phi, radiuses) {
+function fillMissingInitialConditionsNewton(initialConditions) {
+    var r = initialConditions.r;
+    var vr = initialConditions.vr;
+    var vrSign = initialConditions.vrSign;
+    var phi = initialConditions.phi || 0.0;
+    var vphi = initialConditions.vphi;
+    var L = initialConditions.L;
+    var E = initialConditions.E;
+
+    if (r !== undefined && vr !== undefined && vphi !== undefined) {
+        if (L !== undefined)
+            throw InvalidInitialConditionsError('No puedes especificar L si has especificado r, vr y vphi');
+        if (E !== undefined)
+            throw InvalidInitialConditionsError('No puedes especificar E si has especificado r, vr y vphi');
+        if (vr != 0 && vrSign !== undefined)
+            throw InvalidInitialConditionsError('No puedes especificar el signo de vr si has especificado vr y es distinto de 0');
+
+        L = vphi * Math.pow(r, 2);
+        E = (Math.pow(vr, 2) / 2) + getNewtonPotential(r, L);
+        if (vr != 0)
+            vrSign = vr/Math.abs(vr);
+
+    } else if (L !== undefined && E !== undefined) {
+
+        if (r !== undefined) {
+            if (vr !== undefined)
+                throw InvalidInitialConditionsError('No puedes especificar vr si has especificado L, E y r');
+            if (Math.abs(vrSign) !== 1)
+                throw InvalidInitialConditionsError('El signo de vr sólo puede ser 1.0 o -1.0');
+            if (vphi !== undefined)
+                throw InvalidInitialConditionsError('No puedes especificar vphi si has especificado L, E y r');
+
+            vphi = L/Math.pow(r, 2);
+            var vrAbsSquare = 2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r);
+            if (vrAbsSquare < 0)
+                throw InvalidInitialConditionsError('Valor dentro de la raíz de velocidad radial es negativo.');
+            vr = vrSign * Math.sqrt(vrAbsSquare);
+
+        } else if (vr !== undefined) {
+            if (r !== undefined)
+                throw InvalidInitialConditionsError('No puedes especificar r si has especificado L, E y vr');
+            if (vphi !== undefined)
+                throw InvalidInitialConditionsError('No puedes especificar vphi si has especificado L, E y vr');
+            if (vr != 0 && vrSign !== undefined)
+                throw InvalidInitialConditionsError('No puedes especificar el signo de vr si has especificado vr y es distinto de 0');
+
+            var cuadEqA = (E - (Math.pow(vr, 2))/2);
+            var cuadEqB = 1;
+            var cuadEqC = - Math.pow(L, 2)/2;
+
+            var cuadEqSolB2Minus4AC = (
+                Math.pow(cuadEqB, 2)
+                - (4 * cuadEqA * cuadEqC)
+            );
+            var r1 = (
+                (- cuadEqB + Math.sqrt(cuadEqSolB2Minus4AC))
+                / ( 2 *cuadEqA )
+            );
+            var r2 = (
+                (- cuadEqB - Math.sqrt(cuadEqSolB2Minus4AC))
+                / ( 2 *cuadEqA )
+            );
+            r = Math.max(r1, r2);
+            vphi = L/Math.pow(r, 2);
+            if (vr != 0)
+                vrSign = vr/Math.abs(vr);
+
+        } else if (vphi !== undefined) {
+            if (r !== undefined)
+                throw InvalidInitialConditionsError('No puedes especificar r si has especificado L, E y vphi');
+            if (vr !== undefined)
+                throw InvalidInitialConditionsError('No puedes especificar vr si has especificado L, E y vphi');
+            if (Math.abs(vrSign) !== 1)
+                throw InvalidInitialConditionsError('El signo de vr sólo puede ser 1.0 o -1.0');
+
+            r = Math.sqrt(Math.abs(L / vphi));
+            var vrAbsSquare = 2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r);
+            if (vrAbsSquare < 0)
+                throw InvalidInitialConditionsError('Valor dentro de la raíz de velocidad radial es negativo.');
+            vr = vrSign * Math.sqrt(vrAbsSquare);
+        }
+
+    } else {
+        var errorMsg = 'Condiciones iniciales incorrectas.' +
+            ' Es obligatorio especifical uno de estos grupos de valores:\n' +
+            '    - r, vr, vphi\n' +
+            '    - L, E, r\n' +
+            '    - L, E, vr\n' +
+            '    - L, E, vphi\n';
+
+        throw InvalidInitialConditionsError(errorMsg);
+    }
+
+    Object.assign(initialConditions, {
+        r: r,
+        vr: vr,
+        vrSign: vrSign,
+        phi: phi,
+        vphi: vphi,
+        L: L,
+        E: E,
+    });
+}
+
+function initializeStepDataNewton(r, vr, phi, radiuses) {
     var r1 = radiuses.r1;
     var r2 = radiuses.r2;
     var vrSign = undefined;
@@ -162,151 +230,7 @@ function initializeStepData(r, vr, phi, radiuses) {
     return { r: r, phi: phi, vrSign: vrSign };
 }
 
-function fillMissingInitialConditions(initialConditions) {
-    var method = initialConditions.method || 'runge-kutta';
-    var r = initialConditions.r;
-    var vr = initialConditions.vr;
-    var vrSign = initialConditions.vrSign;
-    var phi = initialConditions.phi || 0.0;
-    var vphi = initialConditions.vphi;
-    var L = initialConditions.L;
-    var E = initialConditions.E;
-
-    if (r !== undefined && vr !== undefined && vphi !== undefined) {
-        if (L !== undefined) throw InvalidInitialConditionsError('No puedes especificar L si has especificado r, vr y vphi');
-        if (E !== undefined) throw InvalidInitialConditionsError('No puedes especificar E si has especificado r, vr y vphi');
-        if (vr != 0 && vrSign !== undefined) throw InvalidInitialConditionsError('No puedes especificar el signo de vr si has especificado vr y es distinto de 0');
-
-        L = vphi * Math.pow(r, 2);
-        E = (Math.pow(vr, 2) / 2) + getNewtonPotential(r, L);
-        vrSign = vr/Math.abs(vr);
-
-    } else if (L !== undefined && E !== undefined) {
-
-        if (r !== undefined) {
-            if (vr !== undefined) throw InvalidInitialConditionsError('No puedes especificar vr si has especificado L, E y r');
-            if (Math.abs(vrSign) !== 1) throw InvalidInitialConditionsError('El signo de vr sólo puede ser 1.0 o -1.0');
-            if (vphi !== undefined) throw InvalidInitialConditionsError('No puedes especificar vphi si has especificado L, E y r');
-
-            vphi = L/Math.pow(r, 2);
-            var vrAbsSquare = 2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r);
-            if (vrAbsSquare < 0) throw InvalidInitialConditionsError('Valor dentro de la raíz de velocidad radial es negativo.');
-            vr = vrSign * Math.sqrt(vrAbsSquare);
-
-        } else if (vr !== undefined) {
-            if (r !== undefined) throw InvalidInitialConditionsError('No puedes especificar r si has especificado L, E y vr');
-            if (vphi !== undefined) throw InvalidInitialConditionsError('No puedes especificar vphi si has especificado L, E y vr');
-            if (vr != 0 && vrSign !== undefined) throw InvalidInitialConditionsError('No puedes especificar el signo de vr si has especificado vr y es distinto de 0');
-
-            var cuadEqA = (E - (Math.pow(vr, 2))/2);
-            var cuadEqB = 1;
-            var cuadEqC = - Math.pow(L, 2)/2;
-
-            var cuadEqSolB2Minus4AC = (
-                Math.pow(cuadEqB, 2)
-                - (4 * cuadEqA * cuadEqC)
-            );
-            var r1 = (
-                (- cuadEqB + Math.sqrt(cuadEqSolB2Minus4AC))
-                / ( 2 *cuadEqA )
-            );
-            var r2 = (
-                (- cuadEqB - Math.sqrt(cuadEqSolB2Minus4AC))
-                / ( 2 *cuadEqA )
-            );
-            r = Math.max(r1, r2);
-            vphi = L/Math.pow(r, 2);
-            vrSign = vr/Math.abs(vr);
-
-        } else if (vphi !== undefined) {
-            if (r !== undefined) throw InvalidInitialConditionsError('No puedes especificar r si has especificado L, E y vphi');
-            if (vr !== undefined) throw InvalidInitialConditionsError('No puedes especificar vr si has especificado L, E y vphi');
-            if (Math.abs(vrSign) !== 1) throw InvalidInitialConditionsError('El signo de vr sólo puede ser 1.0 o -1.0');
-
-            r = Math.sqrt(Math.abs(L / vphi));
-            var vrAbsSquare = 2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r);
-            if (vrAbsSquare < 0) throw InvalidInitialConditionsError('Valor dentro de la raíz de velocidad radial es negativo.');
-            vr = vrSign * Math.sqrt(vrAbsSquare);
-        }
-
-    } else {
-        var errorMsg = 'Condiciones iniciales incorrectas.' +
-            ' Es obligatorio especifical uno de estos grupos de valores:\n' +
-            '    - r, vr, vphi\n' +
-            '    - L, E, r\n' +
-            '    - L, E, vr\n' +
-            '    - L, E, vphi\n';
-
-        throw InvalidInitialConditionsError(errorMsg);
-    }
-
-    Object.assign(initialConditions, {
-        method: method,
-        r: r,
-        vr: vr,
-        vrSign: vrSign,
-        phi: phi,
-        vphi: vphi,
-        L: L,
-        E: E,
-    });
-}
-
-function getCaso(L, E) {
-    if (L==0) return (E >= 0 ? 1 : 2);
-
-    var circularOrbitE =  (L != 0 ? -1/(2*(Math.pow(L, 2))) : undefined);
-    var isCircularOrbit = (E == circularOrbitE);
-
-    if (isCircularOrbit) return 6;
-
-    if (E == 0) return 3;
-
-    if (E > 0) return 4;
-
-    // if (E < 0)
-    return 5;
-}
-
-function getRadiuses(L, E) {
-    var r1, r2, analiticR1, analiticR2;
-    var circularOrbitE =  (L != 0 ? -1/(2*(Math.pow(L, 2))) : undefined);
-    var isCircularOrbit = (E == circularOrbitE);
-
-    if (isCircularOrbit) {  // caso 6: circular orbit;
-        r1 = Math.pow(L, 2);
-        r2 = Math.pow(L, 2);
-        analiticR1 = r1;
-        analiticR2 = r2;
-
-    } else {                 // is NOT circular orbit;
-
-        if (Math.abs(L) > 0) {     // ... casos 3, 4, 5;
-            var a = BISECTION_MIN;
-            var b = Math.pow(L, 2);
-            r1 = bisection(a, b, L, E);
-
-            if (Math.abs(E) < E_THRESHOLD_TO_BE_CONSIDERED_ZERO)
-                analiticR1 = (Math.pow(L, 2))/2;
-            else
-                analiticR1 = (1/(2*E)) * ( -1 + Math.sqrt( 1+2*E*(Math.pow(L, 2)) )  );
-        }
-        if (E < 0) {          // ... casos 2, 5;
-            var a = (Math.abs(L) > 0 ? Math.pow(L, 2) : BISECTION_MIN);
-            var b = BISECTION_MAX;
-            r2 = bisection(a, b, L, E);
-            analiticR2 = (1/(2*E)) * ( -1  -  Math.sqrt( 1+2*E*(Math.pow(L, 2)) )  );
-        }
-    }
-
-    return { r1: r1, r2: r2, analiticR1: analiticR1, analiticR2: analiticR2 };
-}
-
-function getNewtonPotential(r, L) {
-    return -1/r + (Math.pow((L/r), 2))/2;
-}
-
-function plotPotentialChart(L, E) {
+function plotNewtonPotentialChart(L, E) {
     if (!PLOT_POTENCIAL_CHART)
         return;
 
@@ -355,42 +279,6 @@ function plotPotentialChart(L, E) {
       }
     };
     Plotly.newPlot($('#potentialPlot')[0], potentialData, layout);
-}
-
-function plotTrajectory(xPoints, yPoints) {
-    var layout = {
-      title: 'Trayectoria',
-      paper_bgcolor: '#000',
-      plot_bgcolor: '#000',
-      showlegend: false,
-      font: {
-          color: '#fff',
-      },
-      titlefont: {
-          color: '#fff',
-      },
-      xaxis: {
-        title: 'x',
-        color: '#fff',
-        titlefont: {
-          family: 'Courier New, monospace',
-          size: 18,
-          color: '#7f7f7f'
-        }
-      },
-      yaxis: {
-        title: 'y',
-        color: '#fff',
-        titlefont: {
-          family: 'Courier New, monospace',
-          size: 18,
-          color: '#7f7f7f'
-        }
-      }
-    };
-
-    var trajectoryData = [{ x: xPoints, y: yPoints }];
-    Plotly.newPlot($('#trajectoryPlot')[0], trajectoryData, layout);
 }
 
 function bisection(a, b, L, E) {
@@ -501,13 +389,3 @@ function siToBel(b, initialConditions) {
 function getB(M, R) {
     return Math.sqrt(2*G*M/R);
 }
-
-function checkInitialConditionsInSi(initialConditions) {
-    var M = initialConditions.M;
-    var R = initialConditions.R;
-    var m = initialConditions.m;
-    if (!M || !R || !m) {
-        throw Error('Los parámetros M, R son obligatorios para usar unidades del SI.');
-    }
-}
-
