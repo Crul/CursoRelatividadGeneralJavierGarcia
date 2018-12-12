@@ -1,4 +1,3 @@
-// TODO fillMissingInitialConditionsSchwarzschild
 function fillMissingInitialConditionsSchwarzschild(initialConditions) {
     var r = initialConditions.r;
     var vr = initialConditions.vr;
@@ -15,12 +14,12 @@ function fillMissingInitialConditionsSchwarzschild(initialConditions) {
             throw InvalidInitialConditionsError('No puedes especificar E si has especificado r, vr y vphi');
         if (vr != 0 && vrSign !== undefined)
             throw InvalidInitialConditionsError('No puedes especificar el signo de vr si has especificado vr y es distinto de 0');
-/*
+
         L = vphi * Math.pow(r, 2);
-        E = (Math.pow(vr, 2) / 2) + getNewtonPotential(r, L);
+        E = Math.pow(vr, 2) + getEinsteinPotential(r, L);
         if (vr != 0)
             vrSign = vr/Math.abs(vr);
-*/
+
     } else if (L !== undefined && E !== undefined) {
 
         if (r !== undefined) {
@@ -30,13 +29,11 @@ function fillMissingInitialConditionsSchwarzschild(initialConditions) {
                 throw InvalidInitialConditionsError('El signo de vr sólo puede ser 1.0 o -1.0');
             if (vphi !== undefined)
                 throw InvalidInitialConditionsError('No puedes especificar vphi si has especificado L, E y r');
-/*
+
             vphi = L/Math.pow(r, 2);
-            var vrAbsSquare = 2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r);
-            if (vrAbsSquare < 0)
-                throw InvalidInitialConditionsError('Valor dentro de la raíz de velocidad radial es negativo.');
+            var vrAbsSquare = Math.abs(E - getEinsteinPotential(r, L));
             vr = vrSign * Math.sqrt(vrAbsSquare);
-*/
+
         } else if (vr !== undefined) {
             if (r !== undefined)
                 throw InvalidInitialConditionsError('No puedes especificar r si has especificado L, E y vr');
@@ -44,28 +41,13 @@ function fillMissingInitialConditionsSchwarzschild(initialConditions) {
                 throw InvalidInitialConditionsError('No puedes especificar vphi si has especificado L, E y vr');
             if (vr != 0 && vrSign !== undefined)
                 throw InvalidInitialConditionsError('No puedes especificar el signo de vr si has especificado vr y es distinto de 0');
-/*
-            var cuadEqA = (E - (Math.pow(vr, 2))/2);
-            var cuadEqB = 1;
-            var cuadEqC = - Math.pow(L, 2)/2;
 
-            var cuadEqSolB2Minus4AC = (
-                Math.pow(cuadEqB, 2)
-                - (4 * cuadEqA * cuadEqC)
-            );
-            var r1 = (
-                (- cuadEqB + Math.sqrt(cuadEqSolB2Minus4AC))
-                / ( 2 *cuadEqA )
-            );
-            var r2 = (
-                (- cuadEqB - Math.sqrt(cuadEqSolB2Minus4AC))
-                / ( 2 *cuadEqA )
-            );
-            r = Math.max(r1, r2);
+            var rSolutions = solveCubic(Math.pow(vr, 2) - E, -1, Math.pow(L, 2), -Math.pow(L, 2));
+            r = Math.max.apply(Math, rSolutions);
             vphi = L/Math.pow(r, 2);
             if (vr != 0)
                 vrSign = vr/Math.abs(vr);
-*/
+
         } else if (vphi !== undefined) {
             if (r !== undefined)
                 throw InvalidInitialConditionsError('No puedes especificar r si has especificado L, E y vphi');
@@ -73,13 +55,10 @@ function fillMissingInitialConditionsSchwarzschild(initialConditions) {
                 throw InvalidInitialConditionsError('No puedes especificar vr si has especificado L, E y vphi');
             if (Math.abs(vrSign) !== 1)
                 throw InvalidInitialConditionsError('El signo de vr sólo puede ser 1.0 o -1.0');
-/*
+
             r = Math.sqrt(Math.abs(L / vphi));
-            var vrAbsSquare = 2 * (E - (Math.pow(L, 2))/(2*Math.pow(r, 2)) + 1/r);
-            if (vrAbsSquare < 0)
-                throw InvalidInitialConditionsError('Valor dentro de la raíz de velocidad radial es negativo.');
+            var vrAbsSquare = Math.abs(E - getEinsteinPotential(r, L));
             vr = vrSign * Math.sqrt(vrAbsSquare);
-*/
         }
     } else {
         var errorMsg = 'Condiciones iniciales incorrectas.' +
@@ -130,6 +109,10 @@ function initializeStepDataSchwarzschild(initialConditions) {
         theta: theta0,
         vtheta: vtheta0,
     };
+}
+
+function getEinsteinPotential(r, L) {
+    return Math.pow(L/r, 2) - (1/r) - (Math.pow(L, 2)/Math.pow(r, 3));
 }
 
 function plotSchwarzschildPotentialChart(L, E) {
@@ -186,4 +169,59 @@ function plotSchwarzschildPotentialChart(L, E) {
     };
     Plotly.newPlot($('#potentialPlot')[0], potentialData, layout);
 
+}
+
+// https://stackoverflow.com/questions/27176423/function-to-solve-cubic-equation-analytically
+function cuberoot(x) {
+    var y = Math.pow(Math.abs(x), 1/3);
+    return x < 0 ? -y : y;
+}
+
+function solveCubic(a, b, c, d) {
+    if (Math.abs(a) < 1e-8) { // Quadratic case, ax^2+bx+c=0
+        a = b; b = c; c = d;
+        if (Math.abs(a) < 1e-8) { // Linear case, ax+b=0
+            a = b; b = c;
+            if (Math.abs(a) < 1e-8) // Degenerate case
+                return [];
+            return [-b/a];
+        }
+
+        var D = b*b - 4*a*c;
+        if (Math.abs(D) < 1e-8)
+            return [-b/(2*a)];
+        else if (D > 0)
+            return [(-b+Math.sqrt(D))/(2*a), (-b-Math.sqrt(D))/(2*a)];
+        return [];
+    }
+
+    // Convert to depressed cubic t^3+pt+q = 0 (subst x = t - b/3a)
+    var p = (3*a*c - b*b)/(3*a*a);
+    var q = (2*b*b*b - 9*a*b*c + 27*a*a*d)/(27*a*a*a);
+    var roots;
+
+    if (Math.abs(p) < 1e-8) { // p = 0 -> t^3 = -q -> t = -q^1/3
+        roots = [cuberoot(-q)];
+    } else if (Math.abs(q) < 1e-8) { // q = 0 -> t^3 + pt = 0 -> t(t^2+p)=0
+        roots = [0].concat(p < 0 ? [Math.sqrt(-p), -Math.sqrt(-p)] : []);
+    } else {
+        var D = q*q/4 + p*p*p/27;
+        if (Math.abs(D) < 1e-8) {       // D = 0 -> two roots
+            roots = [-1.5*q/p, 3*q/p];
+        } else if (D > 0) {             // Only one real root
+            var u = cuberoot(-q/2 - Math.sqrt(D));
+            roots = [u - p/(3*u)];
+        } else {                        // D < 0, three roots, but needs to use complex numbers/trigonometric solution
+            var u = 2*Math.sqrt(-p/3);
+            var t = Math.acos(3*q/p/u)/3;  // D < 0 implies p < 0 and acos argument in [-1..1]
+            var k = 2*Math.PI/3;
+            roots = [u*Math.cos(t), u*Math.cos(t-k), u*Math.cos(t-2*k)];
+        }
+    }
+
+    // Convert back from depressed cubic
+    for (var i = 0; i < roots.length; i++)
+        roots[i] -= b/(3*a);
+
+    return roots;
 }

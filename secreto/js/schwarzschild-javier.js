@@ -47,7 +47,7 @@ function runSchwarzschildJavier() {
         allowedRanges[1].max = radiuses.r2;
 
     var validRange = allowedRanges.filter(function(range) {
-        return r >= range.min && r <= range.max;
+        return (r + INFINITESIMAL) >= range.min && (r - INFINITESIMAL) <= range.max;
     });
     if (!validRange.length) {
         var allowedRangesStr = allowedRanges
@@ -270,8 +270,4 @@ function einsteinianBisection(a, b, L, epsilon) {
     }
 
     return p;
-}
-
-function getEinsteinPotential(r, L) {
-    return Math.pow(L/r, 2) - (1/r) - (Math.pow(L, 2)/Math.pow(r, 3));
 }

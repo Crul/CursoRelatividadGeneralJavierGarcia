@@ -141,7 +141,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-E-r',
         siUnits: false, showPointsData: true,
         timeResolution: 0.01, simulationTime: 1500,
-        L: 2, E: -0.074074, r: 6.0,
+        L: 2, E: -0.074074074074074074, r: 6.0,
     },
     {
         physics: 'schwarzschild-javier',
