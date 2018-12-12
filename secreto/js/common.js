@@ -105,15 +105,15 @@ var defaultInitialConditions = [
     },
     {
         physics: 'schwarzschild-javier',
-        name: 'SCHJAV - Caso 3 (a) - Zona 1 (Colisión / órbita inestable)',
+        name: 'SCHJAV - Caso 3 (a) - Zona 1 (Colisión)',
         inputFormat: 'L-E-r',
         siUnits: false, showPointsData: true,
         timeResolution: 0.01, simulationTime: 1500,
-        L: 1.9, E: -0.04735184287601163, r: 16.0,
+        L: 1.9, E: -0.04735184287601163, r: 1.5,
     },
     {
         physics: 'schwarzschild-javier',
-        name: 'SCHJAV - Caso 3 (a) - Zona 2 (Órbita elíptica inestable)',
+        name: 'SCHJAV - Caso 3 (a) - Zona 2 (Órbita circular inestable)',
         inputFormat: 'L-E-r',
         siUnits: false, showPointsData: true,
         timeResolution: 0.01, simulationTime: 1500,
@@ -150,6 +150,14 @@ var defaultInitialConditions = [
         siUnits: false, showPointsData: true,
         timeResolution: 0.01, simulationTime: 1500,
         L: 1.9, E: -0.08450000897584042, r: 1.5,
+    },
+    {
+        physics: 'schwarzschild-javier',
+        name: 'SCHJAV - Caso 4 - Zona 2 (Órbita elíptica)',
+        inputFormat: 'L-E-r',
+        siUnits: false, showPointsData: true,
+        timeResolution: 0.01, simulationTime: 1500,
+        L: 1.9, E: -0.075, r: 5.093947438422264,
     },
     {
         physics: 'schwarzschild-javier',
