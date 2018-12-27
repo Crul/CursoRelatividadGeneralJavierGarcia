@@ -10,8 +10,6 @@ function runSchwarzschildJavier() {
     var initialConditions = getFormData();
     $('#pointsDataTable').html('');
 
-    var b;
-    var R = initialConditions.R;
     var isThereSiData = true;
     if (initialConditions.siUnits) {
         checkInitialConditionsInSi(initialConditions);
@@ -20,6 +18,8 @@ function runSchwarzschildJavier() {
     } else {
         try {
             checkInitialConditionsInSi(initialConditions);
+            var a = (2*G*initialConditions.M)/SPEED_LIGHT_SQR;
+            initialConditions.a = a;
         } catch(ex) {
             isThereSiData = false;
         }
@@ -28,6 +28,7 @@ function runSchwarzschildJavier() {
 
     fillMissingInitialConditionsSchwarzschild(initialConditions);
 
+    var R = initialConditions.R;
     var r = initialConditions.r;
     var phi = initialConditions.phi;
     var vr = initialConditions.vr;

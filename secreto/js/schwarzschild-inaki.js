@@ -5,8 +5,6 @@ function runSchwarzschildInaki() {
     var initialConditions = getFormData();
     $('#pointsDataTable').html('');
 
-    var b;
-    var R = initialConditions.R;
     var isThereSiData = true;
     if (initialConditions.siUnits) {
         checkInitialConditionsInSi(initialConditions);
@@ -23,6 +21,7 @@ function runSchwarzschildInaki() {
 
     fillMissingInitialConditionsSchwarzschild(initialConditions);
 
+    var R = initialConditions.R;
     var r = initialConditions.r;
     var phi = initialConditions.phi;
     var vr = initialConditions.vr;
