@@ -36,11 +36,11 @@ function run() {
 
 var lastManuallySetHash = '';
 function bootstrapApp() {
-    alert(
-        '¿Qué haces aquí? Espero que seas uno de los Obi Four Kenobi.\n' +
-        'En ese caso: di amigo (o haz click en OK) y entra :).\n' +
-        'Si no lo eres: ESTAS NO SON LAS WEBS QUE ESTÁS BUSCANDO.'
-    );
+    // alert(
+    //     '¿Qué haces aquí? Espero que seas uno de los Obi Four Kenobi.\n' +
+    //     'En ese caso: di amigo (o haz click en OK) y entra :).\n' +
+    //     'Si no lo eres: ESTAS NO SON LAS WEBS QUE ESTÁS BUSCANDO.'
+    // );
 
     var defaultFormDataOpts = defaultInitialConditions.map(function(data){
         return $('<option>').attr('value', data.name).html(data.name);

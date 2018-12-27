@@ -10,8 +10,7 @@ function runNewton(movePointFn) {
     if (initialConditions.siUnits) {
         checkInitialConditionsInSi(initialConditions);
         setHash(initialConditions);
-        b = getB(initialConditions.M, R);
-        siToBel(b, initialConditions);
+        siToBel(initialConditions);
     } else {
         try {
             checkInitialConditionsInSi(initialConditions);
@@ -359,8 +358,10 @@ function radiusesBelToSi(R, radiuses) {
     return { r1: r1, r2: r2, analiticR1: analiticR1, analiticR2: analiticR2 };
 }
 
-function siToBel(b, initialConditions) {
+function siToBel(initialConditions) {
+    var M = initialConditions.M;
     var R = initialConditions.R;
+    var b = Math.sqrt(2*G*M/R);
     var m = initialConditions.m;
     var tSi = initialConditions.t;
     var rSi = initialConditions.r;
@@ -384,8 +385,4 @@ function siToBel(b, initialConditions) {
         L: L,
         E: E,
     });
-}
-
-function getB(M, R) {
-    return Math.sqrt(2*G*M/R);
 }

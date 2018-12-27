@@ -69,6 +69,7 @@ form div.row button {
 
 #pointsDataTable tr td {
     padding-left: 8px;
+    min-width: 200px;
 }
 
 #pointsDataTable thead tr td {

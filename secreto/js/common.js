@@ -255,6 +255,23 @@ var defaultInitialConditions = [
         timeResolution: 0.01, simulationTime: 1500,
         L: 2.2, E: -0.075, r: 1.085,
     },
+    {
+        physics: 'schwarzschild-javier',
+        name: 'SCHJAV - Caso 10 (Colisión) - r,vr,vphi',
+        inputFormat: 'r-vr-vphi',
+        siUnits: false, showPointsData: true,
+        timeResolution: 0.01, simulationTime: 1500,
+        r: 1.3466314515085671, vr: 0.0, vrSign: 1, vphi: 1.1889547626874881,
+    },
+    {
+        physics: 'schwarzschild-javier',
+        name: 'SCHJAV - Caso 10 (Colisión) - r,vr,vphi en SI',
+        inputFormat: 'r-vr-vphi',
+        siUnits: true, showPointsData: true,
+        M: 1e+27, R: 0.01, m: 500.0,
+        timeResolution: 0.01, simulationTime: 1500,
+        r: 1.9999702966941035, vr: 0.0, vrSign: 1, vphi: 240000000,
+    },
 ];
 
 function InvalidInitialConditionsError(message) {
@@ -266,14 +283,23 @@ InvalidInitialConditionsError.prototype = Error.prototype;
 
 function processInitialConditions() {
     var initialConditions = getFormData();
-    if (initialConditions.siUnits) {
-        var R = initialConditions.R;
+    
+    if (!initialConditions.siUnits) {
+        setHash(initialConditions);
+    } else {
         checkInitialConditionsInSi(initialConditions);
         setHash(initialConditions);
-        var b = getB(initialConditions.M, R);
-        siToBel(b, initialConditions);
-    } else {
-        setHash(initialConditions);
+        switch(initialConditions.physics) {
+            case 'newton-euler':
+            case 'newton-runge-kutta':
+                siToBel(initialConditions);
+                break;
+            
+            case 'schwarzschild-inaki':
+            case 'schwarzschild-javier':
+                siToSchwarzschild(initialConditions);
+                break;
+        }
     }
 
     fillMissingInitialConditionsFnByPhysics[initialConditions.physics](initialConditions);

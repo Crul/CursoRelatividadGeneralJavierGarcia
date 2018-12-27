@@ -2,7 +2,7 @@
 
 DELTA_ERROR = 1e-5
 SCHWARZSCHILD_RADIUS = 1
-MAX_RADIUS = 20000
+MAX_RADIUS = 2e3
 INFINITESIMAL_JAVIER = 1e-11;
 INFINITESIMAL_JAVIER_RADIUSES = 1e-3;
 
@@ -16,8 +16,7 @@ function runSchwarzschildJavier() {
     if (initialConditions.siUnits) {
         checkInitialConditionsInSi(initialConditions);
         setHash(initialConditions);
-        b = getB(initialConditions.M, R);
-        siToBel(b, initialConditions);
+        siToSchwarzschild(initialConditions);
     } else {
         try {
             checkInitialConditionsInSi(initialConditions);
@@ -34,6 +33,7 @@ function runSchwarzschildJavier() {
     var vr = initialConditions.vr;
     var L = initialConditions.L;
     var E = initialConditions.E;
+    var a = initialConditions.a;
 
     var radiuses = getJavierRadiuses(initialConditions);
     var allowedRanges = [ { min: 1, max: MAX_RADIUS }];
@@ -71,17 +71,38 @@ function runSchwarzschildJavier() {
         phi: [],
         r: [],
     };
+    if (isThereSiData) {
+        points['xSi'] = [];
+        points['ySi'] = [];
+        points['phiSi'] = [];
+        points['rSi'] = [];
+        points['tauSi'] = [];
+        points['tSi'] = [];
+    }
 
     for (var i=0; i < steps; i++) {
         var tau = i * dtau;
         points.tau.push(tau);
-        // TODO points.t.push(stepData.t);
+        var Everdadera = Math.sqrt(1 + initialConditions.E)
+        var t = (Everdadera / (1 - (1/stepData.r))) * tau;
+        points.t.push(t);
         var x = stepData.r*Math.cos(stepData.phi);
         points.x.push(x);
         var y = stepData.r*Math.sin(stepData.phi);
         points.y.push(y);
         points.r.push(stepData.r);
         points.phi.push(stepData.phi);
+        
+        if (isThereSiData) {
+            points.xSi.push(rSchwarzschildToRSi(initialConditions, x));
+            points.ySi.push(rSchwarzschildToRSi(initialConditions, y));
+            points.rSi.push(rSchwarzschildToRSi(initialConditions, stepData.r));
+            points.phiSi.push(stepData.phi);
+            var tauSi = a * (tau / SPEED_LIGHT);
+            points.tauSi.push(tauSi);
+            var tSi = a * (t / SPEED_LIGHT);
+            points.tSi.push(tSi);
+        }
 
         var valueInsideSqrt = Math.abs(E - getEinsteinPotential(stepData.r, L));
         var nextVr = Math.sqrt(valueInsideSqrt);

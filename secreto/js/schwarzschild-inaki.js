@@ -11,8 +11,7 @@ function runSchwarzschildInaki() {
     if (initialConditions.siUnits) {
         checkInitialConditionsInSi(initialConditions);
         setHash(initialConditions);
-        b = getB(initialConditions.M, R);
-        siToBel(b, initialConditions);
+        siToSchwarzschild(initialConditions);
     } else {
         try {
             checkInitialConditionsInSi(initialConditions);

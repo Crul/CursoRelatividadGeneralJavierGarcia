@@ -1,3 +1,6 @@
+var SPEED_LIGHT = 299792458;
+var SPEED_LIGHT_SQR = Math.pow(SPEED_LIGHT, 2);
+
 function fillMissingInitialConditionsSchwarzschild(initialConditions) {
     var r = initialConditions.r;
     var vr = initialConditions.vr;
@@ -80,6 +83,41 @@ function fillMissingInitialConditionsSchwarzschild(initialConditions) {
         L: L,
         E: E,
     });
+}
+
+function siToSchwarzschild(initialConditions) {
+    var M = initialConditions.M;
+    var a = (2*G*M)/SPEED_LIGHT_SQR;
+    var m = initialConditions.m;
+
+    var tSi = initialConditions.t;
+    var rSi = initialConditions.r;
+    var vrSi = initialConditions.vr;
+    var vphiSi = initialConditions.vphi;
+    var LSi = initialConditions.L;
+    var ESi = initialConditions.E;
+    
+    // https://crul.github.io/CursoRelatividadGeneralJavierGarcia/#capitulo-38 ??
+    var t = SPEED_LIGHT * (tSi / a)
+    var r = (rSi !== undefined ? (rSi / a) : undefined);
+    var vr = (vrSi !== undefined ? (vrSi / SPEED_LIGHT) : undefined);
+    var vphi = (vphiSi !== undefined ? (a * vphiSi / SPEED_LIGHT) : undefined);
+    var L = (LSi !== undefined ? (LSi / (m * a * SPEED_LIGHT)) : undefined);
+    var E = (ESi !== undefined ? (ESi / (m * SPEED_LIGHT_SQR)) : undefined);
+
+    Object.assign(initialConditions, {
+        t: t,
+        r: r,
+        vr: vr,
+        vphi: vphi,
+        L: L,
+        E: E,
+        a: a,
+    });
+}
+
+function rSchwarzschildToRSi(initialConditions, rSchwarzschild) {
+    return rSchwarzschild * initialConditions.a;
 }
 
 function initializeStepDataSchwarzschild(initialConditions) {
