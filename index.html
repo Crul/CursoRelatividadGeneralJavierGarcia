@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="favicon.png" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.css" integrity="sha384-VEnyslhHLHiYPca9KFkBB3CMeslnM9CzwjxsEbZTeA21JBm7tdLwKoZmCt3cZTYD" crossorigin="anonymous" />
-  <link rel="stylesheet" href="style.css?v=20181219" />
+  <link rel="stylesheet" href="style.css?v=20181229" />
 </head>
 
 <body>
@@ -223,6 +223,10 @@
         <li>
           <a href="#capitulo-44">Capítulo 44</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=LY_4hO9uF-4&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
+        </li>
+        <li>
+          <a href="#capitulo-45">Capítulo 45</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=LY_4hO9uF-g-P2aTiKykI&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
         </li>
       </ul>
       </ul>
@@ -3149,7 +3153,7 @@
     </div>
   </div>
 
-  <h2 id="capitulo-44"><a href="#capitulo-44" class="formulas-title">Capítulo 44: Entrando en un agujero negro</a></h2>
+  <h2 id="capitulo-44"><a href="#capitulo-44" class="formulas-title">Capítulo 44: Entrando en un agujero negro (1/2)</a></h2>
   <div class="capitulo-44 formulas">
     <div class="grupo-formulas">
       <span class="formula-titulo">
@@ -3235,9 +3239,170 @@
     </div>
   </div>
 
+  <h2 id="capitulo-45"><a href="#capitulo-45" class="formulas-title">Capítulo 45: Entrando en un agujero negro (2/2)</a></h2>
+  <div class="capitulo-45 formulas">
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.1) Aproximacion de la métrica dentro
+        <br/>del agujero negro, en las cercanías
+        <br/>del horizonte de sucesos, con &Omega; constante
+      </span>
+      <span class="formula">
+        ds^2 \simeq - \frac{1}{ 1 - r } dr^2 + \left( 1 - r \right) dt^2
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.2) Aplicando a la fórmula (45.1)
+        <br/>el siguiente cambio de coordenadas:
+      </span>
+      <span class="formula">
+        u \equiv 2 \sqrt{ 1 - r}
+      </span>
+      <span class="formula">
+        v \equiv \frac{t}{2}
+      </span>
+      <span class="formula-titulo">
+        Obtenemos:
+      </span>
+      <span class="formula">
+        ds^2 \simeq - du^2 + u^2 dv^2
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.3) Aplicando a la fórmula (45.2)
+        <br/>el siguiente cambio de coordenadas:
+      </span>
+      <span class="formula">
+        T = u \cosh{v}
+      </span>
+      <span class="formula">
+        X = v \sinh{u}
+      </span>
+      <span class="formula-titulo">
+        Obtenemos:
+      </span>
+      <span class="formula">
+        ds^2 \simeq - dT^2 + dX^2
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.4) Trayectoria de un cuerpo estático
+        <br/>vista por un observador en caída libre
+      </span>
+      <span class="formula">
+        T = \text{ cte } X
+      </span>
+      <span class="formula-titulo">
+        Lo cual son lineas rectas, como si el cuerpo
+        <br/>estático y el observador fueran inerciales
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.5) Curvas de r = constante
+      </span>
+      <span class="formula">
+        T = \text{ cte } \cosh{\text{ cte }}
+      </span>
+      <span class="formula">
+        X = \text{ cte } \sinh{\text{ cte }}
+      </span>
+      <span class="wolfram-alpha-link">
+        <a target="_blank" href="https://www.wolframalpha.com/input/?i=x%3Dsinh(t%2F2)%2F2,+y%3Dcosh(t%2F2)%2F2">ver en Wolfram Alpha</a>
+        <div class="only-for-print">https://www.wolframalpha.com/input/?i=x%3Dsinh(t%2F2)%2F2,+y%3Dcosh(t%2F2)%2F2</div>
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.6) Espacio conformemente plano es aquel
+        <br/>cuya métrica puede expresarse
+        <br/>de forma proporcional a un
+        <br/>espacio tiempo de Minkowski (plano)
+      </span>
+      <span class="formula">
+        ds^2 = F \left( -du^2 + u^2 dv^2 \right)
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.6) Con el siguiente cambio de coordenadas
+        <br/>extendemos la métrica (de forma exacta)
+        <br/>a todo el interior del agujero negro
+        <br/>(execpto la singularidad)
+      </span>
+      <span class="formula">
+        \chi = r^2 h^2
+      </span>
+      <span class="formula">
+        h \neq 0
+      </span>
+      <span class="formula-titulo">
+        Obtenemos:
+      </span>
+      <span class="formula">
+        ds^2 = \frac{ 4r }{ \chi } \left( -du^2 + u^2 dv^2 \right)
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.7) Aplicando a la fórmula (45.6)
+        <br/>el siguiente cambio de coordenadas:
+      </span>
+      <span class="formula">
+        u = \sqrt{ 1 - r } e^\frac{r}{2}
+      </span>
+      <span class="formula">
+        v = \frac{t}{2}
+      </span>
+      <span class="formula-titulo">
+        Obtenemos:
+      </span>
+      <span class="formula">
+        ds^2 = \frac{ 4r }{ r^2 e^r } \left( -du^2 + u^2 dv^2 \right)
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (45.8) Aplicando a la fórmula (45.7)
+        <br/>el siguiente cambio de coordenadas:
+      </span>
+      <span class="formula">
+        T = \sqrt{ 1 - r } e^\frac{r}{2} \cosh{ \frac{t}{2} }
+      </span>
+      <span class="formula">
+        X = \sqrt{ 1 - r } e^\frac{r}{2} \sinh{ \frac{t}{2} }
+      </span>
+      <span class="formula">
+        T^2 - X^2 = \left( 1 - r \right) e^r
+      </span>
+      <span class="formula-titulo">
+        Obtenemos:
+      </span>
+      <span class="formula">
+        ds^2 = \frac{4}{r} e^{-r} \left( - dT^2 + dX^2 \right)
+      </span>
+      <span class="formula-titulo">
+        Con la singularidad en:
+      </span>
+      <span class="formula">
+        T^2 - X^2 = 1
+      </span>
+      <span class="formula">
+        \left( r = 0 \right)
+      </span>
+      <span class="wolfram-alpha-link">
+        <a target="_blank" href="https://www.wolframalpha.com/input/?i=y+%3D+sqrt(1+%2B+x%5E2)">ver en Wolfram Alpha</a>
+        <div class="only-for-print">https://www.wolframalpha.com/input/?i=y+%3D+sqrt(1+%2B+x%5E2)</div>
+      </span>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js" integrity="sha384-O4hpKqcplNCe+jLuBVEXC10Rn1QEqAmX98lKAIFBEDxZI0a+6Z2w2n8AEtQbR4CD" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script type="text/javascript" src="script.js?v=20181219"></script>
+  <script type="text/javascript" src="script.js?v=20181229"></script>
 
 </body>
 </html>
