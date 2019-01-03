@@ -75,7 +75,7 @@ function runNewton(movePointFn) {
 
     if (initialConditions.siUnits) {
         radiuses = radiusesBelToSi(R, radiuses);
-        belToSi(b, initialConditions);
+        belToSi(initialConditions);
     }
 
     lastRunPoints = points;
@@ -190,15 +190,20 @@ function fillMissingInitialConditionsNewton(initialConditions) {
         throw InvalidInitialConditionsError(errorMsg);
     }
 
-    Object.assign(initialConditions, {
-        r: r,
-        vr: vr,
-        vrSign: vrSign,
-        phi: phi,
-        vphi: vphi,
-        L: L,
-        E: E,
-    });
+    belToSi(
+        Object.assign(
+            initialConditions,
+            {
+                r: r,
+                vr: vr,
+                vrSign: vrSign,
+                phi: phi,
+                vphi: vphi,
+                L: L,
+                E: E,
+            }
+        )
+    );
 }
 
 function initializeStepDataNewton(r, vr, phi, radiuses) {
@@ -233,8 +238,9 @@ function plotNewtonPotentialChart(L, E) {
     if (!PLOT_POTENCIAL_CHART)
         return;
 
-    var plotXValues = range(1, POTENTIAL_PLOT_MAX_X)
-        .map(function(r) { return (r/POTENTIAL_PLOT_RESOLUTION) + INFINITESIMAL; });
+    var plotXValues = range(0, (POTENTIAL_PLOT_MAX_X/POTENTIAL_PLOT_RESOLUTION))
+        .map(function(r) { return (r * POTENTIAL_PLOT_RESOLUTION) + INFINITESIMAL; });
+
 
     var plotYValues = plotXValues
         .map(function(x) { return getNewtonPotential(x, L); });
@@ -317,33 +323,6 @@ function bisection(a, b, L, E) {
     return p;
 }
 
-function belToSi(b, initialConditions) {
-    var R = initialConditions.R;
-    var m = initialConditions.m;
-    var t = initialConditions.t;
-    var r = initialConditions.r;
-    var vr = initialConditions.vr;
-    var vphi = initialConditions.vphi;
-    var L = initialConditions.L;
-    var E = initialConditions.E;
-
-    var rSi = rBelToRSi(R, r);
-    var tSi =  (t * R) / (2 * b);
-    var vrSi = vr * b;
-    var vphiSi = vphi * ((2*b)/R);
-    var LSi = 0.5 * L * m * b * R;
-    var ESi = E * m * (Math.pow(b, 2));
-
-    Object.assign(initialConditions, {
-        t: tSi,
-        r: rSi,
-        vr: vrSi,
-        vphi: vphiSi,
-        L: LSi,
-        E: ESi,
-    });
-}
-
 function rBelToRSi(R, r) {
     if (r === undefined) return undefined;
     return r * (R/2);
@@ -363,16 +342,20 @@ function siToBel(initialConditions) {
     var R = initialConditions.R;
     var b = Math.sqrt(2*G*M/R);
     var m = initialConditions.m;
-    var tSi = initialConditions.t;
-    var rSi = initialConditions.r;
-    var vrSi = initialConditions.vr;
-    var vphiSi = initialConditions.vphi;
-    var LSi = initialConditions.L;
-    var ESi = initialConditions.E;
-
+    var tSi = initialConditions.tSi;
+    var rSi = initialConditions.rSi;
+    var vrSi = initialConditions.vrSi;
+    var vrSignSi = initialConditions.vrSignSi;
+    var phiSi = initialConditions.phiSi;
+    var vphiSi = initialConditions.vphiSi;
+    var LSi = initialConditions.LSi;
+    var ESi = initialConditions.ESi;
+    
     var r = (rSi !== undefined ? (rSi * (2/R)) : undefined);
     var t = tSi * (2 * b / R);
     var vr = (vrSi !== undefined ? (vrSi / b) : undefined);
+    var vrSign = vrSignSi;
+    var phi = phiSi;
     var vphi = (vphiSi !== undefined ? (vphiSi * (R/(2*b))) : undefined);
     var L = (LSi !== undefined ? (2 * LSi / (m * b * R)) : undefined);
     var E = (ESi !== undefined ? (ESi / (m * Math.pow(b, 2))) : undefined);
@@ -381,8 +364,46 @@ function siToBel(initialConditions) {
         t: t,
         r: r,
         vr: vr,
+        vrSign: vrSign,
+        phi: phi,
         vphi: vphi,
         L: L,
         E: E,
+        b: b,
+    });
+}
+
+function belToSi(initialConditions) {
+    var M = initialConditions.M;
+    var R = initialConditions.R;
+    var b = Math.sqrt(2*G*M/R);
+    var m = initialConditions.m;
+    var t = initialConditions.t;
+    var r = initialConditions.r;
+    var vr = initialConditions.vr;
+    var vrSign = initialConditions.vrSign;
+    var phi = initialConditions.phi;
+    var vphi = initialConditions.vphi;
+    var L = initialConditions.L;
+    var E = initialConditions.E;
+
+    var rSi = (r !== undefined ? (r * (R/2)) : undefined);
+    var tSi = (R * t) / (2 * b);
+    var vrSi = (vr !== undefined ? (vr * b) : undefined);
+    var vrSignSi = vrSign;
+    var phiSi = phi;
+    var vphiSi = (vphi !== undefined ? (vphi * ((2*b)/R)) : undefined);
+    var LSi = (L !== undefined ? (L * (m * b * R) / 2) : undefined);
+    var ESi = (E !== undefined ? (E * (m * Math.pow(b, 2))) : undefined);
+
+    Object.assign(initialConditions, {
+        tSi: tSi,
+        rSi: rSi,
+        vrSi: vrSi,
+        vrSignSi: vrSignSi,
+        phiSi: phiSi,
+        vphiSi: vphiSi,
+        LSi: LSi,
+        ESi: ESi,
     });
 }

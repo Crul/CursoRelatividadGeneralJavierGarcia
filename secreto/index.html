@@ -18,116 +18,12 @@
   <div class="container">
 
     <form class="form">
-      <div class="row">
-        <div class="col">
-          <div class="form-group">
-            <label for="inputFormat">Datos de entrada</label>
-            <select id="inputFormat" class="form-control form-control-sm">
-              <option value="r-vr-vphi" selected>r, vr, vphi</option>
-              <option value="L-E-r">L, E, r</option>
-              <option value="L-E-vr">L, E, vr</option>
-              <option value="L-E-vphi">L, E, vphi</option>
-            </select>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="siUnits">
-            <label class="form-check-label" for="siUnits">Unidades SI</label>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="timeResolution">Duración paso (seg)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Duración paso (seg)" id="timeResolution"
-                   step="0.001" min="0.001" max="100">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="simulationTime">Tiempo simul. (seg)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Tiempo simulación (seg)" id="simulationTime"
-                   step="any" min="1" max="100000">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="M">Masa del Planeta (kg)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Masa del Planeta (kg)" id="M"
-                   step="any" min="0">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="R">Radio del Planeta (m)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Radio del Planeta (m)" id="R"
-                   step="any" min="0">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="m">Masa de la Nave (kg)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Masa de la Nave (kg)" id="m"
-                   step="any" min="0">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-group">
-            <label for="r">r inicial</label>
-            <input type="number" class="form-control form-control-sm" placeholder="r inicial" id="r"
-                   step="any" min="0">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vr">vr inicial</label>
-            <input type="number" class="form-control form-control-sm" placeholder="vr inicial" id="vr"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vrSign">signo vr inicial</label>
-            <input type="number" class="form-control form-control-sm" placeholder="signo vr inicial" id="vrSign"
-                   step="2" min="-1" max="1">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="phi">phi inicial</label>
-            <input type="number" class="form-control form-control-sm" placeholder="phi inicial" id="phi"
-                   step="any" min="0" max="6.28318530718">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vphi">vphi inicial</label>
-            <input type="number" class="form-control form-control-sm" placeholder="vphi inicial" id="vphi"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="L">valor L</label>
-            <input type="number" class="form-control form-control-sm" placeholder="valor L" id="L"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="E">valor epsilon</label>
-            <input type="number" class="form-control form-control-sm" placeholder="valor E" id="E"
-                   step="any">
-          </div>
-        </div>
-      </div>
+
       <div class="row">
         <div class="col">
           <div class="form-group">
             <label for="defaultFormData">Configuraciones predeterminadas</label>
-            <select id="defaultFormData" class="form-control form-control-sm">
+            <select id="defaultFormData" class="form-control form-control-sm" style="width: 621.5px;">
               <option value="" selected>-- Selecciona una para cargar --</option>
             </select>
           </div>
@@ -153,6 +49,179 @@
           <button type="button" id="runBtn" class="btn btn-warning" disabled>SIMULAR</button>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="inputFormat">Tipo de condiciones inciales</label>
+            <select id="inputFormat" class="form-control form-control-sm">
+              <option value="r-vr-vphi" selected>r, vr, vphi</option>
+              <option value="L-E-r">L, epsilon, r</option>
+              <option value="L-E-vr">L, epsilon, vr</option>
+              <option value="L-E-vphi">L, epsilon, vphi</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group form-check">
+            <br/>
+            <input type="checkbox" class="form-check-input" id="siUnits">
+            <label class="form-check-label" for="siUnits">Unidades SI</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="timeResolution">Incremento de tiempo propio (seg)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Duración paso (seg)" id="timeResolution"
+                   step="0.001" min="0.001" max="100">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="simulationTime">Tiempo propio total (seg)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Tiempo simulación (seg)" id="simulationTime"
+                   step="any" min="1" max="100000">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="M"><br/>Masa del Planeta (kg)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Masa del Planeta (kg)" id="M"
+                   step="any" min="0">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="R"><br/>Radio del Planeta (m)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Radio del Planeta (m)" id="R"
+                   step="any" min="0">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="m">Masa de la Partícula (kg)</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Masa de la Nave (kg)" id="m"
+                   step="any" min="0">
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-12">
+          <hr/>
+          <h6>Unidades adimensionales</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="r">r inicial</label>
+            <input type="number" class="form-control form-control-sm adim-units" placeholder="r inicial" id="r"
+                   step="any" min="0">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="phi">phi inicial</label>
+            <input type="number" class="form-control form-control-sm adim-units" placeholder="phi inicial" id="phi"
+                   step="any" min="0" max="6.28318530718">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vr">vr inicial</label>
+            <input type="number" class="form-control form-control-sm adim-units" placeholder="vr inicial" id="vr"
+                   step="any">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vrSign">signo vr inicial</label>
+            <input type="number" class="form-control form-control-sm adim-units" placeholder="signo vr inicial" id="vrSign"
+                   step="2" min="-1" max="1">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vphi">vphi inicial</label>
+            <input type="number" class="form-control form-control-sm adim-units" placeholder="vphi inicial" id="vphi"
+                   step="any">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="L">valor L</label>
+            <input type="number" class="form-control form-control-sm adim-units" placeholder="valor L" id="L"
+                   step="any">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="E">valor epsilon</label>
+            <input type="number" class="form-control form-control-sm adim-units" placeholder="valor epsilon" id="E"
+                   step="any">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <hr/>
+          <h6>Unidades del Sistema Internacional</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="rSi">r inicial</label>
+            <input type="number" class="form-control form-control-sm si-units" placeholder="r inicial" id="rSi"
+                   step="any" min="0">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="phiSi">phi inicial</label>
+            <input type="number" class="form-control form-control-sm si-units" placeholder="phi inicial" id="phiSi"
+                   step="any" min="0" max="6.28318530718">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vrSi">vr inicial</label>
+            <input type="number" class="form-control form-control-sm si-units" placeholder="vr inicial" id="vrSi"
+                   step="any">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vrSignSi">signo vr inicial</label>
+            <input type="number" class="form-control form-control-sm si-units" placeholder="signo vr inicial" id="vrSignSi"
+                   step="2" min="-1" max="1">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="vphiSi">vphi inicial</label>
+            <input type="number" class="form-control form-control-sm si-units" placeholder="vphi inicial" id="vphiSi"
+                   step="any">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="LSi">valor L</label>
+            <input type="number" class="form-control form-control-sm si-units" placeholder="valor L" id="LSi"
+                   step="any">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="ESi">valor epsilon</label>
+            <input type="number" class="form-control form-control-sm si-units" placeholder="valor epsilon" id="ESi"
+                   step="any">
+          </div>
+        </div>
+      </div>
+
     </form>
 
     <div class="row">

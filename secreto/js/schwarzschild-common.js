@@ -74,15 +74,20 @@ function fillMissingInitialConditionsSchwarzschild(initialConditions) {
         throw InvalidInitialConditionsError(errorMsg);
     }
 
-    Object.assign(initialConditions, {
-        r: r,
-        vr: vr,
-        vrSign: vrSign,
-        phi: phi,
-        vphi: vphi,
-        L: L,
-        E: E,
-    });
+    schwarzschildToSi(
+        Object.assign(
+            initialConditions,
+            {
+                r: r,
+                vr: vr,
+                vrSign: vrSign,
+                phi: phi,
+                vphi: vphi,
+                L: L,
+                E: E,
+            }
+        )
+    );
 }
 
 function siToSchwarzschild(initialConditions) {
@@ -90,17 +95,21 @@ function siToSchwarzschild(initialConditions) {
     var a = (2*G*M)/SPEED_LIGHT_SQR;
     var m = initialConditions.m;
 
-    var tSi = initialConditions.t;
-    var rSi = initialConditions.r;
-    var vrSi = initialConditions.vr;
-    var vphiSi = initialConditions.vphi;
-    var LSi = initialConditions.L;
-    var ESi = initialConditions.E;
+    var tSi = initialConditions.tSi;
+    var rSi = initialConditions.rSi;
+    var vrSi = initialConditions.vrSi;
+    var vrSignSi = initialConditions.vrSignSi;
+    var phiSi = initialConditions.phiSi;
+    var vphiSi = initialConditions.vphiSi;
+    var LSi = initialConditions.LSi;
+    var ESi = initialConditions.ESi;
     
     // https://crul.github.io/CursoRelatividadGeneralJavierGarcia/#capitulo-38 ??
     var t = SPEED_LIGHT * (tSi / a)
     var r = (rSi !== undefined ? (rSi / a) : undefined);
     var vr = (vrSi !== undefined ? (vrSi / SPEED_LIGHT) : undefined);
+    var vrSign = vrSignSi;
+    var phi = phiSi;
     var vphi = (vphiSi !== undefined ? (a * vphiSi / SPEED_LIGHT) : undefined);
     var L = (LSi !== undefined ? (LSi / (m * a * SPEED_LIGHT)) : undefined);
     var E = (ESi !== undefined ? (ESi / (m * SPEED_LIGHT_SQR)) : undefined);
@@ -109,9 +118,48 @@ function siToSchwarzschild(initialConditions) {
         t: t,
         r: r,
         vr: vr,
+        vrSign: vrSign,
+        phi: phi,
         vphi: vphi,
         L: L,
         E: E,
+        a: a,
+    });
+}
+
+function schwarzschildToSi(initialConditions) {
+    var M = initialConditions.M;
+    var a = (2*G*M)/SPEED_LIGHT_SQR;
+    var m = initialConditions.m;
+
+    var t = initialConditions.t;
+    var r = initialConditions.r;
+    var vr = initialConditions.vr;
+    var vrSign = initialConditions.vrSign;
+    var phi = initialConditions.phi;
+    var vphi = initialConditions.vphi;
+    var L = initialConditions.L;
+    var E = initialConditions.E;
+    
+    // https://crul.github.io/CursoRelatividadGeneralJavierGarcia/#capitulo-38 ??
+    var tSi = t * a / SPEED_LIGHT
+    var rSi = (r !== undefined ? (r * a) : undefined);
+    var vrSi = (vr !== undefined ? (vr * SPEED_LIGHT) : undefined);
+    var vrSignSi = vrSign;
+    var phiSi = phi;
+    var vphiSi = (vphi !== undefined ? (SPEED_LIGHT * vphi / a) : undefined);
+    var LSi = (L !== undefined ? (L * (m * a * SPEED_LIGHT)) : undefined);
+    var ESi = (E !== undefined ? (E * (m * SPEED_LIGHT_SQR)) : undefined);
+
+    Object.assign(initialConditions, {
+        tSi: tSi,
+        rSi: rSi,
+        vrSi: vrSi,
+        vrSignSi: vrSignSi,
+        phiSi: phiSi,
+        vphiSi: vphiSi,
+        LSi: LSi,
+        ESi: ESi,
         a: a,
     });
 }
@@ -157,8 +205,8 @@ function plotSchwarzschildPotentialChart(L, E) {
     if (!PLOT_POTENCIAL_CHART)
         return;
 
-    var plotXValues = range(1, POTENTIAL_PLOT_MAX_X)
-        .map(function(r) { return (r/POTENTIAL_PLOT_RESOLUTION) + INFINITESIMAL; });
+    var plotXValues = range(0, (POTENTIAL_PLOT_MAX_X/POTENTIAL_PLOT_RESOLUTION))
+        .map(function(r) { return (r * POTENTIAL_PLOT_RESOLUTION) + INFINITESIMAL; });
 
     var plotYValues = plotXValues
         .map(function(x) { return getEinsteinPotential(x, L); });
@@ -205,7 +253,10 @@ function plotSchwarzschildPotentialChart(L, E) {
         }
       }
     };
-    Plotly.newPlot($('#potentialPlot')[0], potentialData, layout);
+    var plotElem = $('#potentialPlot')[0];
+    Plotly.newPlot(plotElem, potentialData, layout).then(function(){
+        //Plotly.relayout($('#potentialPlot')[0], { yaxis: { range: [-1,1] }});
+    });
 
 }
 

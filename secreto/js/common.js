@@ -2,23 +2,41 @@ var PLOT_POTENCIAL_CHART = true;
 var INFINITESIMAL = 1e-9;
 var E_THRESHOLD_TO_BE_CONSIDERED_ZERO = 1e-7;
 
-var BISECTION_ERROR_THERSHOLD = 1e-7;
+var BISECTION_ERROR_THERSHOLD = 1e-10;
 var BISECTION_MIN = 1e-9;
 var BISECTION_MAX = 5e3;
 
-var POTENTIAL_PLOT_RESOLUTION = 1e2;
-var POTENTIAL_PLOT_MAX_X = 1e4;
-
+var POTENTIAL_PLOT_MAX_X = 1e3;
+var POTENTIAL_PLOT_RESOLUTION = POTENTIAL_PLOT_MAX_X/5e4;
 var G = 6.674E-11;
 
 var defaultInitialConditions = [
     {
-        physics: 'newton-euler',
-        name: 'NEWTON - Velocidad de Escape (caso 1)',
+        physics: 'schwarzschild-javier',
+        name: 'SCHJAV - Órbita circular de la Tierra [ r = 10 x Radio ] (r, vr, vphi)',
         inputFormat: 'r-vr-vphi',
+        siUnits: true, showPointsData: true,
+        timeResolution: 1e14, simulationTime: 1e16,
+        M: 5.9722e+24, R: 6371000.0, m: 500.0,
+        rSi: 63710000, phi: 0.0, vrSi: 0.0, vrSignSi: 1.0, vphiSi: 0.00003925987071995594
+    },
+    {
+        physics: 'schwarzschild-javier',
+        name: 'SCHJAV - Órbita circular de la Tierra [ r = 10 x Radio ] (L, epsilon, r)',
+        inputFormat: 'L-E-r',
+        siUnits: true, showPointsData: true,
+        timeResolution: 1e14, simulationTime: 1e16,
+        M: 5.9722e+24, R: 6371000.0, m: 500.0,
+        rSi: 63710000, phi: 0.0, vrSignSi: 1.0, LSi: 79677202911471.16, ESi: -3128116684.7610626
+    },
+    {
+        physics: 'schwarzschild-javier',
+        name: 'SCHJAV - Órbita circular de la Tierra: r aleatorio (L, epsilon, r)',
+        inputFormat: 'L-E-r',
         siUnits: false, showPointsData: true,
-        timeResolution: 0.01, simulationTime: 1500,
-        r: 16.0, phi: 0.0, vr: 2.0, vphi: 0.0
+        timeResolution: 1e11, simulationTime: 7e14,
+        M: 5.9722e+24, R: 6371000.0, m: 500.0,
+        r: 1216577086.134062, phi: 0.0, vrSign: 1.0, L:24663.506316358, E: -4.1098910000000007e-10
     },
     {
         physics: 'newton-euler',
@@ -60,8 +78,8 @@ var defaultInitialConditions = [
         timeResolution: 0.01, simulationTime: 1500,
         siUnits: true, showPointsData: true,
         M: 5.97e+24, R: 6371000.0, m: 500.0,
-        phi: 0.0, vr: 0.0,
-        L: 26719623532036.336, E: -13897619421.33626,
+        phiSi: 0.0, vrSi: 0.0,
+        LSi: 26719623532036.336, ESi: -13897619421.33626,
     },
     {
         physics: 'schwarzschild-inaki',
@@ -117,7 +135,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-E-r',
         siUnits: false, showPointsData: true,
         timeResolution: 0.01, simulationTime: 1500,
-        L: 1.9, E: -0.04735184287601163, r: 16.0,
+        L: 1.9, E: -0.04735184287601163, r: 2.1260525615777355,
     },
     {
         physics: 'schwarzschild-javier',
@@ -229,7 +247,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-E-r',
         siUnits: false, showPointsData: true,
         timeResolution: 0.01, simulationTime: 150,
-        L: 2.2, E: 0.10922213581784845, r: 10, vrSign: -1,
+        L: 2.2, E: 0.10922213581784844, r: 10, vrSign: -1,
     },
     {
         physics: 'schwarzschild-javier',
@@ -270,7 +288,7 @@ var defaultInitialConditions = [
         siUnits: true, showPointsData: true,
         M: 1e+27, R: 0.01, m: 500.0,
         timeResolution: 0.01, simulationTime: 1500,
-        r: 1.9999702966941035, vr: 0.0, vrSign: 1, vphi: 240000000,
+        rSi: 1.9999702966941035, vrSi: 0.0, vrSignSi: 1, vphiSi: 240000000,
     },
 ];
 
@@ -283,10 +301,8 @@ InvalidInitialConditionsError.prototype = Error.prototype;
 
 function processInitialConditions() {
     var initialConditions = getFormData();
-    
-    if (!initialConditions.siUnits) {
-        setHash(initialConditions);
-    } else {
+
+    if (initialConditions.siUnits) {
         checkInitialConditionsInSi(initialConditions);
         setHash(initialConditions);
         switch(initialConditions.physics) {
@@ -300,9 +316,26 @@ function processInitialConditions() {
                 siToSchwarzschild(initialConditions);
                 break;
         }
+        
+        fillMissingInitialConditionsFnByPhysics[initialConditions.physics](initialConditions);
+    
+    } else {
+        
+        fillMissingInitialConditionsFnByPhysics[initialConditions.physics](initialConditions);
+    
+        setHash(initialConditions);
+        switch(initialConditions.physics) {
+            case 'newton-euler':
+            case 'newton-runge-kutta':
+                belToSi(initialConditions);
+                break;
+            
+            case 'schwarzschild-inaki':
+            case 'schwarzschild-javier':
+                schwarzschildToSi(initialConditions);
+                break;
+        }
     }
-
-    fillMissingInitialConditionsFnByPhysics[initialConditions.physics](initialConditions);
 
     var L = initialConditions.L;
     var E = initialConditions.E;
@@ -317,7 +350,7 @@ function checkInitialConditionsInSi(initialConditions) {
     var R = initialConditions.R;
     var m = initialConditions.m;
     if (!M || !R || !m) {
-        throw Error('Los parámetros M, R son obligatorios para usar unidades del SI.');
+        throw InvalidInitialConditionsError('Los parámetros M, R y m son obligatorios para usar unidades del SI.');
     }
 }
 

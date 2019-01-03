@@ -24,9 +24,9 @@ var plotPotentialChartFnByPhysics = {
 $(document).ready(bootstrapApp);
 
 function run() {
-    onInitialConditionsChange(true);
-    var physics = $('#physics').val();
     try {
+        onInitialConditionsChange(true);
+        var physics = $('#physics').val();
         var results = runFnByPhysics[physics]();
         console.debug(results);
     } catch(ex) {
@@ -36,11 +36,11 @@ function run() {
 
 var lastManuallySetHash = '';
 function bootstrapApp() {
-    // alert(
-    //     '¿Qué haces aquí? Espero que seas uno de los Obi Four Kenobi.\n' +
-    //     'En ese caso: di amigo (o haz click en OK) y entra :).\n' +
-    //     'Si no lo eres: ESTAS NO SON LAS WEBS QUE ESTÁS BUSCANDO.'
-    // );
+    alert(
+        '¿Qué haces aquí? Espero que seas uno de los Obi Four Kenobi.\n' +
+        'En ese caso: di amigo (o haz click en OK) y entra :).\n' +
+        'Si no lo eres: ESTAS NO SON LAS WEBS QUE ESTÁS BUSCANDO.'
+    );
 
     var defaultFormDataOpts = defaultInitialConditions.map(function(data){
         return $('<option>').attr('value', data.name).html(data.name);
@@ -51,7 +51,7 @@ function bootstrapApp() {
     if (window.location.hash) {
         onHashChange();
     } else {
-        setFormData(defaultInitialConditions[4]);
+        setFormData(defaultInitialConditions[0]);
         onDefaultFormDataChange();
         onInitialConditionsChange();
     }
@@ -62,12 +62,24 @@ function bootstrapApp() {
         .change(onInitialConditionsChange)
         .change(run);
 
+    $('#siUnits').change(onSiUnitsChane).change(onInitialConditionsChange);
     $('#showPointsData').change(onShowPointsDataChange);
+    
     $('#r').change(onInitialConditionsChange);
     $('#vr').change(onVrChange).change(onInitialConditionsChange);
+    $('#vrSign').change(onInitialConditionsChange);
+    $('#phi').change(onInitialConditionsChange);
     $('#vphi').change(onInitialConditionsChange);
     $('#L').change(onInitialConditionsChange);
     $('#E').change(onInitialConditionsChange);
+
+    $('#rSi').change(onInitialConditionsChange);
+    $('#vrSi').change(onVrChange).change(onInitialConditionsChange);
+    $('#vrSignSi').change(onInitialConditionsChange);
+    $('#phiSi').change(onInitialConditionsChange);
+    $('#vphiSi').change(onInitialConditionsChange);
+    $('#LSi').change(onInitialConditionsChange);
+    $('#ESi').change(onInitialConditionsChange);
 
     $('#runBtn').click(run);
 
@@ -79,19 +91,32 @@ function setFormData(data, doNotSetHash) {
     $('#inputFormat').val(data.inputFormat);
     onInputFormatChange(true);
     $('#siUnits').prop('checked', data.siUnits || false);
+    onSiUnitsChane();
     $('#timeResolution').val(data.timeResolution);
     $('#simulationTime').val(data.simulationTime);
     $('#M').val(data.M || $('#M').val());
     $('#R').val(data.R || $('#R').val());
     $('#m').val(data.m || $('#m').val());
+    
     $('#r').val(data.r);
     $('#vr').val(data.vr);
     $('#vrSign').val(data.vrSign);
-    onVrChange();
-    $('#phi').val(data.phi);
+    $('#phi').val(data.phi || 0);
     $('#vphi').val(data.vphi);
     $('#L').val(data.L);
     $('#E').val(data.E);
+    
+    $('#rSi').val(data.rSi);
+    $('#vrSi').val(data.vrSi);
+    $('#vrSignSi').val(data.vrSignSi);
+    $('#phiSi').val(data.phiSi || 0);
+    $('#vphiSi').val(data.vphiSi);
+    $('#LSi').val(data.LSi);
+    $('#ESi').val(data.ESi);
+
+    onVrChange();
+    onInitialConditionsChange();
+    
     $('#showPointsData').prop('checked', data.showPointsData);
 
     if (!doNotSetHash)
@@ -125,6 +150,7 @@ function setHash(data) {
         + '&' + getHashValue(data, 'M')
         + '&' + getHashValue(data, 'R')
         + '&' + getHashValue(data, 'm')
+
         + '&' + getHashValue(data, 'r')
         + '&' + getHashValue(data, 'vr')
         + '&' + getHashValue(data, 'vrSign')
@@ -132,6 +158,15 @@ function setHash(data) {
         + '&' + getHashValue(data, 'vphi')
         + '&' + getHashValue(data, 'L')
         + '&' + getHashValue(data, 'E')
+
+        + '&' + getHashValue(data, 'rSi')
+        + '&' + getHashValue(data, 'vrSi')
+        + '&' + getHashValue(data, 'vrSignSi')
+        + '&' + getHashValue(data, 'phiSi')
+        + '&' + getHashValue(data, 'vphiSi')
+        + '&' + getHashValue(data, 'LSi')
+        + '&' + getHashValue(data, 'ESi')
+
         + '&' + getHashValue(data, 'physics')
         + '&' + getHashValue(data, 'showPointsData')
         + '';
@@ -147,10 +182,46 @@ function getHashValue(data, prop) {
 }
 
 function getFormData(data) {
-    var inp = $('#inputFormat');
-    var val = inp.val();
-    var r, vr, vphi, L, E, vrSign;
-    switch (val) {
+    var r, phi, vr, vrSign, vphi, L, E,
+        rSi, phiSi, vrSi, vrSignSi, vphiSi, LSi, ESi;
+
+    var isSiUnits = $('#siUnits').is(':checked');
+    var val = $('#inputFormat').val();
+    if (isSiUnits) {
+        phiSi = Number($('#phiSi').val());
+        switch (val) {
+        case 'r-vr-vphi':
+            rSi = Number($('#rSi').val());
+            vrSi = Number($('#vrSi').val());
+            vphiSi = Number($('#vphiSi').val());
+            if (vrSi == 0)
+                vrSignSi = Number($('#vrSignSi').val());
+            break;
+        case 'L-E-r':
+            LSi = Number($('#LSi').val());
+            ESi = Number($('#ESi').val());
+            rSi = Number($('#rSi').val());
+            vrSignSi = Number($('#vrSignSi').val());
+            break;
+        case 'L-E-vr':
+            LSi = Number($('#LSi').val());
+            ESi = Number($('#ESi').val());
+            vrSi = Number($('#vrSi').val());
+            if (vrSi == 0)
+                vrSignSi = Number($('#vrSignSi').val());
+            break;
+        case 'L-E-vphi':
+            LSi = Number($('#LSi').val());
+            ESi = Number($('#ESi').val());
+            vphiSi = Number($('#vphiSi').val());
+            vrSignSi = Number($('#vrSignSi').val());
+            break;
+        default:
+            alert('Datos de Entrada (' + val + ') incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò');   
+        }
+    } else {
+        phi = Number($('#phi').val());
+        switch (val) {
         case 'r-vr-vphi':
             r = Number($('#r').val());
             vr = Number($('#vr').val());
@@ -179,6 +250,7 @@ function getFormData(data) {
             break;
         default:
             alert('Datos de Entrada (' + val + ') incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò');   
+        }
     }
 
     return {
@@ -191,13 +263,23 @@ function getFormData(data) {
         M       : Number($('#M').val()),
         R       : Number($('#R').val()),
         m       : Number($('#m').val()),
+
         r       : r,
         vr      : vr,
         vrSign  : vrSign,
-        phi     : Number($('#phi').val()),
+        phi     : phi,
         vphi    : vphi,
         L       : L,
         E       : E,
+
+        rSi     : rSi,
+        vrSi    : vrSi,
+        vrSignSi: vrSignSi,
+        phiSi   : phiSi,
+        vphiSi  : vphiSi,
+        LSi     : LSi,
+        ESi     : ESi,
+
     }
 }
 
@@ -240,23 +322,84 @@ function onInitialConditionsChange(ev) {
         $('#potentialPlot').html('');
         var data = processInitialConditions();
 
+        var isSiUnits = $('#siUnits').is(':checked');
         var val = $('#inputFormat').val();
         switch (val) {
             case 'r-vr-vphi':
                 $('#L').val(data.L);
                 $('#E').val(data.E);
+                $('#LSi').val(data.LSi);
+                $('#ESi').val(data.ESi);
+                if (isSiUnits) {
+                    $('#r').val(data.r);
+                    $('#vr').val(data.vr);
+                    $('#vrSign').val(data.vrSign);
+                    $('#phi').val(data.phi);
+                    $('#vphi').val(data.vphi);
+                } else {
+                    $('#rSi').val(data.rSi);
+                    $('#vrSi').val(data.vrSi);
+                    $('#vrSignSi').val(data.vrSignSi);
+                    $('#phiSi').val(data.phiSi);
+                    $('#vphiSi').val(data.vphiSi);
+                }
                 break;
             case 'L-E-r':
                 $('#vr').val(data.vr);
                 $('#vphi').val(data.vphi);
+                $('#vrSi').val(data.vrSi);
+                $('#vphiSi').val(data.vphiSi);
+                if (isSiUnits) {
+                    $('#r').val(data.r);
+                    $('#vrSign').val(data.vrSign);
+                    $('#phi').val(data.phi);
+                    $('#L').val(data.L);
+                    $('#E').val(data.E);
+                } else {
+                    $('#rSi').val(data.rSi);
+                    $('#vrSignSi').val(data.vrSignSi);
+                    $('#phiSi').val(data.phiSi);
+                    $('#LSi').val(data.LSi);
+                    $('#ESi').val(data.ESi);
+                }
                 break;
             case 'L-E-vr':
                 $('#r').val(data.r);
                 $('#vphi').val(data.vphi);
+                $('#rSi').val(data.rSi);
+                $('#vphiSi').val(data.vphiSi);
+                if (isSiUnits) {
+                    $('#vr').val(data.vr);
+                    $('#vrSign').val(data.vrSign);
+                    $('#phi').val(data.phi);
+                    $('#L').val(data.L);
+                    $('#E').val(data.E);
+                } else {
+                    $('#vrSi').val(data.vrSi);
+                    $('#vrSignSi').val(data.vrSignSi);
+                    $('#phiSi').val(data.phiSi);
+                    $('#LSi').val(data.LSi);
+                    $('#ESi').val(data.ESi);
+                }
                 break;
             case 'L-E-vphi':
                 $('#r').val(data.r);
                 $('#vr').val(data.vr);
+                $('#rSi').val(data.rSi);
+                $('#vrSi').val(data.vrSi);
+                if (isSiUnits) {
+                    $('#vrSign').val(data.vrSign);
+                    $('#phi').val(data.phi);
+                    $('#vphi').val(data.vphi);
+                    $('#L').val(data.L);
+                    $('#E').val(data.E);
+                } else {
+                    $('#vphiSi').val(data.vphiSi);
+                    $('#vrSignSi').val(data.vrSignSi);
+                    $('#phiSi').val(data.phiSi);
+                    $('#LSi').val(data.LSi);
+                    $('#ESi').val(data.ESi);
+                }
                 break;
             default:
                 throw InvalidInitialConditionsError('Datos de Entrada (' + val + ') incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò');   
@@ -269,38 +412,65 @@ function onInitialConditionsChange(ev) {
     }
 }
 
+function onSiUnitsChane() {
+    var isSiUnits = $('#siUnits').is(':checked');
+    $('.adim-units').prop('readonly', isSiUnits);
+    $('.si-units').prop('readonly', !isSiUnits);
+    onInputFormatChange();
+    onVrChange();
+}
+
 function onVrChange() {
+    var vrInputId = "#vr";
+    var vrInputSignId = "#vrSign";
+    var isSiUnits = $('#siUnits').is(':checked');
+    if (isSiUnits) {
+        vrInputId += "Si";
+        vrInputSignId += "Si";
+    }
+
     var inputFormat = $('#inputFormat').val();
-    var vr = Number($('#vr').val());
+    var vr = Number($(vrInputId).val());
     var isVrSignNeeded = (vr == 0 || inputFormat.indexOf('vr') < 0);
-    var vrSignInput = $('#vrSign');
+    var vrSignInput = $(vrInputSignId);
     vrSignInput.prop('readonly', !isVrSignNeeded);
     var vrSign = Number(vrSignInput.val());
     if (vrSign != 1 && vrSign != -1)
         vrSignInput.val(1);
+    
 }
 
 function onInputFormatChange() {
+    var inputIdSuffix = '';
+    var inputSelectors = 'form input.';
+    var isSiUnits = $('#siUnits').is(':checked');
+    if (isSiUnits) {
+        inputIdSuffix = 'Si';
+        inputSelectors += 'si-units';
+    } else {
+        inputSelectors += 'adim-units';
+    }
+    $(inputSelectors).prop('readonly', false);
+
     var val = $('#inputFormat').val();
-    $('form input').prop('readonly', false);
     switch (val) {
         case 'r-vr-vphi':
-            $('#L').prop('readonly', true);
-            $('#E').prop('readonly', true);
-            $('#vrSign').prop('readonly', true);
+            $('#L' + inputIdSuffix).prop('readonly', true);
+            $('#E' + inputIdSuffix).prop('readonly', true);
+            $('#vrSign' + inputIdSuffix).prop('readonly', true);
             break;
         case 'L-E-r':
-            $('#vr').prop('readonly', true);
-            $('#vphi').prop('readonly', true);
+            $('#vr' + inputIdSuffix).prop('readonly', true);
+            $('#vphi' + inputIdSuffix).prop('readonly', true);
             break;
         case 'L-E-vr':
-            $('#r').prop('readonly', true);
-            $('#vphi').prop('readonly', true);
-            $('#vrSign').prop('readonly', true);
+            $('#r' + inputIdSuffix).prop('readonly', true);
+            $('#vphi' + inputIdSuffix).prop('readonly', true);
+            $('#vrSign' + inputIdSuffix).prop('readonly', true);
             break;
         case 'L-E-vphi':
-            $('#r').prop('readonly', true);
-            $('#vr').prop('readonly', true);
+            $('#r' + inputIdSuffix).prop('readonly', true);
+            $('#vr' + inputIdSuffix).prop('readonly', true);
             break;
         default:
             alert('Datos de Entrada (' + val + ') incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò');

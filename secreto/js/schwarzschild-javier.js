@@ -2,9 +2,10 @@
 
 DELTA_ERROR = 1e-5
 SCHWARZSCHILD_RADIUS = 1
-MAX_RADIUS = 2e10
-INFINITESIMAL_JAVIER = 1e-11;
 INFINITESIMAL_JAVIER_RADIUSES = 1e-3;
+MIN_RADIUSES_FOR_BISECTION = [1e-3, 1e-6, 1e-9, 1e-12, 1e-15, 1e-20, 1e-25, 1e-30, 1e-40];
+MAX_RADIUSES_FOR_BISECTION = [1e3, 1e6, 1e9, 1e12, 1e15, 1e20, 1e25, 1e30, 1e40];
+MAX_RADIUS = 1e40
 
 function runSchwarzschildJavier() {
     var initialConditions = getFormData();
@@ -48,12 +49,12 @@ function runSchwarzschildJavier() {
         allowedRanges[1].max = radiuses.r2;
 
     var validRange = allowedRanges.filter(function(range) {
-        return (r + INFINITESIMAL) >= range.min && (r - INFINITESIMAL) <= range.max;
+        return (r + INFINITESIMAL_JAVIER_RADIUSES) >= range.min && (r - INFINITESIMAL_JAVIER_RADIUSES) <= range.max;
     });
     if (!validRange.length) {
         var allowedRangesStr = allowedRanges
-            .map(function(range) { return range.min + "-" + range.max; })
-            .join(", ");
+            .map(function(range) { return "<br/>[ " + range.min + " , " + range.max + " ]"; })
+            .join("");
 
         throw InvalidInitialConditionsError('El valor de r no es válido. Ha de estar en los intervalos: ' + allowedRangesStr);
     }
@@ -80,7 +81,7 @@ function runSchwarzschildJavier() {
         points['tauSi'] = [];
         points['tSi'] = [];
     }
-
+    
     for (var i=0; i < steps; i++) {
         var tau = i * dtau;
         points.tau.push(tau);
@@ -114,25 +115,52 @@ function runSchwarzschildJavier() {
 
         var recalculateBecauseRadius = false;
         // TODO ¿if radiuses.r0 == radiuses.r1 ... random?
+        if (stepData.r != nextR || nextVr != 0) {
 
-        if (radiuses.r0 && Math.abs(nextR - radiuses.r0) <= INFINITESIMAL_JAVIER_RADIUSES && nextVrSign == 1) {
-            nextR = radiuses.r0 - INFINITESIMAL;
-            nextVrSign = -1;
-            recalculateBecauseRadius = true;
+            if (radiuses.r0 && stepData.r <= radiuses.r0 && nextR > radiuses.r0) {
+                nextR = radiuses.r0;
+                nextVrSign = -1;
+                recalculateBecauseRadius = true;
+            }
+
+            if (radiuses.r1 && stepData.r >= radiuses.r1 && nextR < radiuses.r1) {
+                nextR = radiuses.r1;
+                if (radiuses.r1 != radiuses.r2) {
+                    nextVrSign = 1;
+                    recalculateBecauseRadius = true;
+                }
+            }
+
+            if (radiuses.r2 && stepData.r <= radiuses.r2 && nextR > radiuses.r2) {
+                nextR = radiuses.r2;
+                if (radiuses.r1 != radiuses.r2) {
+                    nextVrSign = -1;
+                    recalculateBecauseRadius = true;
+                }
+            }
+
         }
+        
+        if (nextVr == 0) {
+            if (radiuses.r0 && Math.abs(nextR - radiuses.r0) <= INFINITESIMAL_JAVIER_RADIUSES && nextVrSign == 1) {
+                nextR = radiuses.r0 - INFINITESIMAL;
+                nextVrSign = -1;
+                recalculateBecauseRadius = true;
+            }
 
-        if (radiuses.r1 && Math.abs(nextR - radiuses.r1) <= INFINITESIMAL_JAVIER_RADIUSES && nextVrSign == -1) {
-            nextR = radiuses.r1 + INFINITESIMAL;
-            nextVrSign = 1;
-            recalculateBecauseRadius = true;
+            if (radiuses.r1 && Math.abs(nextR - radiuses.r1) <= INFINITESIMAL_JAVIER_RADIUSES && nextVrSign == -1) {
+                nextR = radiuses.r1 + INFINITESIMAL;
+                nextVrSign = 1;
+                recalculateBecauseRadius = true;
+            }
+
+            if (radiuses.r2 && Math.abs(nextR - radiuses.r2) <= INFINITESIMAL_JAVIER_RADIUSES && nextVrSign == 1) {
+                nextR = radiuses.r2 - INFINITESIMAL;
+                nextVrSign = -1;
+                recalculateBecauseRadius = true;
+            }
         }
-
-        if (radiuses.r2 && Math.abs(nextR - radiuses.r2) <= INFINITESIMAL_JAVIER_RADIUSES && nextVrSign == 1) {
-            nextR = radiuses.r2 - INFINITESIMAL;
-            nextVrSign = -1;
-            recalculateBecauseRadius = true;
-        }
-
+        
         if (recalculateBecauseRadius) {
             valueInsideSqrt = Math.abs(E - getEinsteinPotential(nextR, L));
             nextVr = Math.sqrt(valueInsideSqrt);
@@ -148,6 +176,8 @@ function runSchwarzschildJavier() {
         stepData.vphi = nextVphi;
 
         if (stepData.r < SCHWARZSCHILD_RADIUS + DELTA_ERROR) {
+            for (pointsArray in points)
+                points[pointsArray].pop();
             console.warn('Integrator skipped at r=%0.5frs, next iteration r=%0.5frs'); // TODO %(r_points[-1],x[1]));
             break;
         }
@@ -184,7 +214,7 @@ function getJavierRadiuses(initialConditions) {
 
     if (LSquare <= 3) {         // L <= 3
         if (epsilon < 0) {      //   epsilon < 0
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, MAX_RADIUS, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 1;
         }
     } else if (LSquare <= 4) {  // 3 < L <= 4
@@ -194,29 +224,29 @@ function getJavierRadiuses(initialConditions) {
         var maximumPotential = getEinsteinPotential(rc1, L);
 
         if (epsilon < minimumPotential - INFINITESIMAL_JAVIER_RADIUSES) {
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, MAX_RADIUS, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 5;
 
         } else if (Math.abs(epsilon - minimumPotential) < INFINITESIMAL_JAVIER_RADIUSES) {
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, MAX_RADIUS, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             r1 = rc2;
             r2 = rc2;
             caso = 4;
 
         } else if (epsilon > minimumPotential && epsilon < maximumPotential) {
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, rc1, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, rc1, L, epsilon);
             r1 = einsteinianBisection(rc1, rc2, L, epsilon);
-            r2 = einsteinianBisection(rc2, MAX_RADIUS, L, epsilon);
+            r2 = einsteinianBisection(rc2, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 3; // 3b
 
         } else if (Math.abs(epsilon - maximumPotential) < INFINITESIMAL_JAVIER_RADIUSES) {
             r0 = rc1;
             r1 = rc1;
-            r2 = einsteinianBisection(rc2, MAX_RADIUS, L, epsilon);
+            r2 = einsteinianBisection(rc2, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 3; // 3a
 
         } else if (epsilon > maximumPotential && epsilon < 0) {
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, MAX_RADIUS, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 2;
         }
 
@@ -227,11 +257,11 @@ function getJavierRadiuses(initialConditions) {
         var maximumPotential = getEinsteinPotential(rc1, L);
 
         if (epsilon < minimumPotential) {
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, MAX_RADIUS, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 10;
 
         } else if (Math.abs(epsilon - minimumPotential) < INFINITESIMAL_JAVIER_RADIUSES) {
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, MAX_RADIUS, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             r1 = rc2;
             r2 = rc2;
             caso = 9;
@@ -242,13 +272,13 @@ function getJavierRadiuses(initialConditions) {
             caso = 8;
 
         } else if (epsilon < 0 && epsilon >= minimumPotential){
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, rc1, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, rc1, L, epsilon);
             r1 = einsteinianBisection(rc1, rc2, L, epsilon);
-            r2 = einsteinianBisection(rc2, MAX_RADIUS, L, epsilon);
+            r2 = einsteinianBisection(rc2, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 7;
 
         } else if (epsilon >= 0 && epsilon <= maximumPotential){
-            r0 = einsteinianBisection(INFINITESIMAL_JAVIER, rc1, L, epsilon);
+            r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, rc1, L, epsilon);
             r1 = einsteinianBisection(rc1, rc2, L, epsilon);
             caso = 6;
         }
@@ -258,13 +288,37 @@ function getJavierRadiuses(initialConditions) {
 }
 
 function einsteinianBisection(a, b, L, epsilon) {
+    if (!a.length) a = [a];
+    if (!b.length) b = [b];
+    
+    var isThereAnyError = false;
+    for (var aIdx in a) {
+        var aElem = a[aIdx];
+        for (var bIdx in b) {
+            var bElem = b[bIdx];
+            try {
+                var candidate = executeEinsteinianBisection(aElem, bElem, L, epsilon);
+                if (candidate != aElem && candidate != bElem)
+                    return candidate;   
+            } catch {
+                isThereAnyError = true;
+            }
+        }
+    }
+
+    if (isThereAnyError)
+        throw InvalidInitialConditionsError('Bisección no aplicable');
+}
+
+function executeEinsteinianBisection(a, b, L, epsilon) {
     var errEqualToPrevErrCount = 0;
     var A = epsilon - getEinsteinPotential(a, L);
     var B = epsilon - getEinsteinPotential(b, L);
 
-    if (A*B > 0)
+    if (A*B > 0) {
         throw InvalidInitialConditionsError('Bisección no aplicable');
-
+    }
+    
     var p = (a + b) / 2;
     var f1;
     var f2 = epsilon - getEinsteinPotential(p, L);
