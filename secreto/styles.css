@@ -32,6 +32,13 @@ label {
     cursor: pointer;
 }
 
+input[type=checkbox] {
+    vertical-align: middle;
+    margin: 0;
+    position: relative;
+    top: -2px;
+}
+
 input[readonly] {
     cursor: not-allowed;
     background-color: #BBB;
