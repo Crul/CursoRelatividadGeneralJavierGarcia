@@ -1,128 +1,192 @@
+var currentVrSign = 1;
+var currentPhysics = 'schwarzschild';
+var lastManuallySetHash = '';
 var MAX_POINTS_TO_PRINT = 200;
+var MAX_STEPS = 5e5;
 
-var runFnByPhysics = {
-    'newton-euler': function() { return runNewton(movePointEuler); },
-    'newton-runge-kutta': function() { return runNewton(movePointRungeKutta); },
-    'schwarzschild-inaki': runSchwarzschildInaki,
-    'schwarzschild-javier': runSchwarzschildJavier,
-};
+var physicsConfigs = {
+    newton: {
+        run: runNewton,
+        fillMissingInitialConditions: fillMissingInitialConditionsNewton,
+        plotPotentialChart: plotNewtonPotentialChart,
+        siToAdim: siToBel,
+        adimToSi: belToSi,
+    },
+    schwarzschild: {
+        run: runSchwarzschild,
+        fillMissingInitialConditions: fillMissingInitialConditionsSchwarzschild,
+        plotPotentialChart: plotSchwarzschildPotentialChart,
+        siToAdim: siToSchwarzschild,
+        adimToSi: schwarzschildToSi,
+    },
+}
 
-var fillMissingInitialConditionsFnByPhysics = {
-    'newton-euler': fillMissingInitialConditionsNewton,
-    'newton-runge-kutta': fillMissingInitialConditionsNewton,
-    'schwarzschild-inaki': fillMissingInitialConditionsSchwarzschild,
-    'schwarzschild-javier': fillMissingInitialConditionsSchwarzschild,
-};
-
-var plotPotentialChartFnByPhysics = {
-    'newton-euler': plotNewtonPotentialChart,
-    'newton-runge-kutta': plotNewtonPotentialChart,
-    'schwarzschild-inaki': plotSchwarzschildPotentialChart,
-    'schwarzschild-javier': plotSchwarzschildPotentialChart,
-};
+var fields = [
+    'physics', 'showDataTable', 'inputFormat', 'units', 'stepsCount', 'M', 'R', 'm',
+    'totalProperTimeAdim', 'rAdim', 'vrAdim', 'phiAdim', 'vphiAdim', 'LAdim', 'epsilonAdim',
+    'totalProperTimeSi', 'rSi', 'vrSi', 'phiSi', 'vphiSi', 'LSi', 'epsilonSi',
+    'vrSign',
+];
 
 $(document).ready(bootstrapApp);
 
-function run() {
-    try {
-        onInitialConditionsChange(true);
-        var physics = $('#physics').val();
-        var results = runFnByPhysics[physics]();
-        console.debug(results);
-    } catch(ex) {
-        handleException(ex);
-    }   
-}
-
-var lastManuallySetHash = '';
 function bootstrapApp() {
-    alert(
-        '¿Qué haces aquí? Espero que seas uno de los Obi Four Kenobi.\n' +
-        'En ese caso: di amigo (o haz click en OK) y entra :).\n' +
-        'Si no lo eres: ESTAS NO SON LAS WEBS QUE ESTÁS BUSCANDO.'
-    );
-
-    var defaultFormDataOpts = defaultInitialConditions.map(function(data){
+    var examplesOpts = defaultInitialConditions.map(function(data){
         return $('<option>').attr('value', data.name).html(data.name);
     });
-    $('#defaultFormData').append(defaultFormDataOpts);
+    $('#examples').append(examplesOpts);
 
+    $('#inputFormat').change(onInputFormatChange).change(handleInitialConditionsAndRun);
+    $('#examples')
+        .change(onExamplesChange)
+        .change(handleInitialConditionsAndRun)
+        .change(run);
+
+    $('.physics-btn').click(onPhysicsChange).click(handleInitialConditionsAndRun);
+    
+    $('.form-data-box input[type=radio]').change(onUnitsChange).change(handleInitialConditionsAndRun);
+    $('#showDataTable').change(onShowDataTableChange);
+    
+    $('#stepsCount').change(handleInitialConditionsAndRun);
+    $('#M').change(handleInitialConditionsAndRun);
+    $('#R').change(handleInitialConditionsAndRun);
+    $('#m').change(handleInitialConditionsAndRun);
+
+    $('.vr-sign-btn')
+        .click(onVrSignChange)
+        .click(handleInitialConditionsAndRun);
+    
+    $('#totalProperTimeAdim').change(handleInitialConditionsAndRun);
+    $('#rAdim').change(handleInitialConditionsAndRun);
+    $('#vrAdim').change(onVrChange).change(handleInitialConditionsAndRun);
+    $('#phiAdim').change(handleInitialConditionsAndRun);
+    $('#vphiAdim').change(handleInitialConditionsAndRun);
+    $('#LAdim').change(handleInitialConditionsAndRun);
+    $('#epsilonAdim').change(handleInitialConditionsAndRun);
+
+    $('#totalProperTimeSi').change(handleInitialConditionsAndRun);
+    $('#rSi').change(handleInitialConditionsAndRun);
+    $('#vrSi').change(onVrChange).change(handleInitialConditionsAndRun);
+    $('#phiSi').change(handleInitialConditionsAndRun);
+    $('#vphiSi').change(handleInitialConditionsAndRun);
+    $('#LSi').change(handleInitialConditionsAndRun);
+    $('#epsilonSi').change(handleInitialConditionsAndRun);
+
+    $(window).bind('hashchange', onHashChange);
+    
+    onPhysicsChange();
     onInputFormatChange();
     if (window.location.hash) {
         onHashChange();
     } else {
         setFormData(defaultInitialConditions[0]);
-        onDefaultFormDataChange();
-        onInitialConditionsChange();
+        onExamplesChange();
+        handleInitialConditionsAndRun();
     }
+}
 
-    $('#inputFormat').change(onInputFormatChange).change(onInitialConditionsChange);
-    $('#defaultFormData')
-        .change(onDefaultFormDataChange)
-        .change(onInitialConditionsChange)
-        .change(run);
+function run() {
+    try {
+        var steps = Number($('#stepsCount').val());
+        if (steps > MAX_STEPS)
+            throw InvalidInitialConditionsError('El máximo número de pasos es ' + MAX_STEPS);
 
-    $('#siUnits').change(onSiUnitsChane).change(onInitialConditionsChange);
-    $('#showPointsData').change(onShowPointsDataChange);
-    
-    $('#r').change(onInitialConditionsChange);
-    $('#vr').change(onVrChange).change(onInitialConditionsChange);
-    $('#vrSign').change(onInitialConditionsChange);
-    $('#phi').change(onInitialConditionsChange);
-    $('#vphi').change(onInitialConditionsChange);
-    $('#L').change(onInitialConditionsChange);
-    $('#E').change(onInitialConditionsChange);
+        var results = physicsConfigs[currentPhysics].run();
+        console.debug('run', results);
+    } catch(ex) {
+        handleException(ex);
+    }   
+}
 
-    $('#rSi').change(onInitialConditionsChange);
-    $('#vrSi').change(onVrChange).change(onInitialConditionsChange);
-    $('#vrSignSi').change(onInitialConditionsChange);
-    $('#phiSi').change(onInitialConditionsChange);
-    $('#vphiSi').change(onInitialConditionsChange);
-    $('#LSi').change(onInitialConditionsChange);
-    $('#ESi').change(onInitialConditionsChange);
+function handleException(ex) {
+    if (ex.name != 'InvalidInitialConditionsError')
+        throw ex;
 
-    $('#runBtn').click(run);
+    $('form input[readonly="readonly"]').val('');
+    $('#trajectoryPlot').html('');
+    $('#errorMsg').html(ex.message);
+}
 
-    $(window).bind('hashchange', onHashChange);
+////////////////////////////////////////////////////// FORM DATA
+function getFormData(data) {
+    return {
+        physics        : currentPhysics,
+        showDataTable  : $('#showDataTable').is(':checked'),
+        inputFormat    : $('#inputFormat').val(),
+        stepsCount     : getFormValue('stepsCount'),
+        units          : getUnits(),
+        siUnits        : getIsSiUnits(),
+
+        M: getFormValue('M'),
+        R: getFormValue('R'),
+        m: getFormValue('m'),
+
+        properTimeIncrementAdim: getFormValue('properTimeIncrementAdim'),
+        totalProperTimeAdim    : getFormValue('totalProperTimeAdim'),
+        rAdim      : getFormValue('rAdim'),
+        vrAdim     : getFormValue('vrAdim'),
+        phiAdim    : getFormValue('phiAdim'),
+        vphiAdim   : getFormValue('vphiAdim'),
+        LAdim      : getFormValue('LAdim'),
+        epsilonAdim: getFormValue('epsilonAdim'),
+
+        properTimeIncrementSi : getFormValue('properTimeIncrementSi'),
+        totalProperTimeSi     : getFormValue('totalProperTimeSi'),
+        rSi       : getFormValue('rSi'),
+        vrSi      : getFormValue('vrSi'),
+        phiSi     : getFormValue('phiSi'),
+        vphiSi    : getFormValue('vphiSi'),
+        LSi       : getFormValue('LSi'),
+        epsilonSi : getFormValue('epsilonSi'),
+        
+        vrSign    : currentVrSign,
+    }
+}
+
+function getFormValue(inputId) {
+    var inputCtrl = $('#' + inputId);
+    return inputCtrl.is('[readonly]') ? undefined : Number(inputCtrl.val())
 }
 
 function setFormData(data, doNotSetHash) {
-    $('#physics').val(data.physics);
+    currentPhysics = data.physics;
+    onPhysicsChange();
     $('#inputFormat').val(data.inputFormat);
-    onInputFormatChange(true);
-    $('#siUnits').prop('checked', data.siUnits || false);
-    onSiUnitsChane();
-    $('#timeResolution').val(data.timeResolution);
-    $('#simulationTime').val(data.simulationTime);
+    onInputFormatChange();
+    $('input[name=units-type][value=' + data.units + ']').prop('checked', true);
+    onUnitsChange();
+    $('#stepsCount').val(data.stepsCount);
     $('#M').val(data.M || $('#M').val());
     $('#R').val(data.R || $('#R').val());
     $('#m').val(data.m || $('#m').val());
+
+    $('#totalProperTimeAdim').val(data.totalProperTimeAdim);
+    $('#rAdim').val(data.rAdim);
+    $('#vrAdim').val(data.vrAdim);
+    $('#phiAdim').val(data.phiAdim || 0);
+    $('#vphiAdim').val(data.vphiAdim);
+    $('#LAdim').val(data.LAdim);
+    $('#epsilonAdim').val(data.epsilonAdim);
     
-    $('#r').val(data.r);
-    $('#vr').val(data.vr);
-    $('#vrSign').val(data.vrSign);
-    $('#phi').val(data.phi || 0);
-    $('#vphi').val(data.vphi);
-    $('#L').val(data.L);
-    $('#E').val(data.E);
-    
+    $('#totalProperTimeSi').val(data.totalProperTimeSi);
     $('#rSi').val(data.rSi);
     $('#vrSi').val(data.vrSi);
-    $('#vrSignSi').val(data.vrSignSi);
     $('#phiSi').val(data.phiSi || 0);
     $('#vphiSi').val(data.vphiSi);
     $('#LSi').val(data.LSi);
-    $('#ESi').val(data.ESi);
+    $('#epsilonSi').val(data.epsilonSi);
 
     onVrChange();
-    onInitialConditionsChange();
+    setVrSign(data.vrSign);
     
-    $('#showPointsData').prop('checked', data.showPointsData);
+    $('#showDataTable').prop('checked', data.showDataTable);
 
     if (!doNotSetHash)
         setHash(data);
 }
+////////////////////////////////////////////////////// FORM DATA
 
+////////////////////////////////////////////////////// HASH
 function onHashChange() {
     if (!window.location.hash) return;
 
@@ -138,38 +202,14 @@ function onHashChange() {
         values[tokenItems[0]] = value;
     });
     setFormData(values, false);
-    onInitialConditionsChange();
+    handleInitialConditionsAndRun();
 }
 
 function setHash(data) {
-    lastManuallySetHash = ''
-        + getHashValue(data, 'inputFormat')
-        + '&' + getHashValue(data, 'siUnits')
-        + '&' + getHashValue(data, 'timeResolution')
-        + '&' + getHashValue(data, 'simulationTime')
-        + '&' + getHashValue(data, 'M')
-        + '&' + getHashValue(data, 'R')
-        + '&' + getHashValue(data, 'm')
-
-        + '&' + getHashValue(data, 'r')
-        + '&' + getHashValue(data, 'vr')
-        + '&' + getHashValue(data, 'vrSign')
-        + '&' + getHashValue(data, 'phi')
-        + '&' + getHashValue(data, 'vphi')
-        + '&' + getHashValue(data, 'L')
-        + '&' + getHashValue(data, 'E')
-
-        + '&' + getHashValue(data, 'rSi')
-        + '&' + getHashValue(data, 'vrSi')
-        + '&' + getHashValue(data, 'vrSignSi')
-        + '&' + getHashValue(data, 'phiSi')
-        + '&' + getHashValue(data, 'vphiSi')
-        + '&' + getHashValue(data, 'LSi')
-        + '&' + getHashValue(data, 'ESi')
-
-        + '&' + getHashValue(data, 'physics')
-        + '&' + getHashValue(data, 'showPointsData')
-        + '';
+    lastManuallySetHash = fields
+        .filter(function(name){ return data[name] !== undefined; })
+        .map(function(name) { return getHashValue(data, name); })
+        .join("&");
 
     window.location.hash = lastManuallySetHash;
 }
@@ -179,108 +219,6 @@ function getHashValue(data, prop) {
     if (value == 'false') value = false;
 
     return prop + '=' + (value === undefined ? '' : value);
-}
-
-function getFormData(data) {
-    var r, phi, vr, vrSign, vphi, L, E,
-        rSi, phiSi, vrSi, vrSignSi, vphiSi, LSi, ESi;
-
-    var isSiUnits = $('#siUnits').is(':checked');
-    var val = $('#inputFormat').val();
-    if (isSiUnits) {
-        phiSi = Number($('#phiSi').val());
-        switch (val) {
-        case 'r-vr-vphi':
-            rSi = Number($('#rSi').val());
-            vrSi = Number($('#vrSi').val());
-            vphiSi = Number($('#vphiSi').val());
-            if (vrSi == 0)
-                vrSignSi = Number($('#vrSignSi').val());
-            break;
-        case 'L-E-r':
-            LSi = Number($('#LSi').val());
-            ESi = Number($('#ESi').val());
-            rSi = Number($('#rSi').val());
-            vrSignSi = Number($('#vrSignSi').val());
-            break;
-        case 'L-E-vr':
-            LSi = Number($('#LSi').val());
-            ESi = Number($('#ESi').val());
-            vrSi = Number($('#vrSi').val());
-            if (vrSi == 0)
-                vrSignSi = Number($('#vrSignSi').val());
-            break;
-        case 'L-E-vphi':
-            LSi = Number($('#LSi').val());
-            ESi = Number($('#ESi').val());
-            vphiSi = Number($('#vphiSi').val());
-            vrSignSi = Number($('#vrSignSi').val());
-            break;
-        default:
-            alert('Datos de Entrada (' + val + ') incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò');   
-        }
-    } else {
-        phi = Number($('#phi').val());
-        switch (val) {
-        case 'r-vr-vphi':
-            r = Number($('#r').val());
-            vr = Number($('#vr').val());
-            vphi = Number($('#vphi').val());
-            if (vr == 0)
-                vrSign = Number($('#vrSign').val());
-            break;
-        case 'L-E-r':
-            L = Number($('#L').val());
-            E = Number($('#E').val());
-            r = Number($('#r').val());
-            vrSign = Number($('#vrSign').val());
-            break;
-        case 'L-E-vr':
-            L = Number($('#L').val());
-            E = Number($('#E').val());
-            vr = Number($('#vr').val());
-            if (vr == 0)
-                vrSign = Number($('#vrSign').val());
-            break;
-        case 'L-E-vphi':
-            L = Number($('#L').val());
-            E = Number($('#E').val());
-            vphi = Number($('#vphi').val());
-            vrSign = Number($('#vrSign').val());
-            break;
-        default:
-            alert('Datos de Entrada (' + val + ') incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò');   
-        }
-    }
-
-    return {
-        physics        : $('#physics').val(),
-        inputFormat    : $('#inputFormat').val(),
-        siUnits        : $('#siUnits').is(':checked'),
-        timeResolution : Number($('#timeResolution').val()),
-        simulationTime : Number($('#simulationTime').val()),
-        showPointsData : Number($('#showPointsData').is(':checked')),
-        M       : Number($('#M').val()),
-        R       : Number($('#R').val()),
-        m       : Number($('#m').val()),
-
-        r       : r,
-        vr      : vr,
-        vrSign  : vrSign,
-        phi     : phi,
-        vphi    : vphi,
-        L       : L,
-        E       : E,
-
-        rSi     : rSi,
-        vrSi    : vrSi,
-        vrSignSi: vrSignSi,
-        phiSi   : phiSi,
-        vphiSi  : vphiSi,
-        LSi     : LSi,
-        ESi     : ESi,
-
-    }
 }
 
 function printPointsData(points, dataLength) {
@@ -314,140 +252,223 @@ function printPointsData(points, dataLength) {
     $('#pointsDataTable').append(thead).append(tbody);
     $('#pointsDataTableDiv').fadeIn();
 }
+////////////////////////////////////////////////////// HASH
 
-function onInitialConditionsChange(ev) {
+function plotTrajectory(xPoints, yPoints) {
+    var layout = {
+      title: 'Trayectoria',
+      paper_bgcolor: '#000',
+      plot_bgcolor: '#000',
+      showlegend: false,
+      font: {
+          color: '#fff',
+      },
+      titlefont: {
+          color: '#fff',
+      },
+      xaxis: {
+        title: 'x',
+        color: '#fff',
+        titlefont: {
+          family: 'Courier New, monospace',
+          size: 18,
+          color: '#7f7f7f'
+        }
+      },
+      yaxis: {
+        title: 'y',
+        color: '#fff',
+        titlefont: {
+          family: 'Courier New, monospace',
+          size: 18,
+          color: '#7f7f7f'
+        }
+      }
+    };
+
+    var trajectoryData = [{ x: xPoints, y: yPoints }];
+    Plotly.newPlot($('#trajectoryPlot')[0], trajectoryData, layout);
+}
+
+function handleInitialConditionsAndRun() {
+    $('#errorMsg').html('');
+    if (onInitialConditionsChange())
+        run();
+}
+
+function onInitialConditionsChange() {
+    console.debug('onInitialConditionsChange');
     try {
-        $('#runBtn').prop('disabled', true);
-        $('#trajectoryPlot').html('');
         $('#potentialPlot').html('');
-        var data = processInitialConditions();
+        var data = processInitialConditions(currentPhysics);
+    
+        $('#properTimeIncrementAdim').val(data.properTimeIncrementAdim);
+        $('#totalProperTimeAdim').val(data.totalProperTimeAdim);
+        $('#properTimeIncrementSi').val(data.properTimeIncrementSi);
+        $('#totalProperTimeSi').val(data.totalProperTimeSi);
+        setVrSign(data.vrSign);
+        var isVrSignBtnActive = (
+            !$('#vrAdim').is('[readonly]')
+            || !$('#vrSi').is('[readonly]')
+            || data.vrSi == 0
+        )
+        if (isVrSignBtnActive) {
+            $('.vr-sign-btn').removeClass('inactive');
+        } else {
+            $('.vr-sign-btn').addClass('inactive');
+        }
 
-        var isSiUnits = $('#siUnits').is(':checked');
-        var val = $('#inputFormat').val();
+        var isSiUnits = getIsSiUnits();
+        var val = $('#inputFormat').val();  
         switch (val) {
             case 'r-vr-vphi':
-                $('#L').val(data.L);
-                $('#E').val(data.E);
+                $('#LAdim').val(data.LAdim);
+                $('#epsilonAdim').val(data.epsilonAdim);
                 $('#LSi').val(data.LSi);
-                $('#ESi').val(data.ESi);
+                $('#epsilonSi').val(data.epsilonSi);
                 if (isSiUnits) {
-                    $('#r').val(data.r);
-                    $('#vr').val(data.vr);
-                    $('#vrSign').val(data.vrSign);
-                    $('#phi').val(data.phi);
-                    $('#vphi').val(data.vphi);
+                    $('#rAdim').val(data.rAdim);
+                    $('#vrAdim').val(data.vrAdim);
+                    $('#phiAdim').val(data.phiAdim);
+                    $('#vphiAdim').val(data.vphiAdim);
                 } else {
                     $('#rSi').val(data.rSi);
                     $('#vrSi').val(data.vrSi);
-                    $('#vrSignSi').val(data.vrSignSi);
                     $('#phiSi').val(data.phiSi);
                     $('#vphiSi').val(data.vphiSi);
                 }
                 break;
-            case 'L-E-r':
-                $('#vr').val(data.vr);
-                $('#vphi').val(data.vphi);
+            case 'L-epsilon-r':
+                $('#vrAdim').val(data.vrAdim);
+                $('#vphiAdim').val(data.vphiAdim);
                 $('#vrSi').val(data.vrSi);
                 $('#vphiSi').val(data.vphiSi);
                 if (isSiUnits) {
-                    $('#r').val(data.r);
-                    $('#vrSign').val(data.vrSign);
-                    $('#phi').val(data.phi);
-                    $('#L').val(data.L);
-                    $('#E').val(data.E);
+                    $('#rAdim').val(data.rAdim);
+                    $('#phiAdim').val(data.phiAdim);
+                    $('#LAdim').val(data.LAdim);
+                    $('#epsilonAdim').val(data.epsilonAdim);
                 } else {
                     $('#rSi').val(data.rSi);
-                    $('#vrSignSi').val(data.vrSignSi);
                     $('#phiSi').val(data.phiSi);
                     $('#LSi').val(data.LSi);
-                    $('#ESi').val(data.ESi);
+                    $('#epsilonSi').val(data.epsilonSi);
                 }
                 break;
-            case 'L-E-vr':
-                $('#r').val(data.r);
-                $('#vphi').val(data.vphi);
+            case 'L-epsilon-vr':
+                $('#rAdim').val(data.rAdim);
+                $('#vphiAdim').val(data.vphiAdim);
                 $('#rSi').val(data.rSi);
                 $('#vphiSi').val(data.vphiSi);
                 if (isSiUnits) {
-                    $('#vr').val(data.vr);
-                    $('#vrSign').val(data.vrSign);
-                    $('#phi').val(data.phi);
-                    $('#L').val(data.L);
-                    $('#E').val(data.E);
+                    $('#vrAdim').val(data.vrAdim);
+                    $('#phiAdim').val(data.phiAdim);
+                    $('#LAdim').val(data.LAdim);
+                    $('#epsilonAdim').val(data.epsilonAdim);
                 } else {
                     $('#vrSi').val(data.vrSi);
-                    $('#vrSignSi').val(data.vrSignSi);
                     $('#phiSi').val(data.phiSi);
                     $('#LSi').val(data.LSi);
-                    $('#ESi').val(data.ESi);
+                    $('#epsilonSi').val(data.epsilonSi);
                 }
                 break;
-            case 'L-E-vphi':
-                $('#r').val(data.r);
-                $('#vr').val(data.vr);
+            case 'L-epsilon-vphi':
+                $('#rAdim').val(data.rAdim);
+                $('#vrAdim').val(data.vrAdim);
                 $('#rSi').val(data.rSi);
                 $('#vrSi').val(data.vrSi);
                 if (isSiUnits) {
-                    $('#vrSign').val(data.vrSign);
-                    $('#phi').val(data.phi);
-                    $('#vphi').val(data.vphi);
-                    $('#L').val(data.L);
-                    $('#E').val(data.E);
+                    $('#phiAdim').val(data.phiAdim);
+                    $('#vphiAdim').val(data.vphiAdim);
+                    $('#LAdim').val(data.LAdim);
+                    $('#epsilonAdim').val(data.epsilonAdim);
                 } else {
                     $('#vphiSi').val(data.vphiSi);
-                    $('#vrSignSi').val(data.vrSignSi);
                     $('#phiSi').val(data.phiSi);
                     $('#LSi').val(data.LSi);
-                    $('#ESi').val(data.ESi);
+                    $('#epsilonSi').val(data.epsilonSi);
                 }
                 break;
             default:
                 throw InvalidInitialConditionsError('Datos de Entrada (' + val + ') incorrectos... ¿Cómo has conseguido que ocurra esto? Ó_ò');   
         }
-        $('#runBtn').prop('disabled', false);
 
-        if (!ev) run();
+        return true;
+
     } catch(ex) {
         handleException(ex);
     }
 }
 
-function onSiUnitsChane() {
-    var isSiUnits = $('#siUnits').is(':checked');
-    $('.adim-units').prop('readonly', isSiUnits);
-    $('.si-units').prop('readonly', !isSiUnits);
-    onInputFormatChange();
-    onVrChange();
+function onPhysicsChange(ev) {
+    if (ev)
+        currentPhysics = ev.currentTarget.id.replace('Btn', '');
+
+    $('.form-content')
+        .removeClass('schwarzschild-content')
+        .removeClass('newton-content')
+        .addClass(currentPhysics + '-content');
 }
 
-function onVrChange() {
-    var vrInputId = "#vr";
-    var vrInputSignId = "#vrSign";
-    var isSiUnits = $('#siUnits').is(':checked');
-    if (isSiUnits) {
-        vrInputId += "Si";
-        vrInputSignId += "Si";
-    }
-
-    var inputFormat = $('#inputFormat').val();
-    var vr = Number($(vrInputId).val());
-    var isVrSignNeeded = (vr == 0 || inputFormat.indexOf('vr') < 0);
-    var vrSignInput = $(vrInputSignId);
-    vrSignInput.prop('readonly', !isVrSignNeeded);
-    var vrSign = Number(vrSignInput.val());
-    if (vrSign != 1 && vrSign != -1)
-        vrSignInput.val(1);
+function onUnitsChange() {
+    var isSiUnits = getIsSiUnits();
+    $('.adim-units').prop('readonly', isSiUnits);
+    $('.si-units').prop('readonly', !isSiUnits);
     
+    if (isSiUnits) {
+        $('#adimensionalData').removeClass('active').addClass('inactive');
+        $('#SystemeInternationalData').removeClass('inactive').addClass('active');
+    } else {
+        $('#adimensionalData').removeClass('inactive').addClass('active');
+        $('#SystemeInternationalData').removeClass('active').addClass('inactive');
+    }
+    
+    onInputFormatChange();
+}
+
+function onVrChange(ev) {
+    if (ev) {
+        vrInputControl = $(ev.currentTarget);
+    } else {
+        vrInputControl = $('#vr' + (getIsSiUnits() ? 'Si' : 'Adim' ));
+    }
+    var vr = Number(vrInputControl.val());
+    var vrSign = (vr == 0 ? 1 : vr / Math.abs(vr))
+    setVrSign(vrSign);
+}
+
+function onVrSignChange() {
+    setVrSign(-1 * currentVrSign);
+}
+
+function setVrSign(vrSign) {
+    currentVrSign = vrSign || 1;
+    var absVrAdim = Math.abs(Number($('#vrAdim').val()));
+    var absVrSi = Math.abs(Number($('#vrSi').val()));
+    var isNegative = (vrSign < 0);
+    if (isNegative) {
+        absVrAdim *= -1;
+        absVrSi *= -1;
+        $('.vr-sign-btn').addClass('negative');
+        buttonText = '&mdash;';
+    } else {
+        $('.vr-sign-btn').removeClass('negative');
+        buttonText = '+';
+    }
+    $('.vr-sign-btn span').html(buttonText);
+    $('#vrAdim').val(absVrAdim);
+    $('#vrSi').val(absVrSi);
 }
 
 function onInputFormatChange() {
-    var inputIdSuffix = '';
+    var inputIdSuffix;
     var inputSelectors = 'form input.';
-    var isSiUnits = $('#siUnits').is(':checked');
+    var isSiUnits = getIsSiUnits();
     if (isSiUnits) {
         inputIdSuffix = 'Si';
         inputSelectors += 'si-units';
     } else {
+        inputIdSuffix = 'Adim';
         inputSelectors += 'adim-units';
     }
     $(inputSelectors).prop('readonly', false);
@@ -456,19 +477,17 @@ function onInputFormatChange() {
     switch (val) {
         case 'r-vr-vphi':
             $('#L' + inputIdSuffix).prop('readonly', true);
-            $('#E' + inputIdSuffix).prop('readonly', true);
-            $('#vrSign' + inputIdSuffix).prop('readonly', true);
+            $('#epsilon' + inputIdSuffix).prop('readonly', true);
             break;
-        case 'L-E-r':
+        case 'L-epsilon-r':
             $('#vr' + inputIdSuffix).prop('readonly', true);
             $('#vphi' + inputIdSuffix).prop('readonly', true);
             break;
-        case 'L-E-vr':
+        case 'L-epsilon-vr':
             $('#r' + inputIdSuffix).prop('readonly', true);
             $('#vphi' + inputIdSuffix).prop('readonly', true);
-            $('#vrSign' + inputIdSuffix).prop('readonly', true);
             break;
-        case 'L-E-vphi':
+        case 'L-epsilon-vphi':
             $('#r' + inputIdSuffix).prop('readonly', true);
             $('#vr' + inputIdSuffix).prop('readonly', true);
             break;
@@ -477,8 +496,8 @@ function onInputFormatChange() {
     }
 }
 
-function onDefaultFormDataChange() {
-    var initialConditionsName = $('#defaultFormData').val();
+function onExamplesChange() {
+    var initialConditionsName = $('#examples').val();
     if (!initialConditionsName)
         return;
 
@@ -491,15 +510,15 @@ function onDefaultFormDataChange() {
     }
 
     setFormData(filteredIC[0]);
-    $('#defaultFormData').val('');
+    handleInitialConditionsAndRun();
+    //$('#examples').val('');
 }
 
-function onShowPointsDataChange() {
-    var doNotRun = true;
-    onInitialConditionsChange(doNotRun);
+function onShowDataTableChange() {
+    onInitialConditionsChange();
 
-    var showPointsData = $('#showPointsData').is(':checked');
-    if (!showPointsData) {
+    var showDataTable = $('#showDataTable').is(':checked');
+    if (!showDataTable) {
         $('#pointsDataTableDiv').fadeOut();
         return;
     }
@@ -511,11 +530,13 @@ function onShowPointsDataChange() {
     $('#pointsDataTableDiv').fadeIn();
 }
 
-function handleException(ex) {
-    if (ex.name != 'InvalidInitialConditionsError')
-        throw ex;
+function getIsSiUnits() {
+    var units = getUnits();
+    var isSiUnits = (units == "si");
 
-    $('form input[readonly="readonly"]').val('');
-    $('#trajectoryPlot').html('');
-    $('#trajectoryPlot').append($('<div>').addClass('error-msg').html(ex.message));
+    return isSiUnits;    
+}
+
+function getUnits() {
+    return $('input[name=units-type]:checked').val();
 }

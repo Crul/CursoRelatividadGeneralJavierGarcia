@@ -2,10 +2,31 @@ html {
     overflow-y: scroll;
 }
 html, body {
-    background-color: #000;
+    background-color: #888888;
+    margin: 0;
+    padding: 0;
+}
+html, body, table, td, div, input, textarea, select {
+    font-family: Times New Roman, Serif;
+}
+
+input[type=number],
+select {
+    border: none;
+    border-radius: 3px;
+    padding: 3px 6px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+input[type=number] {
+    text-align: right;
+    font-size: 70%;
 }
 
 input[type=checkbox],
+input[type=radio],
 select,
 label {
     cursor: pointer;
@@ -13,58 +34,212 @@ label {
 
 input[readonly] {
     cursor: not-allowed;
+    background-color: #BBB;
 }
 
-hr {
-    margin: 3px -8px 6px;
-    border-top: solid 1px #fff;
+.centered-page {
+    margin: auto;
+    width: 1036px;
+    background-color: #000;
 }
 
-.error-msg {
-    background-color: #330000;
-    color: #FF4444;
-    border: solid 1px #FFFF00;
+.form-row {
+    clear: both;
+}
+
+.form-row label {
+    color: #fff;
+    font-size: 90%;
+} 
+
+.form-content {
+    padding-top: 4px;
+}
+
+.newton-content {
+    background-color: #60542e;
+}
+
+.schwarzschild-content {
+    background-color: #1e445d;
+}
+
+.input-control {
+    display: inline-block;
+    margin-bottom: 3px;
+}
+
+.input-control,
+.input-control input[type=number] {
+    width: 184px;
+}
+
+.input-control.narrow,
+.input-control.narrow input[type=number] {
+    width: 175px;
+}
+
+#MControl{
+    margin-left: 16px;
+}
+
+.input-control .big-label {
+    display: inline-block;
+    width: 100%;
     text-align: center;
-    padding: 18px 36px;
-    margin-top: 12px;
+    font-size: 133%;
+    margin: -4px 0;
+}
+
+.form-data-box {
+    display: inline-block;
+    width: 500px;
+    border-radius: 12px;
+    margin: 0 6px 6px 6px;
+    background-color: rgba(0,0,0, 0.2);
+    border: solid 2px rgba(0,0,0, 0.2);
+}
+
+.form-data-box h3 {
+    color: #fff;
+    margin: 0;
+    padding: 3px 8px;
+    background-color: rgba(0,0,0, 0.8);
+    border-radius: 12px 12px 0 0;
+    font-weight: normal;
+}
+
+.form-data-left,
+.form-data-middle {
+    display: inline-block;
+    color: #fff;
+    text-align: right;
+    font-size: 80%;
+}
+.form-data-left label,
+.form-data-middle label {
+    font-size: 120%;
+}
+
+.form-data-left {
+    width: 64px;
+}
+
+#inputFormatControl {
+    margin-left: 76px;  /* .form-data-left[width] + 12 */
+}
+
+.form-data-middle {
+    width: 24px;
+}
+
+.form-data-box.active {
+    border-color: #fff;
+}
+
+.form-data-box.inactive label,
+.form-data-box.inactive .form-data-left,
+.form-data-box.inactive .form-data-middle {
+    color: rgba(255,255,255, 0.5);
+}
+
+.vr-sign-btn {
+    cursor: pointer;
+    color: #fff;
+    background-color: #0074c0;
+    border: solid 1px #fff;
+    border-radius: 6px;
+    padding: 7px 0 7px 0;
+    position: relative;
+    top: 2px;
+    left: -2px;
+    text-align: center;
+    font-size: 133%;
+    line-height: 3px;
+    font-weight: bold;
+}
+.vr-sign-btn.negative {
+    background-color: #c07400;
+}
+.vr-sign-btn.negative span {
+    position: relative;
+    top: -1px;
+}
+.vr-sign-btn.inactive {
+    cursor: not-allowed;
+    background-color: #888888;
+}
+
+#formTopRow .input-control {
+    width: auto;
+    margin: 12px 24px;
+}
+
+
+.physics-btn {
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    float: left;
+    height: 48px;
+    text-align: center;
+    padding-top: 4px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+    
+}
+
+.physics-btn img {
+    vertical-align: top;
+}
+
+.physics-btn label {
+    font-size: 105%;
+    position: relative;
+    top: 4px;
+    left: 4px;
+}
+
+#newtonBtn {
+    width: 165px;
+    background-color: #60542e;
+}
+
+#schwarzschildBtn {
+    width: 177px;
+    background-color: #1e445d;
+}
+
+#examples { 
+    width: 330px;
+}
+
+#inputFormat {
+    width: 100px;
+    padding: 1px;
+}
+
+#errorMsg {
+    background-color: #f00;
+    color: #ff0;
+    text-align: center;
 }
 
 #potentialPlot,
 #trajectoryPlot {
-    height: 500px;
+    display: inline-block;
+    width:516px; /* (1036 / 2) - 2 */
+    height:516px; /* (1036 / 2) - 2 */
 }
 
-form {
-   font-size: 80%; 
-}
-form .row {
-   background-color: rgb(30, 68, 93);
-   color: rgb(210, 218, 222);
-}
 
-form div.form-group {
-    margin-bottom: .5rem;
-}
-form div.form-group.form-check {
-    padding-top: 1.5rem;
-}
-form div.form-group label {
-    margin-bottom: .1rem;
-}
-form div.row button {
-    float: right;
-    margin-top: .8rem;
-    margin-bottom: .5rem;
-}
-.form-control:disabled, .form-control[readonly] {
-    background-color: #7c7d80;
-    color: #fff;
-}
+
+
 
 #pointsDataTableDiv {
     overflow: auto;
     max-height: 600px;
-    margin-bottom: 72px;
 }
 
 #pointsDataTable {

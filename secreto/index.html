@@ -7,255 +7,228 @@
   <title>Simulador de Gravedad Newtoniana</title>
   <meta name="description" content="Simulador de Gravedad Newtoniana">
   <meta name="author" content="obi-four-kenobi">
-
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="styles.css?v=20181212b">
+  <link rel="stylesheet" href="styles.css?v=20190111">
 
 </head>
 
 <body>
 
-  <div class="container">
+  <div class="centered-page">
 
-    <form class="form">
+    <form>
 
-      <div class="row">
-        <div class="col">
-          <div class="form-group">
-            <label for="defaultFormData">Configuraciones predeterminadas</label>
-            <select id="defaultFormData" class="form-control form-control-sm" style="width: 621.5px;">
-              <option value="" selected>-- Selecciona una para cargar --</option>
-            </select>
-          </div>
+      <div class="form-row" id="formTopRow">
+
+        <div id="newtonBtn" class="physics-btn">
+          <img src="imgs/newton.png" />
+          <label>Newton</label>
         </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="physics">Física</label>
-            <select id="physics" class="form-control form-control-sm">
-              <option value="newton-euler">Newton (Euler)</option>
-              <option value="newton-runge-kutta">Newton (Runge-Kutta)</option>
-              <option value="schwarzschild-inaki">Schwarzschild (Iñaki)</option>
-              <option value="schwarzschild-javier" selected>Schwarzschild (Javier)</option>
-            </select>
-          </div>
+        <div id="schwarzschildBtn" class="physics-btn">
+          <img src="imgs/schwarzschild.png" />
+          <label>Schwarzschild</label>
         </div>
-        <div class="col">
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="showPointsData">
-            <label class="form-check-label" for="showPointsData">Mostrar datos</label>
-          </div>
+    
+        <div class="input-control">
+          <label for="examples">Ejemplos</label>
+          <select id="examples">
+            <option value="" selected>-- Selecciona uno para cargar los datos --</option>
+          </select>
         </div>
-        <div class="col">
-          <button type="button" id="runBtn" class="btn btn-warning" disabled>SIMULAR</button>
+          
+        <div class="input-control">
+          <input type="checkbox" id="showDataTable">
+          <label for="showDataTable">Mostrar tabla de datos</label>
         </div>
+        
       </div>
 
-      <div class="row">
-        <div class="col">
-          <div class="form-group">
-            <label for="inputFormat">Tipo de condiciones inciales</label>
-            <select id="inputFormat" class="form-control form-control-sm">
-              <option value="r-vr-vphi" selected>r, vr, vphi</option>
-              <option value="L-E-r">L, epsilon, r</option>
-              <option value="L-E-vr">L, epsilon, vr</option>
-              <option value="L-E-vphi">L, epsilon, vphi</option>
-            </select>
-          </div>
+      <div class="form-row form-content schwarzschild-content">
+      
+        <div class="input-control" id="inputFormatControl">
+          <label for="inputFormat">Datos de entrada</label><br/>
+          <select id="inputFormat">
+            <option value="r-vr-vphi" selected>r, vr, v&phi;</option>
+            <option value="L-epsilon-r">L, &epsilon;, r</option>
+            <option value="L-epsilon-vr">L, &epsilon;, vr</option>
+            <option value="L-epsilon-vphi">L, &epsilon;, v&phi;</option>
+          </select>
         </div>
-        <div class="col">
-          <div class="form-group form-check">
-            <br/>
-            <input type="checkbox" class="form-check-input" id="siUnits">
-            <label class="form-check-label" for="siUnits">Unidades SI</label>
-          </div>
+        
+        <div class="form-data-middle">&nbsp;</div>
+
+        <div class="input-control">
+          <label for="stepsCount">Número de pasos</label><br/>
+          <input type="number" placeholder="Nº de pasos" id="stepsCount" step="1" min="1">
         </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="timeResolution">Incremento de tiempo propio (seg)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Duración paso (seg)" id="timeResolution"
-                   step="0.001" min="0.001" max="100">
-          </div>
+
+        <div class="input-control narrow" id="MControl">
+          <label for="M">Masa del Planeta (kg)</label><br/>
+          <input type="number" placeholder="Masa del Planeta (kg)" id="M" step="any" min="0">
         </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="simulationTime">Tiempo propio total (seg)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Tiempo simulación (seg)" id="simulationTime"
-                   step="any" min="1" max="100000">
-          </div>
+        
+        <div class="input-control narrow">
+          <label for="R">Radio del Planeta (m)</label><br/>
+          <input type="number" placeholder="Radio del Planeta (m)" id="R" step="any" min="0">
         </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="M"><br/>Masa del Planeta (kg)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Masa del Planeta (kg)" id="M"
-                   step="any" min="0">
-          </div>
+        
+        <div class="input-control narrow">
+          <label for="m">Masa de la Partícula (kg)</label><br/>
+          <input type="number" placeholder="Masa de la Nave (kg)" id="m" step="any" min="0">
         </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="R"><br/>Radio del Planeta (m)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Radio del Planeta (m)" id="R"
-                   step="any" min="0">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="m">Masa de la Partícula (kg)</label>
-            <input type="number" class="form-control form-control-sm" placeholder="Masa de la Nave (kg)" id="m"
-                   step="any" min="0">
-          </div>
-        </div>
+
       </div>
       
-      <div class="row">
-        <div class="col-12">
-          <hr/>
-          <h6>Unidades adimensionales</h6>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-group">
-            <label for="r">r inicial</label>
-            <input type="number" class="form-control form-control-sm adim-units" placeholder="r inicial" id="r"
-                   step="any" min="0">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="phi">phi inicial</label>
-            <input type="number" class="form-control form-control-sm adim-units" placeholder="phi inicial" id="phi"
-                   step="any" min="0" max="6.28318530718">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vr">vr inicial</label>
-            <input type="number" class="form-control form-control-sm adim-units" placeholder="vr inicial" id="vr"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vrSign">signo vr inicial</label>
-            <input type="number" class="form-control form-control-sm adim-units" placeholder="signo vr inicial" id="vrSign"
-                   step="2" min="-1" max="1">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vphi">vphi inicial</label>
-            <input type="number" class="form-control form-control-sm adim-units" placeholder="vphi inicial" id="vphi"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="L">valor L</label>
-            <input type="number" class="form-control form-control-sm adim-units" placeholder="valor L" id="L"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="E">valor epsilon</label>
-            <input type="number" class="form-control form-control-sm adim-units" placeholder="valor epsilon" id="E"
-                   step="any">
-          </div>
-        </div>
-      </div>
+      <div class="form-row form-content schwarzschild-content">
 
-      <div class="row">
-        <div class="col-12">
-          <hr/>
-          <h6>Unidades del Sistema Internacional</h6>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-group">
-            <label for="rSi">r inicial</label>
-            <input type="number" class="form-control form-control-sm si-units" placeholder="r inicial" id="rSi"
-                   step="any" min="0">
+        <div id="adimensionalData" class="form-data-box inactive">
+          <h3>
+            <input type="radio" name="units-type" id="unitsTypeAdim" value="adim">
+            <label for="unitsTypeAdim">Condiciones iniciales (uds. adimensionales)</label>
+          </h3>
+          <div class="form-data">
+
+            <div>
+              <div class="form-data-left">&nbsp;</div>
+              <div class="input-control">
+                <label for="totalProperTimeAdim">Tiempo propio total</label><br/>
+                <input type="number" placeholder="Tiempo propio total" id="totalProperTimeAdim" class="adim-units" step="any">
+              </div>
+              <div class="form-data-middle">&nbsp;</div>
+              <div class="input-control">
+                <label for="properTimeIncrementAdim">Incremento tiempo propio</label><br/>
+                <input type="number" placeholder="Tiempo propio total" id="properTimeIncrementAdim" step="any" readonly>
+              </div>
+            </div>
+
+            <div>
+              <div class="form-data-left">Posición</div>
+              <div class="input-control">
+                <label for="rAdim" class="big-label">r</label><br/>
+                <input type="number" placeholder="Posición radial inicial" id="rAdim" class="adim-units" step="any">
+              </div>
+              <div class="form-data-middle">&nbsp;</div>
+              <div class="input-control">
+                <label for="phiAdim" class="big-label">&phi;</label><br/>
+                <input type="number" placeholder="Posición angular inicial" id="phiAdim" class="adim-units" step="any">
+              </div>
+            </div>
+
+            <div>
+              <div class="form-data-left">Velocidad</div>
+              <div class="input-control">
+                <input type="number" placeholder="Velocidad radial inicial" id="vrAdim" class="adim-units" step="any">
+              </div>
+              <div class="form-data-middle">
+                <div class="vr-sign-btn"><span>+</span></div>
+              </div>
+              <div class="input-control">
+                <input type="number" placeholder="Velocidad angular inicial" id="vphiAdim" class="adim-units" step="any">
+              </div>
+            </div>
+
+            <div>
+              <div class="form-data-left">
+                <label for="LAdim">L</label>
+              </div>
+              <div class="input-control">
+                <input type="number" placeholder="L" id="LAdim" class="adim-units" step="any">
+              </div>
+              <div class="form-data-middle">
+                <label for="epsilonAdim">&epsilon;</label>
+              </div>
+              <div class="input-control">
+                <input type="number" placeholder="epsilon" id="epsilonAdim" class="adim-units" step="any">
+              </div>
+            </div>
+          
           </div>
         </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="phiSi">phi inicial</label>
-            <input type="number" class="form-control form-control-sm si-units" placeholder="phi inicial" id="phiSi"
-                   step="any" min="0" max="6.28318530718">
+
+        <div id="SystemeInternationalData" class="form-data-box inactive">
+          <h3>
+            <input type="radio" name="units-type" id="unitsTypeSi" value="si">
+            <label for="unitsTypeSi">Condiciones iniciales (uds. S.I.)</label>
+          </h3>
+          <div class="form-data">
+          
+            <div>
+              <div class="form-data-left">&nbsp;</div>
+              <div class="input-control">
+                <label for="totalProperTimeSi">Tiempo propio total</label><br/>
+                <input type="number" placeholder="Tiempo propio total" id="totalProperTimeSi" class="si-units" step="any">
+              </div>
+              <div class="form-data-middle">&nbsp;</div>
+              <div class="input-control">
+                <label for="properTimeIncrementSi">Incremento tiempo propio</label><br/>
+                <input type="number" placeholder="Tiempo propio total" id="properTimeIncrementSi" step="any" readonly>
+              </div>
+            </div>
+
+            <div>
+              <div class="form-data-left">Posición</div>
+              <div class="input-control">
+                <label for="rSi" class="big-label">r</label><br/>
+                <input type="number" placeholder="Posición radial inicial" id="rSi" class="si-units" step="any">
+              </div>
+              <div class="form-data-middle">&nbsp;</div>
+              <div class="input-control">
+                <label for="phiSi" class="big-label">&phi;</label><br/>
+                <input type="number" placeholder="Posición angular inicial" id="phiSi" class="si-units" step="any">
+              </div>
+            </div>
+
+            <div>
+              <div class="form-data-left">Velocidad</div>
+              <div class="input-control">
+                <input type="number" placeholder="Velocidad radial inicial" id="vrSi" class="si-units" step="any">
+              </div>
+              <div class="form-data-middle">
+                <div class="vr-sign-btn"><span>+</span></div>
+              </div>
+              <div class="input-control">
+                <input type="number" placeholder="Velocidad angular inicial" id="vphiSi" class="si-units" step="any">
+              </div>
+            </div>
+
+            <div>
+              <div class="form-data-left">
+                <label for="LSi">L</label>
+              </div>
+              <div class="input-control">
+                <input type="number" placeholder="L" id="LSi" class="si-units" step="any">
+              </div>
+              <div class="form-data-middle">
+                <label for="epsilonSi">&epsilon;</label>
+              </div>
+              <div class="input-control">
+                <input type="number" placeholder="epsilon" id="epsilonSi" class="si-units" step="any">
+              </div>
+            </div>
+
           </div>
         </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vrSi">vr inicial</label>
-            <input type="number" class="form-control form-control-sm si-units" placeholder="vr inicial" id="vrSi"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vrSignSi">signo vr inicial</label>
-            <input type="number" class="form-control form-control-sm si-units" placeholder="signo vr inicial" id="vrSignSi"
-                   step="2" min="-1" max="1">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="vphiSi">vphi inicial</label>
-            <input type="number" class="form-control form-control-sm si-units" placeholder="vphi inicial" id="vphiSi"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="LSi">valor L</label>
-            <input type="number" class="form-control form-control-sm si-units" placeholder="valor L" id="LSi"
-                   step="any">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="ESi">valor epsilon</label>
-            <input type="number" class="form-control form-control-sm si-units" placeholder="valor epsilon" id="ESi"
-                   step="any">
-          </div>
-        </div>
+
       </div>
 
     </form>
 
-    <div class="row">
-      <div class="col-sm">
-        <div id="potentialPlot"></div>
-      </div>
-      <div class="col-sm">
-        <div id="trajectoryPlot"></div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm">
-        <div id="pointsDataTableDiv">
-          <table id="pointsDataTable">
-          </table>
-        </div>
-      </div>
-    </div>
+    <div id="errorMsg"></div>
+    <div id="potentialPlot"></div>
+    <div id="trajectoryPlot"></div>
 
   </div>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+  <div id="pointsDataTableDiv">
+    <table id="pointsDataTable"></table>
+  </div>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
   <!-- https://plot.ly/javascript/ -->
   <!-- https://github.com/plotly/plotly.js -->
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-  <script src="js/common.js?v=20181212b"></script>
-  <script src="js/euler.js?v=20181212b"></script>
-  <script src="js/rungeKutta.js?v=20181212b"></script>
-  <script src="js/newton.js?v=20181212b"></script>
-  <script src="js/schwarzschild-common.js?v=20181212b"></script>
-  <script src="js/schwarzschild-inaki.js?v=20181212b"></script>
-  <script src="js/schwarzschild-javier.js?v=20181212b"></script>
-  <script src="js/ux.js?v=20181212b"></script>
+  <script src="js/plotly-1.43.2.min.js"></script>
+  <script src="js/common.js?v=20190111"></script>
+  <script src="js/newton.js?v=20190111"></script>
+  <script src="js/schwarzschild.js?v=20190111"></script>
+  <script src="js/ux.js?v=20190111"></script>
 </body>
 </html>
