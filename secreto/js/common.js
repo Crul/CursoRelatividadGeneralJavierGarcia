@@ -13,21 +13,21 @@ var G = 6.674E-11;
 var defaultInitialConditions = [
     {
         physics: 'schwarzschild',
-        name: 'SCHWAR - Órbita circular de la Tierra [ r = 10 x Radio ] (r, vr, vphi)',
-        inputFormat: 'r-vr-vphi',
-        units: 'si', showDataTable: true,
-        stepsCount: 100, totalProperTimeSi: 295861.4847384257,
-        M: 5.9722e+24, R: 6371000.0, m: 500.0,
-        rSi: 63710000, phiAdim: 0.0, vrSi: 0.0, vrSign: 1.0, vphiSi: 0.00003925987071995594
-    },
-    {
-        physics: 'schwarzschild',
         name: 'SCHWAR - Órbita circular de la Tierra [ r = 10 x Radio ] (L, epsilon, r)',
         inputFormat: 'L-epsilon-r',
         units: 'si', showDataTable: true,
         stepsCount: 100, totalProperTimeSi: 295861.4847384257,
         M: 5.9722e+24, R: 6371000.0, m: 500.0,
         rSi: 63710000, phiAdim: 0.0, vrSign: 1.0, LSi: 79677202911471.16, epsilonSi: -3128116684.7610626
+    },
+    {
+        physics: 'schwarzschild',
+        name: 'SCHWAR - Órbita circular de la Tierra [ r = 10 x Radio ] (r, vr, vphi)',
+        inputFormat: 'r-vr-vphi',
+        units: 'si', showDataTable: true,
+        stepsCount: 100, totalProperTimeSi: 295861.4847384257,
+        M: 5.9722e+24, R: 6371000.0, m: 500.0,
+        rSi: 63710000, phiAdim: 0.0, vrSi: 0.0, vrSign: 1.0, vphiSi: 0.00003925987071995594
     },
     {
         physics: 'schwarzschild',
