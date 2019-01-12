@@ -102,6 +102,7 @@ function handleException(ex) {
     if (ex.name != 'InvalidInitialConditionsError')
         throw ex;
 
+    lastRunPoints = undefined;
     $('form input[readonly="readonly"]').val('');
     $('#trajectoryPlot').html('');
     $('#errorMsg').html(ex.message);
@@ -254,7 +255,44 @@ function printPointsData(points, dataLength) {
 }
 ////////////////////////////////////////////////////// HASH
 
-function plotTrajectory(xPoints, yPoints) {
+function plotTrajectory(xPoints, yPoints, planetRadius, schwarzschildRadius) {
+    var auxValues1 = [planetRadius];
+    var auxValues2 = [-planetRadius];
+    if (schwarzschildRadius){
+        auxValues1.push(schwarzschildRadius);
+        auxValues2.push(-schwarzschildRadius);
+    }
+    var xMin = getMin(xPoints.concat(auxValues2));
+    var xMax = getMax(xPoints.concat(auxValues1));
+    var yMin = getMin(yPoints.concat(auxValues2));
+    var yMax = getMax(yPoints.concat(auxValues1));
+    var xCenter = (xMax + xMin) / 2
+    var yCenter = (yMax + yMin) / 2
+    var maxHalfRange = 1.05 * Math.max(xMax - xMin, yMax - yMin) / 2;
+    var xRange = [ xCenter - maxHalfRange, xCenter + maxHalfRange ];
+    var yRange = [ yCenter - maxHalfRange, yCenter + maxHalfRange ];
+    
+    var shapes = [];
+    if (planetRadius) {
+        shapes.push({
+            type: 'circle',
+            xref: 'x', yref: 'y',
+            x0: -planetRadius, y0: -planetRadius,
+            x1:  planetRadius, y1:  planetRadius,
+            fillcolor: '#f9a50355',
+            line: { color: 'orange' }
+        })
+    }
+    if (schwarzschildRadius) {
+        shapes.push({
+            type: 'circle',
+            xref: 'x', yref: 'y',
+            x0: -1, y0: -1,
+            x1:  1, y1:  1,
+            line: { color: 'red' }
+        })
+    }
+        
     var layout = {
       title: 'Trayectoria',
       paper_bgcolor: '#000',
@@ -266,8 +304,10 @@ function plotTrajectory(xPoints, yPoints) {
       titlefont: {
           color: '#fff',
       },
+      shapes: shapes,
       xaxis: {
         title: 'x',
+        range: xRange,
         color: '#fff',
         titlefont: {
           family: 'Courier New, monospace',
@@ -277,6 +317,7 @@ function plotTrajectory(xPoints, yPoints) {
       },
       yaxis: {
         title: 'y',
+        range: yRange,
         color: '#fff',
         titlefont: {
           family: 'Courier New, monospace',

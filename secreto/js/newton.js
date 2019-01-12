@@ -1,5 +1,3 @@
-var lastRunPoints;
-
 function runNewton() {
     var initialConditions = getFormData();
     $('#pointsDataTable').html('');
@@ -71,13 +69,9 @@ function runNewton() {
 
     }
 
-    plotTrajectory(points.x, points.y);
+    plotTrajectory(points.x, points.y, 2);
     if ($('#showDataTable').is(':checked'))
         printPointsData(points, steps);
-
-    if (initialConditions.siUnits) {
-        radiuses = radiusesBelToSi(R, radiuses);
-    }
 
     lastRunPoints = points;
 
@@ -229,13 +223,24 @@ function initializeStepDataNewton(r, vr, phi, radiuses) {
     return { r: r, phi: phi, vrSign: vrSign };
 }
 
-function plotNewtonPotentialChart(L, epsilon) {
-    if (!PLOT_POTENCIAL_CHART)
-        return;
+function plotNewtonPotentialChart(initialConditions) {
+    var L = initialConditions.LAdim;
+    var epsilon = initialConditions.epsilonAdim;
+    var radiuses = getNewtonRadiuses(L, epsilon); // DRY
+    
+    var maxXRange = Math.max(radiuses.analiticR1, radiuses.analiticR2);
+    if (isNaN(maxXRange)) {
+        maxXRange = (radiuses.analiticR1 || radiuses.analiticR2);
+        if (!radiuses.analiticR2) {
+            maxXRange *= 5;
+        }
+    }
+    maxXRange *= TRAJECTORY_PLOT_MARGIN_FACTOR;
+    var xRange = [0, maxXRange];
 
-    var plotXValues = range(0, (POTENTIAL_PLOT_MAX_X/POTENTIAL_PLOT_RESOLUTION))
-        .map(function(r) { return (r * POTENTIAL_PLOT_RESOLUTION) + INFINITESIMAL; });
-
+    var potential_plot_resolution = (maxXRange / POTENTIAL_PLOT_POINTS_COUNT);
+    var plotXValues = range(0, POTENTIAL_PLOT_POINTS_COUNT)
+        .map(function(r) { return (r * potential_plot_resolution) + INFINITESIMAL; });
 
     var plotYValues = plotXValues
         .map(function(x) { return getNewtonPotential(x, L); });
@@ -247,6 +252,14 @@ function plotNewtonPotentialChart(L, epsilon) {
         { x: plotXValues, y: energyValues },
     ];
 
+    var minL = Math.abs(getMin(plotYValues));
+    var maxL = Math.abs(getMax(plotYValues));
+    var minLExtremeValue = Math.min(minL, maxL);
+    var yRangeValue = Math.max(minLExtremeValue, Math.abs(epsilon));
+    yRangeValue *= TRAJECTORY_PLOT_MARGIN_FACTOR;
+    
+    var yRange = [ -yRangeValue, yRangeValue ];
+    
     var layout = {
       title: 'Energía Potencial',
       paper_bgcolor: '#000',
@@ -260,6 +273,7 @@ function plotNewtonPotentialChart(L, epsilon) {
       },
       xaxis: {
         title: 'Radio',
+        range: xRange,
         color: '#fff',
         titlefont: {
           family: 'Courier New, monospace',
@@ -269,7 +283,7 @@ function plotNewtonPotentialChart(L, epsilon) {
       },
       yaxis: {
         title: 'Energía Potencial',
-        range: [-1, 2],
+        range: yRange,
         color: '#fff',
         titlefont: {
           family: 'Courier New, monospace',

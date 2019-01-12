@@ -180,10 +180,12 @@ function runSchwarzschild() {
         }
     }
 
-    plotTrajectory(points.x, points.y);
+    plotTrajectory(points.x, points.y, rSiToRSchwarzschild(initialConditions.a, initialConditions.R), 1);
     if ($('#showDataTable').is(':checked'))
         printPointsData(points, steps);
 
+    lastRunPoints = points;
+    
     return {
         caso: radiuses.caso,
         points: points,
@@ -239,7 +241,7 @@ function fillMissingInitialConditionsSchwarzschild(initialConditions) {
                 throw InvalidInitialConditionsError('El signo de vr no es coherente con el valor de vr');
 
             var rSolutions = solveCubic(Math.pow(vr, 2) - epsilon, -1, Math.pow(L, 2), -Math.pow(L, 2));
-            r = Math.max.apply(Math, rSolutions);
+            r = getMax(rSolutions);
             vphi = L/Math.pow(r, 2);
             if (vr != 0)
                 vrSign = vr/Math.abs(vr);
@@ -313,12 +315,27 @@ function initializeStepDataSchwarzschild(initialConditions) {
     };
 }
 
-function plotSchwarzschildPotentialChart(L, epsilon) {
-    if (!PLOT_POTENCIAL_CHART)
-        return;
+function plotSchwarzschildPotentialChart(initialConditions) {
+    var L = initialConditions.LAdim;
+    var epsilon = initialConditions.epsilonAdim;
 
-    var plotXValues = range(0, (POTENTIAL_PLOT_MAX_X/POTENTIAL_PLOT_RESOLUTION))
-        .map(function(r) { return (r * POTENTIAL_PLOT_RESOLUTION) + INFINITESIMAL; });
+    var radiuses = getSchwarzschildRadiuses(initialConditions);
+    var definedRadiuses = [ radiuses.r0, radiuses.r1, radiuses.r2 ]
+        .filter(function(r) { return r !== undefined; });
+
+    if (definedRadiuses.length == 0) {
+        definedRadiuses = [5 * initialConditions.rAdim];
+    }
+    
+    var maxXRange = TRAJECTORY_PLOT_MARGIN_FACTOR * getMax(definedRadiuses);
+    if (!radiuses.r2 || radiuses.r1 == radiuses.r2)
+        maxXRange *= 5;
+
+    var xRange = [0, maxXRange];
+
+    var potential_plot_resolution = (maxXRange / POTENTIAL_PLOT_POINTS_COUNT);
+    var plotXValues = range(0, POTENTIAL_PLOT_POINTS_COUNT)
+        .map(function(r) { return (r * potential_plot_resolution) + INFINITESIMAL; });
 
     var plotYValues = plotXValues
         .map(function(x) { return getEinsteinPotential(x, L); });
@@ -329,8 +346,16 @@ function plotSchwarzschildPotentialChart(L, epsilon) {
         { x: plotXValues, y: plotYValues },
         { x: plotXValues, y: energyValues },
     ];
-    var allPotentialDataValues = plotYValues.concat(energyValues);
-
+    
+    // var minL = Math.abs(getMin(plotYValues));
+    // var maxL = Math.abs(getMax(plotYValues));
+    // var minLExtremeValue = Math.min(minL, maxL);
+    // var yRangeValue = Math.max(minLExtremeValue, Math.abs(epsilon));
+    // yRangeValue *= TRAJECTORY_PLOT_MARGIN_FACTOR;
+    
+    yRangeValue = TRAJECTORY_PLOT_MARGIN_FACTOR * Math.abs(epsilon);
+    var yRange = [ -yRangeValue, yRangeValue ];
+    
     var layout = {
       title: 'Energía Potencial',
       paper_bgcolor: '#000',
@@ -344,6 +369,7 @@ function plotSchwarzschildPotentialChart(L, epsilon) {
       },
       xaxis: {
         title: 'Radio',
+        range: xRange,
         color: '#fff',
         titlefont: {
           family: 'Courier New, monospace',
@@ -353,10 +379,7 @@ function plotSchwarzschildPotentialChart(L, epsilon) {
       },
       yaxis: {
         title: 'Energía Potencial',
-        range: [
-            Math.min(-1, Math.min.apply(energyValues)),
-            Math.max.apply(Math, allPotentialDataValues) * 1.1
-        ],
+        range: yRange,
         color: '#fff',
         titlefont: {
           family: 'Courier New, monospace',
@@ -366,9 +389,7 @@ function plotSchwarzschildPotentialChart(L, epsilon) {
       }
     };
     var plotElem = $('#potentialPlot')[0];
-    Plotly.newPlot(plotElem, potentialData, layout).then(function(){
-        //Plotly.relayout($('#potentialPlot')[0], { yaxis: { range: [-1,1] }});
-    });
+    Plotly.newPlot(plotElem, potentialData, layout);
 
 }
 

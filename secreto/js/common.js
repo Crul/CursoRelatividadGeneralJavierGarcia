@@ -1,4 +1,4 @@
-var PLOT_POTENCIAL_CHART = true;
+var lastRunPoints;
 var INFINITESIMAL = 1e-9;
 var E_THRESHOLD_TO_BE_CONSIDERED_ZERO = 1e-7;
 
@@ -6,8 +6,8 @@ var BISECTION_ERROR_THERSHOLD = 1e-10;
 var BISECTION_MIN = 1e-9;
 var BISECTION_MAX = 5e3;
 
-var POTENTIAL_PLOT_MAX_X = 1e3;
-var POTENTIAL_PLOT_RESOLUTION = POTENTIAL_PLOT_MAX_X/1e4;
+var POTENTIAL_PLOT_POINTS_COUNT = 1e5;
+var TRAJECTORY_PLOT_MARGIN_FACTOR = 1.5;
 var G = 6.674E-11;
 
 var defaultInitialConditions = [
@@ -44,6 +44,7 @@ var defaultInitialConditions = [
         inputFormat: 'r-vr-vphi',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+24, R: 6371000.0, m: 500.0,
         rAdim: 16.0, phiAdim: 0.0, vrAdim: 0.0, vphiAdim: 0.0
     },
     {
@@ -52,6 +53,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-vphi',
         units: 'adim', showDataTable: true,
         stepsCount: 500000, totalProperTimeAdim: 5000,
+        M: 5.97e+24, R: 6371000.0, m: 500.0,
         phiAdim: 1.0, vphiAdim: 0.001, vrSign: -1.0,
         LAdim: 9.48, epsilonAdim: 0.0,
     },
@@ -61,6 +63,7 @@ var defaultInitialConditions = [
         inputFormat: 'r-vr-vphi',
         units: 'adim', showDataTable: true,
         stepsCount: 10000, totalProperTimeAdim: 100,
+        M: 5.97e+24, R: 6371000.0, m: 500.0,
         rAdim: 16.0, phiAdim: 0.0, vrAdim: 0.0, vphiAdim: 0.08,
     },
     {
@@ -69,14 +72,15 @@ var defaultInitialConditions = [
         inputFormat: 'r-vr-vphi',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+24, R: 6371000.0, m: 500.0,
         rAdim: 8.0, phiAdim: 0.0, vrAdim: 0.0, vphiAdim: 0.035
     },
     {
         physics: 'newton',
         name: 'NEWTON - Órbita Circular en SI (caso 6)',
         inputFormat: 'L-epsilon-vr',
-        stepsCount: 150000, totalProperTimeSi: 427245.410758225,
         units: 'si', showDataTable: true,
+        stepsCount: 150000, totalProperTimeSi: 427245.410758225,
         M: 5.97e+24, R: 6371000.0, m: 500.0,
         phiSi: 0.0, vrSi: 0.0,
         LSi: 26719623532036.336, epsilonSi: -13897619421.33626,
@@ -86,7 +90,8 @@ var defaultInitialConditions = [
         name: 'SCHWAR - Caso 0 - Zona 0 (Escape)',
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
-        stepsCount: 150000, totalProperTimeAdim: 1500,
+        stepsCount: 150000, totalProperTimeAdim: 15,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 0, epsilonAdim: 1.9375, rAdim: 16.0,
     },
     {
@@ -95,6 +100,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 0, epsilonAdim: 1.9375, rAdim: 16.0, vrSign: -1,
     },
     {
@@ -103,6 +109,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 500000, totalProperTimeAdim: 5000,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.1, epsilonAdim: -0.05, rAdim: 16.0,
     },
     {
@@ -111,6 +118,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.8, epsilonAdim: -0.08, rAdim: 7.0,
     },
     {
@@ -119,6 +127,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.9, epsilonAdim: -0.04735184287601163, rAdim: 1.5,
     },
     {
@@ -127,6 +136,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.9, epsilonAdim: -0.04735184287601163, rAdim: 2.1260525615777355,
     },
     {
@@ -135,6 +145,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.9, epsilonAdim: -0.06, rAdim: 1.5,
     },
     {
@@ -143,6 +154,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.9, epsilonAdim: -0.06, rAdim: 10.0,
     },
     {
@@ -151,6 +163,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2, epsilonAdim: -0.074074074074074074, rAdim: 6.0,
     },
     {
@@ -159,6 +172,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.9, epsilonAdim: -0.08450000897584042, rAdim: 1.5,
     },
     {
@@ -167,6 +181,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.9, epsilonAdim: -0.075, rAdim: 5.093947438422264,
     },
     {
@@ -175,6 +190,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.9, epsilonAdim: -0.08450000897584042, rAdim: 5.093947438422264,
     },
     {
@@ -183,6 +199,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 1.8, epsilonAdim: -0.2, rAdim: 1.3,
     },
     {
@@ -191,6 +208,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: 0.1, rAdim: 1.5,
     },
     {
@@ -199,6 +217,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 15000, totalProperTimeAdim: 200,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: 0.1, rAdim: 5, vrSign: -1,
     },
     {
@@ -207,6 +226,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: -0.05, rAdim: 1.2,
     },
     {
@@ -215,6 +235,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: -0.05, rAdim: 5.406,
     },
     {
@@ -223,6 +244,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 15000, totalProperTimeAdim: 50,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: 0.10922213581784845, rAdim: 1.2, vrSign: 1,
     },
     {
@@ -231,6 +253,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 15000, totalProperTimeAdim: 50,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: 0.10922213581784845, rAdim: 5.406, vrSign: -1,
     },
     {
@@ -239,6 +262,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 15000, totalProperTimeAdim: 150,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: 0.10922213581784844, rAdim: 10, vrSign: -1,
     },
     {
@@ -247,6 +271,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: -0.058851765447478034, rAdim: 1.2,
     },
     {
@@ -255,6 +280,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: -0.058851765447478034, rAdim: 7.824225192575119,
     },
     {
@@ -263,6 +289,7 @@ var defaultInitialConditions = [
         inputFormat: 'L-epsilon-r',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         LAdim: 2.2, epsilonAdim: -0.075, rAdim: 1.085,
     },
     {
@@ -271,6 +298,7 @@ var defaultInitialConditions = [
         inputFormat: 'r-vr-vphi',
         units: 'adim', showDataTable: true,
         stepsCount: 150000, totalProperTimeAdim: 1500,
+        M: 5.97e+30, R: 5e3, m: 500.0,
         rAdim: 1.3466314515085671, vrAdim: 0.0, vrSign: 1, vphiAdim: 1.1889547626874881,
     },
     {
@@ -304,11 +332,7 @@ function processInitialConditions(physics) {
         physicsConfig.adimToSi(initialConditions);
     }
     setHash(initialConditions);
-
-    var L = initialConditions.LAdim;
-    var epsilon = initialConditions.epsilonAdim;
-
-    physicsConfig.plotPotentialChart(L, epsilon);
+    physicsConfig.plotPotentialChart(initialConditions);
 
     return initialConditions;
 }
@@ -379,4 +403,24 @@ function solveCubic(a, b, c, d) {
 
 function range(start, end) {
   return Array(end - start + 1).fill().map(function(_, idx) { return start + idx; });
+}
+
+function getMax(arr) {
+    let len = arr.length;
+    let max = -Infinity;
+
+    while (len--) {
+        max = arr[len] > max ? arr[len] : max;
+    }
+    return max;
+}
+
+function getMin(arr) {
+    let len = arr.length;
+    let min = Infinity;
+
+    while (len--) {
+        min = arr[len] < min ? arr[len] : min;
+    }
+    return min;
 }
