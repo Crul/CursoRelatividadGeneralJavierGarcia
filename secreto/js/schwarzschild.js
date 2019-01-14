@@ -9,7 +9,6 @@ var SPEED_LIGHT_SQR = Math.pow(SPEED_LIGHT, 2);
 
 function runSchwarzschild() {
     var initialConditions = getFormData();
-    $('#pointsDataTable').html('');
 
     var isThereSiData = true;
     if (initialConditions.siUnits) {
@@ -62,45 +61,50 @@ function runSchwarzschild() {
     var stepData = initializeStepDataSchwarzschild(initialConditions);
     var steps  = initialConditions.stepsCount;
     var dtau   = initialConditions.totalProperTimeAdim / steps;
-    var points = {
-        tau: [],
-        t  : [],
-        x  : [],
-        y  : [],
-        r  : [],
-        phi: [],
-    };
-    if (isThereSiData) {
-        points['tauSi']   = [];
+    var points = { 'paso': [] };
+    var RAdim;
+    var minR = SCHWARZSCHILD_RADIUS;
+    if (initialConditions.siUnits) {
+        points['tauSi'] = [];
         points['tSi']   = [];
         points['xSi'] = [];
         points['ySi'] = [];
         points['rSi'] = [];
         points['phiSi'] = [];
+        RAdim = rSiToRSchwarzschild(initialConditions.a, R);
+        minR = Math.max(minR, RAdim);
+    } else {
+        points['tau'] = [];
+        points['t'] = [];
+        points['x'] = [];
+        points['y'] = [];
+        points['r'] = [];
+        points['phi'] = [];
     }
+    minR += DELTA_ERROR;
     
     for (var i=0; i < steps; i++) {
         var tau = i * dtau;
-        points.tau.push(tau);
         var E = Math.sqrt(1 + initialConditions.epsilonAdim)
         var t = (E / (1 - (1/stepData.r))) * tau;
-        points.t.push(t);
         var x = stepData.r*Math.cos(stepData.phi);
-        points.x.push(x);
         var y = stepData.r*Math.sin(stepData.phi);
-        points.y.push(y);
-        points.r.push(stepData.r);
-        points.phi.push(stepData.phi);
         
-        if (isThereSiData) {
+        points.paso.push(i);
+        if (initialConditions.siUnits) {
             points.xSi.push(rSchwarzschildToRSi(initialConditions.a, x));
             points.ySi.push(rSchwarzschildToRSi(initialConditions.a, y));
             points.rSi.push(rSchwarzschildToRSi(initialConditions.a, stepData.r));
             points.phiSi.push(stepData.phi);
-            var tauSi = a * (tau / SPEED_LIGHT);
-            points.tauSi.push(tauSi);
-            var tSi = a * (t / SPEED_LIGHT);
-            points.tSi.push(tSi);
+            points.tauSi.push(tSchwarzschildToTSi(a, tau));
+            points.tSi.push(tSchwarzschildToTSi(a, t));
+        } else {
+            points.tau.push(tau);
+            points.t.push(t);
+            points.x.push(x);
+            points.y.push(y);
+            points.r.push(stepData.r);
+            points.phi.push(stepData.phi);
         }
 
         var valueInsideSqrt = Math.abs(epsilon - getEinsteinPotential(stepData.r, L));
@@ -171,7 +175,7 @@ function runSchwarzschild() {
         stepData.phi = nextPhi;
         stepData.vphi = nextVphi;
 
-        if (stepData.r < SCHWARZSCHILD_RADIUS + DELTA_ERROR) {
+        if (stepData.r < minR) {
             for (pointsArray in points)
                 points[pointsArray].pop();
 
@@ -180,10 +184,13 @@ function runSchwarzschild() {
         }
     }
 
-    plotTrajectory(points.x, points.y, rSiToRSchwarzschild(initialConditions.a, initialConditions.R), 1);
-    if ($('#showDataTable').is(':checked'))
-        printPointsData(points, steps);
-
+    if (initialConditions.siUnits) {
+        plotTrajectory(points.xSi, points.ySi, R, rSchwarzschildToRSi(initialConditions.a, 1));
+    } else {
+        plotTrajectory(points.x, points.y, RAdim, 1);
+    }
+    
+    printPointsData(points, steps);
     lastRunPoints = points;
     
     return {
@@ -327,11 +334,11 @@ function plotSchwarzschildPotentialChart(initialConditions) {
         definedRadiuses = [5 * initialConditions.rAdim];
     }
     
-    var maxXRange = TRAJECTORY_PLOT_MARGIN_FACTOR * getMax(definedRadiuses);
+    var maxXRange = (TRAJECTORY_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR * TRAJECTORY_PLOT_MARGIN_FACTOR * getMax(definedRadiuses));
     if (!radiuses.r2 || radiuses.r1 == radiuses.r2)
         maxXRange *= 5;
 
-    var xRange = [0, maxXRange];
+    var xRange = [0, maxXRange/TRAJECTORY_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR];
 
     var potential_plot_resolution = (maxXRange / POTENTIAL_PLOT_POINTS_COUNT);
     var plotXValues = range(0, POTENTIAL_PLOT_POINTS_COUNT)
@@ -415,7 +422,7 @@ function siToSchwarzschild(initialConditions) {
     var phi = phiSi;
     var vphi = (vphiSi !== undefined ? (a * vphiSi / SPEED_LIGHT) : undefined);
     var L = (LSi !== undefined ? (LSi / (m * a * SPEED_LIGHT)) : undefined);
-    var epsilon = (epsilonSi !== undefined ? (epsilonSi / (m * SPEED_LIGHT_SQR)) : undefined);
+    var epsilon = epsilonSiToEpsilonSchwarzschild(m, epsilonSi);
 
     Object.assign(initialConditions, {
         totalProperTimeAdim: totalProperTime,
@@ -453,7 +460,7 @@ function schwarzschildToSi(initialConditions) {
     var phiSi = phi;
     var vphiSi = (vphi !== undefined ? (SPEED_LIGHT * vphi / a) : undefined);
     var LSi = (L !== undefined ? (L * (m * a * SPEED_LIGHT)) : undefined);
-    var epsilonSi = (epsilon !== undefined ? (epsilon * (m * SPEED_LIGHT_SQR)) : undefined);
+    var epsilonSi = epsilonSchwarzschildToEpsilonSi(m, epsilon);
 
     Object.assign(initialConditions, {
         totalProperTimeSi: totalProperTimeSi,
@@ -482,6 +489,14 @@ function tSchwarzschildToTSi(a, t) {
 
 function rSchwarzschildToRSi(a, r) {
     return (r == undefined ? undefined : r * a);
+}
+
+function epsilonSiToEpsilonSchwarzschild(m, epsilon) {
+    return (epsilon !== undefined ? (epsilon / (m * SPEED_LIGHT_SQR)) : undefined);
+}
+
+function epsilonSchwarzschildToEpsilonSi(m, epsilon) {
+    return (epsilon !== undefined ? (epsilon * m * SPEED_LIGHT_SQR) : undefined);
 }
 
 function getEinsteinPotential(r, L) {

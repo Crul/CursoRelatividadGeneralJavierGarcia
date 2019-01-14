@@ -7,13 +7,14 @@
   <title>Simulador de Gravedad Newtoniana</title>
   <meta name="description" content="Simulador de Gravedad Newtoniana">
   <meta name="author" content="obi-four-kenobi">
-  <link rel="stylesheet" href="styles.css?v=20190112">
+  <link rel="stylesheet" href="styles.css?v=20190114">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 
 <body>
 
-  <div class="centered-page">
+  <div id="top" class="centered-page">
 
     <form>
 
@@ -34,10 +35,9 @@
             <option value="" selected>-- Selecciona uno para cargar los datos --</option>
           </select>
         </div>
-          
-        <div class="input-control">
-          <input type="checkbox" id="showDataTable">
-          <label for="showDataTable">Mostrar tabla de datos</label>
+        
+        <div id="helpBtn">
+          <i class="fa fa-info-circle"></i>
         </div>
         
       </div>
@@ -54,26 +54,28 @@
           </select>
         </div>
         
-        <div class="form-data-middle">&nbsp;</div>
-
-        <div class="input-control">
+        <div class="input-control narrow">
           <label for="stepsCount">Número de pasos</label><br/>
           <input type="number" placeholder="Nº de pasos" id="stepsCount" step="1" min="1">
         </div>
 
-        <div class="input-control narrow" id="MControl">
-          <label for="M">Masa del Planeta (kg)</label><br/>
-          <input type="number" placeholder="Masa del Planeta (kg)" id="M" step="any" min="0">
-        </div>
-        
-        <div class="input-control narrow">
-          <label for="R">Radio del Planeta (m)</label><br/>
-          <input type="number" placeholder="Radio del Planeta (m)" id="R" step="any" min="0">
-        </div>
-        
-        <div class="input-control narrow">
-          <label for="m">Masa de la Partícula (kg)</label><br/>
-          <input type="number" placeholder="Masa de la Nave (kg)" id="m" step="any" min="0">
+        <div id="systemData" class="form-data-box active">
+          <h3><label>Datos del planeta y de la partícula test (unidades del S.I.)</label></h3>
+
+          <div class="input-control narrow" id="MControl">
+            <label for="M">Masa del Planeta (kg)</label><br/>
+            <input type="number" placeholder="Masa del Planeta (kg)" id="M" step="any" min="0">
+          </div>
+          
+          <div class="input-control narrow">
+            <label for="R">Radio del Planeta (m)</label><br/>
+            <input type="number" placeholder="Radio del Planeta (m)" id="R" step="any" min="0">
+          </div>
+          
+          <div class="input-control narrow">
+            <label for="m">Masa de la Partícula (kg)</label><br/>
+            <input type="number" placeholder="Masa de la Nave (kg)" id="m" step="any" min="0">
+          </div>
         </div>
 
       </div>
@@ -83,7 +85,7 @@
         <div id="adimensionalData" class="form-data-box inactive">
           <h3>
             <input type="radio" name="units-type" id="unitsTypeAdim" value="adim">
-            <label for="unitsTypeAdim">Condiciones iniciales (uds. adimensionales)</label>
+            <label for="unitsTypeAdim">Condiciones iniciales (unidades adimensionales)</label>
           </h3>
           <div class="form-data">
 
@@ -93,7 +95,6 @@
                 <label for="totalProperTimeAdim">Tiempo propio total</label><br/>
                 <input type="number" placeholder="Tiempo propio total" id="totalProperTimeAdim" class="adim-units" step="any">
               </div>
-              <div class="form-data-middle">&nbsp;</div>
               <div class="input-control">
                 <label for="properTimeIncrementAdim">Incremento tiempo propio</label><br/>
                 <input type="number" placeholder="Tiempo propio total" id="properTimeIncrementAdim" step="any" readonly>
@@ -106,7 +107,6 @@
                 <label for="rAdim" class="big-label">r</label><br/>
                 <input type="number" placeholder="Posición radial inicial" id="rAdim" class="adim-units" step="any">
               </div>
-              <div class="form-data-middle">&nbsp;</div>
               <div class="input-control">
                 <label for="phiAdim" class="big-label">&phi;</label><br/>
                 <input type="number" placeholder="Posición angular inicial" id="phiAdim" class="adim-units" step="any">
@@ -115,7 +115,7 @@
 
             <div>
               <div class="form-data-left">Velocidad</div>
-              <div class="input-control">
+              <div class="input-control" id="vrAdimControl">
                 <input type="number" placeholder="Velocidad radial inicial" id="vrAdim" class="adim-units" step="any">
               </div>
               <div class="form-data-middle">
@@ -133,10 +133,8 @@
               <div class="input-control">
                 <input type="number" placeholder="L" id="LAdim" class="adim-units" step="any">
               </div>
-              <div class="form-data-middle">
-                <label for="epsilonAdim">&epsilon;</label>
-              </div>
-              <div class="input-control">
+              <label for="epsilonAdim" id="epsilonAdimLabel">&epsilon;</label>
+              <div class="input-control" id="epsilonAdimControl">
                 <input type="number" placeholder="epsilon" id="epsilonAdim" class="adim-units" step="any">
               </div>
             </div>
@@ -147,7 +145,7 @@
         <div id="SystemeInternationalData" class="form-data-box inactive">
           <h3>
             <input type="radio" name="units-type" id="unitsTypeSi" value="si">
-            <label for="unitsTypeSi">Condiciones iniciales (uds. S.I.)</label>
+            <label for="unitsTypeSi">Condiciones iniciales (unidades del S.I.)</label>
           </h3>
           <div class="form-data">
           
@@ -157,7 +155,6 @@
                 <label for="totalProperTimeSi">Tiempo propio total</label><br/>
                 <input type="number" placeholder="Tiempo propio total" id="totalProperTimeSi" class="si-units" step="any">
               </div>
-              <div class="form-data-middle">&nbsp;</div>
               <div class="input-control">
                 <label for="properTimeIncrementSi">Incremento tiempo propio</label><br/>
                 <input type="number" placeholder="Tiempo propio total" id="properTimeIncrementSi" step="any" readonly>
@@ -170,7 +167,6 @@
                 <label for="rSi" class="big-label">r</label><br/>
                 <input type="number" placeholder="Posición radial inicial" id="rSi" class="si-units" step="any">
               </div>
-              <div class="form-data-middle">&nbsp;</div>
               <div class="input-control">
                 <label for="phiSi" class="big-label">&phi;</label><br/>
                 <input type="number" placeholder="Posición angular inicial" id="phiSi" class="si-units" step="any">
@@ -179,7 +175,7 @@
 
             <div>
               <div class="form-data-left">Velocidad</div>
-              <div class="input-control">
+              <div class="input-control" id="vrSiControl">
                 <input type="number" placeholder="Velocidad radial inicial" id="vrSi" class="si-units" step="any">
               </div>
               <div class="form-data-middle">
@@ -197,10 +193,8 @@
               <div class="input-control">
                 <input type="number" placeholder="L" id="LSi" class="si-units" step="any">
               </div>
-              <div class="form-data-middle">
-                <label for="epsilonSi">&epsilon;</label>
-              </div>
-              <div class="input-control">
+              <label for="epsilonSi" id="epsilonSiLabel">&epsilon;</label>
+              <div class="input-control" id="epsilonSiControl">
                 <input type="number" placeholder="epsilon" id="epsilonSi" class="si-units" step="any">
               </div>
             </div>
@@ -216,19 +210,47 @@
     <div id="potentialPlot"></div>
     <div id="trajectoryPlot"></div>
 
+    <table id="pointsDataTableTitles"></table>
+    <div id="pointsDataTableDiv">
+      <table id="pointsDataTable"></table>
+    </div>
   </div>
-
-  <div id="pointsDataTableDiv">
-    <table id="pointsDataTable"></table>
+  
+  <ul id="floatingMenu">
+    <li id="scrollToTop"><i class="fa fa-arrow-up"></i></li>
+    <li id="scrollToPlot"><i class="fa fa-line-chart"></i></li>
+    <li id="scrollToData"><i class="fa fa-table"></i></li>
+    <li id="downloadData">
+      <a id="downloadDataBtn">
+        <i class="fa fa-download"></i>
+      </a>
+    </li>
+  </ul>
+  
+  <div id="helpContent">
+    <i id="closeHelpBtn" class="fa fa-window-close"></i>
+    <h3>Simulador web de Newton y Schwarzschild</h3>
+    <p>
+      Este simulador es una herramienta de apoyo al
+      <a target="_blank" href="https://www.youtube.com/playlist?list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">Curso de Relatividad General</a>
+      de <a target="_blank" href="https://www.youtube.com/user/jamesjamesbondbond">Javier García</a>.
+    </p>
+    <h4>Lorem ipsum dolor sit amet</h4>
+    <p>Aquí irá la ayuda cuando esté redactada ^_^.</p>
+  </div>
+  
+  <div id="loading">
+    <i class="fa fa-spinner fa-spin"></i>
+    Calculando ...
   </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <!-- https://plot.ly/javascript/ -->
   <!-- https://github.com/plotly/plotly.js -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="js/common.js?v=20190112"></script>
-  <script src="js/newton.js?v=20190112"></script>
-  <script src="js/schwarzschild.js?v=20190112"></script>
-  <script src="js/ux.js?v=20190112"></script>
+  <script src="js/common.js?v=20190114"></script>
+  <script src="js/newton.js?v=20190114"></script>
+  <script src="js/schwarzschild.js?v=20190114"></script>
+  <script src="js/ux.js?v=20190114"></script>
 </body>
 </html>

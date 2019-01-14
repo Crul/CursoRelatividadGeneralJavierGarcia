@@ -22,7 +22,7 @@ var physicsConfigs = {
 }
 
 var fields = [
-    'physics', 'showDataTable', 'inputFormat', 'units', 'stepsCount', 'M', 'R', 'm',
+    'physics', 'inputFormat', 'units', 'stepsCount', 'M', 'R', 'm',
     'totalProperTimeAdim', 'rAdim', 'vrAdim', 'phiAdim', 'vphiAdim', 'LAdim', 'epsilonAdim',
     'totalProperTimeSi', 'rSi', 'vrSi', 'phiSi', 'vphiSi', 'LSi', 'epsilonSi',
     'vrSign',
@@ -39,13 +39,11 @@ function bootstrapApp() {
     $('#inputFormat').change(onInputFormatChange).change(handleInitialConditionsAndRun);
     $('#examples')
         .change(onExamplesChange)
-        .change(handleInitialConditionsAndRun)
-        .change(run);
+        .change(handleInitialConditionsAndRun);
 
     $('.physics-btn').click(onPhysicsChange).click(handleInitialConditionsAndRun);
     
     $('.form-data-box input[type=radio]').change(onUnitsChange).change(handleInitialConditionsAndRun);
-    $('#showDataTable').change(onShowDataTableChange);
     
     $('#stepsCount').change(handleInitialConditionsAndRun);
     $('#M').change(handleInitialConditionsAndRun);
@@ -72,6 +70,11 @@ function bootstrapApp() {
     $('#LSi').change(handleInitialConditionsAndRun);
     $('#epsilonSi').change(handleInitialConditionsAndRun);
 
+    $('#floatingMenu li').click(onMenuClick);
+    
+    $('#helpBtn').click(function() { $('#helpContent').fadeIn(); });
+    $('#closeHelpBtn').click(function() { $('#helpContent').fadeOut(); });
+    
     $(window).bind('hashchange', onHashChange);
     
     onPhysicsChange();
@@ -86,16 +89,23 @@ function bootstrapApp() {
 }
 
 function run() {
+    $('#loading').show();
     try {
         var steps = Number($('#stepsCount').val());
         if (steps > MAX_STEPS)
             throw InvalidInitialConditionsError('El máximo número de pasos es ' + MAX_STEPS);
 
+        $('#pointsDataTableTitles').html('');
+        $('#pointsDataTable').html('');
+        $('#downloadData').hide();
+        $('#downloadDataBtn').attr('href', '');
+    
         var results = physicsConfigs[currentPhysics].run();
         console.debug('run', results);
     } catch(ex) {
         handleException(ex);
-    }   
+    }
+    $('#loading').hide();
 }
 
 function handleException(ex) {
@@ -112,7 +122,6 @@ function handleException(ex) {
 function getFormData(data) {
     return {
         physics        : currentPhysics,
-        showDataTable  : $('#showDataTable').is(':checked'),
         inputFormat    : $('#inputFormat').val(),
         stepsCount     : getFormValue('stepsCount'),
         units          : getUnits(),
@@ -180,8 +189,6 @@ function setFormData(data, doNotSetHash) {
     onVrChange();
     setVrSign(data.vrSign);
     
-    $('#showDataTable').prop('checked', data.showDataTable);
-
     if (!doNotSetHash)
         setHash(data);
 }
@@ -221,6 +228,7 @@ function getHashValue(data, prop) {
 
     return prop + '=' + (value === undefined ? '' : value);
 }
+////////////////////////////////////////////////////// HASH
 
 function printPointsData(points, dataLength) {
     var pointTypes = Object.keys(points);
@@ -250,25 +258,52 @@ function printPointsData(points, dataLength) {
         );
     }
 
-    $('#pointsDataTable').append(thead).append(tbody);
-    $('#pointsDataTableDiv').fadeIn();
+    $('#pointsDataTableTitles').html('').append(thead);
+    $('#pointsDataTable').html('').append(tbody);
+    
+    var csvTitles = pointTypes.join(";");
+    var csvData = range(0, Math.min(dataLength, MAX_POINTS_TO_PRINT))
+        .map(function(i) {
+            return pointTypes.map(function(pointType) { return points[pointType][i]; }).join(";")
+        })
+        .join("\n");
+    
+    var csv = csvTitles + "\n" + csvData;
+    
+    $('#downloadDataBtn')
+        .attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv))
+        .attr('download', 'simulation.csv');
+        
+    $('#downloadData').fadeIn();
+    
 }
-////////////////////////////////////////////////////// HASH
 
 function plotTrajectory(xPoints, yPoints, planetRadius, schwarzschildRadius) {
-    var auxValues1 = [planetRadius];
-    var auxValues2 = [-planetRadius];
+    var auxValues1 = [];
+    var auxValues2 = [];
+    if (planetRadius){
+        auxValues1.push(planetRadius);
+        auxValues2.push(-planetRadius);
+    }
     if (schwarzschildRadius){
         auxValues1.push(schwarzschildRadius);
         auxValues2.push(-schwarzschildRadius);
     }
-    var xMin = getMin(xPoints.concat(auxValues2));
-    var xMax = getMax(xPoints.concat(auxValues1));
-    var yMin = getMin(yPoints.concat(auxValues2));
-    var yMax = getMax(yPoints.concat(auxValues1));
-    var xCenter = (xMax + xMin) / 2
-    var yCenter = (yMax + yMin) / 2
-    var maxHalfRange = 1.05 * Math.max(xMax - xMin, yMax - yMin) / 2;
+    
+    var maxLimit = 0;
+    if (xPoints.length) {
+        maxLimit = TRAJECTORY_PLOT_MAXLIMIT_FACTOR * getMax(auxValues1.concat([xPoints[0], yPoints[0]]));
+    }
+    var xMin = Math.max(-maxLimit, getMin(xPoints.concat(auxValues2)));
+    var xMax = Math.min(maxLimit, getMax(xPoints.concat(auxValues1)));
+    var yMin = Math.max(-maxLimit, getMin(yPoints.concat(auxValues2)));
+    var yMax = Math.min(maxLimit, getMax(yPoints.concat(auxValues1)));
+    
+    var xCenter = (xMax + xMin) / 2;
+    var yCenter = (yMax + yMin) / 2;
+    var maxRange = Math.max(xMax - xMin, yMax - yMin);
+    var maxHalfRange = 1.05 * maxRange / 2;
+    
     var xRange = [ xCenter - maxHalfRange, xCenter + maxHalfRange ];
     var yRange = [ yCenter - maxHalfRange, yCenter + maxHalfRange ];
     
@@ -333,8 +368,26 @@ function plotTrajectory(xPoints, yPoints, planetRadius, schwarzschildRadius) {
 
 function handleInitialConditionsAndRun() {
     $('#errorMsg').html('');
-    if (onInitialConditionsChange())
-        run();
+    $('#loading').show();
+    setTimeout(function(){
+        if (onInitialConditionsChange())
+            run();
+    }, 0);
+}
+
+function onMenuClick(ev) {
+    var btnId = ev.currentTarget.id;
+    switch(btnId) {
+        case 'scrollToTop':
+            $(window).scrollTop(0);
+            break;
+        case 'scrollToPlot':
+            $(window).scrollTop($('#potentialPlot').offset().top);
+            break;
+        case 'scrollToData':
+            $(window).scrollTop($('#pointsDataTableTitles').offset().top);
+            break;
+   }
 }
 
 function onInitialConditionsChange() {
@@ -442,9 +495,36 @@ function onInitialConditionsChange() {
 }
 
 function onPhysicsChange(ev) {
+    var prevPhysics = currentPhysics;
     if (ev)
         currentPhysics = ev.currentTarget.id.replace('Btn', '');
 
+    var toBeReplaced, replaceWith;
+    switch(currentPhysics) {
+        case 'newton':
+            toBeReplaced = 'ε';
+            replaceWith = 'E';
+            break;
+        case 'schwarzschild':
+            toBeReplaced = 'E';
+            replaceWith = 'ε';            
+            break;
+    }
+    $('#inputFormat option').each(function(idx, optionElem) { 
+        $(optionElem).html($(optionElem).html().replace(toBeReplaced, replaceWith));
+    });
+    $('#epsilonAdimLabel').html(replaceWith);
+    $('#epsilonAdim').attr('placeholder', replaceWith);
+    $('#epsilonSiLabel').html(replaceWith);
+    $('#epsilonSi').attr('placeholder', replaceWith);
+    
+    if (prevPhysics && prevPhysics != currentPhysics) {
+        $('#inputFormat').val('r-vr-vphi');
+        onInputFormatChange();
+        $('input[name=units-type][value=si]').prop('checked', true);
+        onUnitsChange();
+    }
+    
     $('.form-content')
         .removeClass('schwarzschild-content')
         .removeClass('newton-content')
@@ -478,8 +558,9 @@ function onVrChange(ev) {
     setVrSign(vrSign);
 }
 
-function onVrSignChange() {
-    setVrSign(-1 * currentVrSign);
+function onVrSignChange(ev) {
+    if (!$(ev.currentTarget).hasClass('inactive'))
+        setVrSign(-1 * currentVrSign);
 }
 
 function setVrSign(vrSign) {
@@ -555,22 +636,6 @@ function onExamplesChange() {
     //$('#examples').val('');
 }
 
-function onShowDataTableChange() {
-    onInitialConditionsChange();
-
-    var showDataTable = $('#showDataTable').is(':checked');
-    if (!showDataTable) {
-        $('#pointsDataTableDiv').fadeOut();
-        return;
-    }
-
-    var isThereDataInTable = $('#pointsDataTable thead').length > 0;
-    if (!isThereDataInTable && lastRunPoints) {
-        printPointsData(lastRunPoints, lastRunPoints.x.length);
-    }
-    $('#pointsDataTableDiv').fadeIn();
-}
-
 function getIsSiUnits() {
     var units = getUnits();
     var isSiUnits = (units == "si");
@@ -581,3 +646,4 @@ function getIsSiUnits() {
 function getUnits() {
     return $('input[name=units-type]:checked').val();
 }
+

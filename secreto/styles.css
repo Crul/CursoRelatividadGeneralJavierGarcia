@@ -1,10 +1,11 @@
-html {
-    overflow-y: scroll;
-}
 html, body {
     background-color: #888888;
     margin: 0;
     padding: 0;
+}
+html {
+    overflow-y: scroll;
+    padding: 0 36px;
 }
 html, body, table, td, div, input, textarea, select {
     font-family: Times New Roman, Serif;
@@ -44,6 +45,99 @@ input[readonly] {
     background-color: #BBB;
 }
 
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    padding-top: 72px;
+    font-size: 200%;
+}
+
+#floatingMenu {
+    position: fixed;
+    top: 70px;
+    left: 0px;
+    list-style: none;
+    padding: 0;
+}
+#floatingMenu li {
+    cursor: pointer;
+    padding: 2px 8px 2px 12px;
+    margin: 3px 0;
+    background-color: #ccc;
+    border-style: none solid solid none;
+    border-color: #666;
+    border-width: 1px;
+}
+#floatingMenu li,
+#downloadDataBtn, 
+#downloadDataBtn:visited {
+    color: #1e445d;
+}
+#floatingMenu li:hover,
+#downloadDataBtn:hover {
+    color: #000;
+    background-color: #fff;
+}
+#floatingMenu li#downloadData {
+    padding: 0;
+    display: none;
+}
+#downloadDataBtn {
+    display: block;
+    padding: 2px 8px 2px 12px;
+}
+
+#helpBtn {
+    cursor: pointer;
+    float: right;
+    color: #fff;
+    margin: 7px 24px 0 0;
+    font-size: 180%;
+    background-color: #ccc;
+    border-radius: 16.5px;
+    padding: 0.5px 4.5px 0 4px;
+    color: #1f76b4;
+}
+#helpBtn:hover {
+    background-color: #fff;
+}
+#helpContent {
+    position: fixed;
+    top: 2%;
+    left: 2%;
+    width: 96%;
+    height: 96%;
+    overflow: auto;
+    padding: 20px 32px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+    background-color: #eee;
+    border: solid 2px #fff;
+    display: none;
+}
+#helpContent h3 {
+    font-size: 120%;
+}
+#helpContent h4 {
+    font-size: 120%;
+}
+#closeHelpBtn { 
+    cursor: pointer;
+    float: right;
+    color: #666;
+    font-size: 150%;
+}
+#closeHelpBtn:hover { 
+    color: #000;
+}
+
 .centered-page {
     margin: auto;
     width: 1036px;
@@ -78,16 +172,33 @@ input[readonly] {
 
 .input-control,
 .input-control input[type=number] {
+    width: 212px;
+}
+
+#vrAdimControl,
+#vrAdimControl input[type=number],
+#vrSiControl,
+#vrSiControl input[type=number] {
     width: 184px;
+}
+
+#epsilonAdimLabel,
+#epsilonSiLabel {
+    width: 12px;
+    display: inline-block;
+    text-align: right;
+}
+
+#epsilonAdimControl,
+#epsilonAdimControl input[type=number],
+#epsilonSiControl,
+#epsilonSiControl input[type=number] {
+    width: 196px;
 }
 
 .input-control.narrow,
 .input-control.narrow input[type=number] {
     width: 175px;
-}
-
-#MControl{
-    margin-left: 16px;
 }
 
 .input-control .big-label {
@@ -134,6 +245,16 @@ input[readonly] {
 
 #inputFormatControl {
     margin-left: 76px;  /* .form-data-left[width] + 12 */
+    width: 120px;
+}
+
+#systemData {
+    width: 540px;
+    margin-left: 106px;
+}
+
+#MControl {
+    margin-left: 3px;
 }
 
 .form-data-middle {
@@ -181,7 +302,6 @@ input[readonly] {
     width: auto;
     margin: 12px 24px;
 }
-
 
 .physics-btn {
     cursor: pointer;
@@ -241,29 +361,41 @@ input[readonly] {
 }
 
 
-
-
-
 #pointsDataTableDiv {
-    overflow: auto;
-    max-height: 600px;
+    overflow-y: scroll;
+    max-height: 420px;
+    background-color: #ccc;
 }
 
+#pointsDataTableTitles,
 #pointsDataTable {
     width: 100%;
+    border: none;
+}
+#pointsDataTableTitles {
+    border-top: solid 2px #ccc;
+    padding-right: 24px;
+    background-color: #333;
+}
+
+#pointsDataTableTitles td,
+#pointsDataTable td {
+    padding-left: 8px;
+    max-width: 200px;
+}
+#pointsDataTableTitles td {
+    padding-right: 12px;
+    text-align: center;
     color: #fff;
 }
 
-#pointsDataTable tr td {
-    padding-left: 8px;
-    min-width: 200px;
+#pointsDataTableTitles tr td:first-child,
+#pointsDataTable tr td:first-child {
+    width: 60px;
+    text-align: center;
 }
 
-#pointsDataTable thead tr td {
-    padding-right: 12px;
-    border-bottom: solid 1px #CCC;
-    background-color: #333;
-}
+
 .not-all-data-printed-msg {
     text-align: center;
     background-color: #333;

@@ -1,6 +1,5 @@
 function runNewton() {
     var initialConditions = getFormData();
-    $('#pointsDataTable').html('');
 
     var b;
     var R = initialConditions.R;
@@ -31,19 +30,20 @@ function runNewton() {
 
     var dt     = initialConditions.properTimeIncrementAdim;
     var steps  = initialConditions.stepsCount;
-    var points = {
-        t: [],
-        x: [],
-        y: [],
-        r: [],
-        phi: [],
-    };
-    if (isThereSiData) {
-        points['tSi']   = [];
+    var points = { 'paso': [] };
+    var minR = 2;  // Bel radius
+    if (initialConditions.siUnits) {
+        points['tSi'] = [];
         points['xSi'] = [];
         points['ySi'] = [];
-        points['phiSi'] = [];
         points['rSi'] = [];
+        points['phiSi'] = [];
+    } else {
+        points['t'] = [];
+        points['x'] = [];
+        points['y'] = [];
+        points['r'] = [];
+        points['phi'] = [];
     }
 
     for (var i=0; i < steps; i++) {
@@ -51,28 +51,40 @@ function runNewton() {
 
         var t = i * dt;
         var rStepValue = stepData.r;
-        points.t.push(t);
         var x = rStepValue*Math.cos(stepData.phi);
-        points.x.push(x);
         var y = rStepValue*Math.sin(stepData.phi);
-        points.y.push(y);
-        points.r.push(rStepValue);
-        points.phi.push(stepData.phi);
 
-        if (isThereSiData) {
+        points.paso.push(i);
+        if (initialConditions.siUnits) {
             points.tSi.push(tBelToTSi(R, initialConditions.b, t));
             points.xSi.push(rBelToRSi(R, x));
             points.ySi.push(rBelToRSi(R, y));
             points.rSi.push(rBelToRSi(R, rStepValue));
             points.phiSi.push(stepData.phi);
+        } else {
+            points.t.push(t);
+            points.x.push(x);
+            points.y.push(y);
+            points.r.push(rStepValue);
+            points.phi.push(stepData.phi);
         }
 
+        if (stepData.r < minR) {
+            for (pointsArray in points)
+                points[pointsArray].pop();
+
+            console.warn('Integrator skipped at r=%0.5frs, next iteration r=%0.5frs');
+            break;
+        }
     }
 
-    plotTrajectory(points.x, points.y, 2);
-    if ($('#showDataTable').is(':checked'))
-        printPointsData(points, steps);
-
+    if (initialConditions.siUnits) {
+        plotTrajectory(points.xSi, points.ySi, R);
+    } else {
+        plotTrajectory(points.x, points.y, 2);
+    }
+    
+    printPointsData(points, steps);
     lastRunPoints = points;
 
     return {
@@ -235,8 +247,9 @@ function plotNewtonPotentialChart(initialConditions) {
             maxXRange *= 5;
         }
     }
-    maxXRange *= TRAJECTORY_PLOT_MARGIN_FACTOR;
-    var xRange = [0, maxXRange];
+    maxXRange *= (TRAJECTORY_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR * TRAJECTORY_PLOT_MARGIN_FACTOR);
+
+    var xRange = [0, maxXRange/TRAJECTORY_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR];
 
     var potential_plot_resolution = (maxXRange / POTENTIAL_PLOT_POINTS_COUNT);
     var plotXValues = range(0, POTENTIAL_PLOT_POINTS_COUNT)
@@ -298,7 +311,7 @@ function plotNewtonPotentialChart(initialConditions) {
 function siToBel(initialConditions) {
     var M = initialConditions.M;
     var R = initialConditions.R;
-    var b = Math.sqrt(2*G*M/R);
+    var b = getBBel(M, R);
     var m = initialConditions.m;
 
     var totalProperTimeSi = initialConditions.totalProperTimeSi;
@@ -317,7 +330,7 @@ function siToBel(initialConditions) {
     var phi = phiSi;
     var vphi = (vphiSi !== undefined ? (vphiSi * (R/(2*b))) : undefined);
     var L = (LSi !== undefined ? (2 * LSi / (m * b * R)) : undefined);
-    var epsilon = (epsilonSi !== undefined ? (epsilonSi / (m * Math.pow(b, 2))) : undefined);
+    var epsilon = epsilonSiToEpsilonBel(m, b, epsilonSi);
 
     Object.assign(initialConditions, {
         totalProperTimeAdim: totalProperTime,
@@ -335,7 +348,7 @@ function siToBel(initialConditions) {
 function belToSi(initialConditions) {
     var M = initialConditions.M;
     var R = initialConditions.R;
-    var b = Math.sqrt(2*G*M/R);
+    var b = getBBel(M, R);
     var m = initialConditions.m;
     
     var totalProperTime = initialConditions.totalProperTimeAdim;
@@ -354,7 +367,7 @@ function belToSi(initialConditions) {
     var phiSi = phi;
     var vphiSi = (vphi !== undefined ? (vphi * ((2*b)/R)) : undefined);
     var LSi = (L !== undefined ? (L * (m * b * R) / 2) : undefined);
-    var epsilonSi = (epsilon !== undefined ? (epsilon * (m * Math.pow(b, 2))) : undefined);
+    var epsilonSi = epsilonBelToEpsilonSi(m, b, epsilon);
 
     Object.assign(initialConditions, {
         totalProperTimeSi: totalProperTimeSi,
@@ -367,6 +380,10 @@ function belToSi(initialConditions) {
         epsilonSi: epsilonSi,
         b        : b,
     });
+}
+
+function getBBel(M, R) {
+    return Math.sqrt(2*G*M/R);
 }
 
 function tSiToTBel(R, b, t) {
@@ -383,6 +400,14 @@ function tBelToTSi(R, b, t) {
 
 function rBelToRSi(R, r) {
     return (r === undefined ? undefined : r * (R/2));
+}
+
+function epsilonSiToEpsilonBel(m, b, epsilon) {
+    return (epsilon !== undefined ? (epsilon / (m * Math.pow(b, 2))) : undefined)
+}
+
+function epsilonBelToEpsilonSi(m, b, epsilon) {
+    return (epsilon !== undefined ? (epsilon * m * Math.pow(b, 2)) : undefined)
 }
 
 function radiusesBelToSi(R, radiuses) {
