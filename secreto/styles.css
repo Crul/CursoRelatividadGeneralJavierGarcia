@@ -7,8 +7,9 @@ html {
     overflow-y: scroll;
     padding: 0 36px;
 }
-html, body, table, td, div, input, textarea, select {
-    font-family: Times New Roman, Serif;
+td, input, textarea, select, label, p, h1, h2, h3, h4 {
+    font-family: 'PT Sans Narrow', sans-serif;
+    font-size: 98%;
 }
 
 input[type=number],
@@ -23,7 +24,8 @@ select {
 
 input[type=number] {
     text-align: right;
-    font-size: 70%;
+    padding: 2px;
+    font-size: 80%;
 }
 
 input[type=checkbox],
@@ -198,7 +200,7 @@ input[readonly] {
 
 .input-control.narrow,
 .input-control.narrow input[type=number] {
-    width: 175px;
+    width: 120px;
 }
 
 .input-control .big-label {
@@ -206,7 +208,7 @@ input[readonly] {
     width: 100%;
     text-align: center;
     font-size: 133%;
-    margin: -4px 0;
+    margin: -8px 0 0 0;
 }
 
 .form-data-box {
@@ -225,6 +227,10 @@ input[readonly] {
     background-color: rgba(0,0,0, 0.8);
     border-radius: 12px 12px 0 0;
     font-weight: normal;
+}
+.form-data-box h3 label {
+    font-size: 120%;
+    color: #ddd;
 }
 
 .form-data-left,
@@ -245,12 +251,16 @@ input[readonly] {
 
 #inputFormatControl {
     margin-left: 76px;  /* .form-data-left[width] + 12 */
-    width: 120px;
 }
 
 #systemData {
-    width: 540px;
-    margin-left: 106px;
+    width: 566px;
+    margin-left: 135px;
+}
+
+#systemData .input-control.narrow,
+#systemData .input-control.narrow input[type=number] {
+    width: 184px;
 }
 
 #MControl {
@@ -300,7 +310,7 @@ input[readonly] {
 
 #formTopRow .input-control {
     width: auto;
-    margin: 12px 24px;
+        margin: 10px 0 0 24px;
 }
 
 .physics-btn {
@@ -381,20 +391,30 @@ input[readonly] {
 #pointsDataTableTitles td,
 #pointsDataTable td {
     padding-left: 8px;
-    max-width: 200px;
 }
 #pointsDataTableTitles td {
-    padding-right: 12px;
-    text-align: center;
+    padding: 2px 12px;
     color: #fff;
+    border-bottom: solid 1px #fff;
 }
 
 #pointsDataTableTitles tr td:first-child,
 #pointsDataTable tr td:first-child {
-    width: 60px;
     text-align: center;
 }
 
+.table-6-cols tr td {
+    width: 18.5%
+}
+.table-6-cols tr td:first-child {
+    width: 7.5%
+}
+.table-7-cols tr td {
+    width: 13%
+}
+.table-7-cols tr td:first-child {
+    width: 9%
+}
 
 .not-all-data-printed-msg {
     text-align: center;

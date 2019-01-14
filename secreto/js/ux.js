@@ -258,8 +258,9 @@ function printPointsData(points, dataLength) {
         );
     }
 
-    $('#pointsDataTableTitles').html('').append(thead);
-    $('#pointsDataTable').html('').append(tbody);
+    var tableCssClass = 'table-' + pointTypes.length + '-cols';
+    $('#pointsDataTableTitles').html('').append(thead).attr('class', tableCssClass);
+    $('#pointsDataTable').html('').append(tbody).attr('class', tableCssClass);
     
     var csvTitles = pointTypes.join(";");
     var csvData = range(0, Math.min(dataLength, MAX_POINTS_TO_PRINT))

@@ -9,6 +9,7 @@
   <meta name="author" content="obi-four-kenobi">
   <link rel="stylesheet" href="styles.css?v=20190114">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
 
 </head>
 
@@ -44,7 +45,7 @@
 
       <div class="form-row form-content schwarzschild-content">
       
-        <div class="input-control" id="inputFormatControl">
+        <div class="input-control narrow" id="inputFormatControl">
           <label for="inputFormat">Datos de entrada</label><br/>
           <select id="inputFormat">
             <option value="r-vr-vphi" selected>r, vr, v&phi;</option>
@@ -210,9 +211,9 @@
     <div id="potentialPlot"></div>
     <div id="trajectoryPlot"></div>
 
-    <table id="pointsDataTableTitles"></table>
+    <table id="pointsDataTableTitles" cellspacing="0"></table>
     <div id="pointsDataTableDiv">
-      <table id="pointsDataTable"></table>
+      <table id="pointsDataTable" cellspacing="0"></table>
     </div>
   </div>
   
@@ -240,8 +241,10 @@
   </div>
   
   <div id="loading">
-    <i class="fa fa-spinner fa-spin"></i>
-    Calculando ...
+    <p>
+      <i class="fa fa-spinner fa-spin"></i>
+      Calculando ...
+    </p>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
