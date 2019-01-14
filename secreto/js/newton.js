@@ -6,7 +6,6 @@ function runNewton() {
     var isThereSiData = true;
     if (initialConditions.siUnits) {
         checkInitialConditionsInSi(initialConditions);
-        setHash(initialConditions);
         siToBel(initialConditions);
     } else {
         try {
@@ -14,7 +13,6 @@ function runNewton() {
         } catch(ex) {
             isThereSiData = false;
         }
-        setHash(initialConditions);
     }
 
     fillMissingInitialConditionsNewton(initialConditions);

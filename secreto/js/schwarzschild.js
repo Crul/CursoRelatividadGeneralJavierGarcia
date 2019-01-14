@@ -13,7 +13,6 @@ function runSchwarzschild() {
     var isThereSiData = true;
     if (initialConditions.siUnits) {
         checkInitialConditionsInSi(initialConditions);
-        setHash(initialConditions);
         siToSchwarzschild(initialConditions);
     } else {
         try {
@@ -23,9 +22,7 @@ function runSchwarzschild() {
         } catch(ex) {
             isThereSiData = false;
         }
-        setHash(initialConditions);
     }
-
     fillMissingInitialConditionsSchwarzschild(initialConditions);
 
     var R       = initialConditions.R;

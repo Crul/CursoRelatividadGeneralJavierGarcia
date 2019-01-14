@@ -333,7 +333,6 @@ function processInitialConditions(physics) {
         physicsConfig.fillMissingInitialConditions(initialConditions);
         physicsConfig.adimToSi(initialConditions);
     }
-    setHash(initialConditions);
     physicsConfig.plotPotentialChart(initialConditions);
 
     return initialConditions;

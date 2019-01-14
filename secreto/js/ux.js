@@ -158,7 +158,7 @@ function getFormValue(inputId) {
     return inputCtrl.is('[readonly]') ? undefined : Number(inputCtrl.val())
 }
 
-function setFormData(data, doNotSetHash) {
+function setFormData(data, setHash) {
     currentPhysics = data.physics;
     onPhysicsChange();
     $('#inputFormat').val(data.inputFormat);
@@ -188,9 +188,6 @@ function setFormData(data, doNotSetHash) {
 
     onVrChange();
     setVrSign(data.vrSign);
-    
-    if (!doNotSetHash)
-        setHash(data);
 }
 ////////////////////////////////////////////////////// FORM DATA
 
@@ -214,11 +211,15 @@ function onHashChange() {
 }
 
 function setHash(data) {
-    lastManuallySetHash = fields
+    var newHash = fields
         .filter(function(name){ return data[name] !== undefined; })
         .map(function(name) { return getHashValue(data, name); })
         .join("&");
 
+    if (lastManuallySetHash == newHash)
+        return;
+        
+    lastManuallySetHash = newHash;
     window.location.hash = lastManuallySetHash;
 }
 
@@ -323,8 +324,8 @@ function plotTrajectory(xPoints, yPoints, planetRadius, schwarzschildRadius) {
         shapes.push({
             type: 'circle',
             xref: 'x', yref: 'y',
-            x0: -1, y0: -1,
-            x1:  1, y1:  1,
+            x0: -schwarzschildRadius, y0: -schwarzschildRadius,
+            x1:  schwarzschildRadius, y1:  schwarzschildRadius,
             line: { color: 'red' }
         })
     }
@@ -373,7 +374,7 @@ function handleInitialConditionsAndRun() {
     setTimeout(function(){
         if (onInitialConditionsChange())
             run();
-    }, 0);
+    }, 10);
 }
 
 function onMenuClick(ev) {
@@ -392,10 +393,10 @@ function onMenuClick(ev) {
 }
 
 function onInitialConditionsChange() {
-    console.debug('onInitialConditionsChange');
     try {
         $('#potentialPlot').html('');
         var data = processInitialConditions(currentPhysics);
+        setHash(data);
     
         $('#properTimeIncrementAdim').val(data.properTimeIncrementAdim);
         $('#totalProperTimeAdim').val(data.totalProperTimeAdim);
@@ -634,7 +635,7 @@ function onExamplesChange() {
 
     setFormData(filteredIC[0]);
     handleInitialConditionsAndRun();
-    //$('#examples').val('');
+    $('#examples').val('');
 }
 
 function getIsSiUnits() {
