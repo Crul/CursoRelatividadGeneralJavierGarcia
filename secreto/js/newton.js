@@ -27,7 +27,7 @@ function runNewton() {
     var stepData = initializeStepDataNewton(r, vr, phi, radiuses);
 
     var dt     = initialConditions.properTimeIncrementAdim;
-    var steps  = initialConditions.stepsCount;
+    var steps  = initialConditions.stepsCount + 1;
     var points = { 'paso': [] };
     var minR = 2;  // Bel radius
     if (initialConditions.siUnits) {
@@ -83,7 +83,6 @@ function runNewton() {
     }
     
     printPointsData(points, steps);
-    lastRunPoints = points;
 
     return {
         caso: getCaso(L, epsilon),
@@ -236,40 +235,44 @@ function initializeStepDataNewton(r, vr, phi, radiuses) {
 function plotNewtonPotentialChart(initialConditions) {
     var L = initialConditions.LAdim;
     var epsilon = initialConditions.epsilonAdim;
-    var radiuses = getNewtonRadiuses(L, epsilon); // DRY
+    var radiuses = getNewtonRadiuses(L, epsilon);  // TODO DRY
     
     var maxXRange = Math.max(radiuses.analiticR1, radiuses.analiticR2);
     if (isNaN(maxXRange)) {
         maxXRange = (radiuses.analiticR1 || radiuses.analiticR2);
         if (!radiuses.analiticR2) {
-            maxXRange *= 5;
+            maxXRange *= POTENTIAL_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR;
         }
     }
-    maxXRange *= (TRAJECTORY_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR * TRAJECTORY_PLOT_MARGIN_FACTOR);
-
-    var xRange = [0, maxXRange/TRAJECTORY_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR];
-
+    maxXRange *= (POTENTIAL_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR * POTENTIAL_PLOT_MARGIN_FACTOR);
+    
     var potential_plot_resolution = (maxXRange / POTENTIAL_PLOT_POINTS_COUNT);
     var plotXValues = range(0, POTENTIAL_PLOT_POINTS_COUNT)
         .map(function(r) { return (r * potential_plot_resolution) + INFINITESIMAL; });
 
-    var plotYValues = plotXValues
-        .map(function(x) { return getNewtonPotential(x, L); });
-
+    var plotYValues = plotXValues.map(function(x) { return getNewtonPotential(x, L); });
     var energyValues = plotXValues.map(function() { return epsilon; });
-
-    var potentialData = [
-        { x: plotXValues, y: plotYValues },
-        { x: plotXValues, y: energyValues },
-    ];
 
     var minL = Math.abs(getMin(plotYValues));
     var maxL = Math.abs(getMax(plotYValues));
     var minLExtremeValue = Math.min(minL, maxL);
     var yRangeValue = Math.max(minLExtremeValue, Math.abs(epsilon));
-    yRangeValue *= TRAJECTORY_PLOT_MARGIN_FACTOR;
+    yRangeValue *= POTENTIAL_PLOT_MARGIN_FACTOR;
     
+    if (initialConditions.siUnits) {
+        plotXValues = plotXValues.map(function(x) { return rBelToRSi(initialConditions.R, x); });
+        plotYValues = plotYValues.map(function(x) { return epsilonBelToEpsilonSi(initialConditions.m, initialConditions.b, x); });
+        energyValues = energyValues.map(function(x) { return epsilonBelToEpsilonSi(initialConditions.m, initialConditions.b, x); });
+        maxXRange = rBelToRSi(initialConditions.R, maxXRange);
+        yRangeValue = epsilonBelToEpsilonSi(initialConditions.m, initialConditions.b, yRangeValue);
+    }
+    
+    var xRange = [0, maxXRange/POTENTIAL_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR];
     var yRange = [ -yRangeValue, yRangeValue ];
+    var potentialData = [
+        { x: plotXValues, y: plotYValues },
+        { x: plotXValues, y: energyValues },
+    ];
     
     var layout = {
       title: 'Energía Potencial',

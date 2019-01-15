@@ -214,7 +214,7 @@ input[readonly] {
 .form-data-box {
     display: inline-block;
     width: 500px;
-    border-radius: 12px;
+    border-radius: 6px;
     margin: 0 6px 6px 6px;
     background-color: rgba(0,0,0, 0.2);
     border: solid 2px rgba(0,0,0, 0.2);
@@ -223,13 +223,13 @@ input[readonly] {
 .form-data-box h3 {
     color: #fff;
     margin: 0;
-    padding: 3px 8px;
+    padding: 2px 8px 2px 3px;
     background-color: rgba(0,0,0, 0.8);
-    border-radius: 12px 12px 0 0;
+    border-radius: 6px 6px 0 0;
     font-weight: normal;
 }
 .form-data-box h3 label {
-    font-size: 120%;
+    font-size: 110%;
     color: #ddd;
 }
 
@@ -349,7 +349,7 @@ input[readonly] {
 }
 
 #examples { 
-    width: 330px;
+    width: 480px;
 }
 
 #inputFormat {
@@ -373,7 +373,7 @@ input[readonly] {
 
 #pointsDataTableDiv {
     overflow-y: scroll;
-    max-height: 420px;
+    height: 420px;
     background-color: #ccc;
 }
 
@@ -384,16 +384,16 @@ input[readonly] {
 }
 #pointsDataTableTitles {
     border-top: solid 2px #ccc;
-    padding-right: 24px;
+    padding-right: 18px;
     background-color: #333;
 }
 
 #pointsDataTableTitles td,
 #pointsDataTable td {
-    padding-left: 8px;
+    font-size: 80%;
 }
 #pointsDataTableTitles td {
-    padding: 2px 12px;
+    padding: 2px 18px;
     color: #fff;
     border-bottom: solid 1px #fff;
 }
@@ -410,13 +410,34 @@ input[readonly] {
     width: 7.5%
 }
 .table-7-cols tr td {
-    width: 13%
+    width: 13.5%
 }
 .table-7-cols tr td:first-child {
-    width: 9%
+    width: 6%
 }
 
-.not-all-data-printed-msg {
+#pointsDataTable td.data-table-msg {
     text-align: center;
     background-color: #333;
+    color: #fff;
+    padding: 3px;
+    font-size: 120%;
 }
+
+#pointsDataTable tfoot button {
+    cursor: pointer;
+    background-color: #1f76b4;
+    border: solid 1px #ccc;
+    border-radius: 5px;
+    color: #ddd;
+    margin: 2px 12px 0 0;
+    vertical-align: top;
+    padding: 3px 11px;
+}   
+
+#pointsDataTable tfoot button:hover {
+    background-color: #1e445d;
+    color: #fff;
+    border-color: #fff;
+}
+    

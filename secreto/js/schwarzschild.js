@@ -1,6 +1,6 @@
 var DELTA_ERROR = 1e-5;
 var SCHWARZSCHILD_RADIUS = 1;
-var INFINITESIMAL_FOR_RADIUSES = 1e-3;;
+var INFINITESIMAL_FACTOR = 1e-3;
 var MIN_RADIUSES_FOR_BISECTION = [1e-3, 1e-6, 1e-9, 1e-12, 1e-15, 1e-20, 1e-25, 1e-30, 1e-40];
 var MAX_RADIUSES_FOR_BISECTION = [1e3, 1e6, 1e9, 1e12, 1e15, 1e20, 1e25, 1e30, 1e40];
 var MAX_RADIUS = 1e40;
@@ -45,9 +45,15 @@ function runSchwarzschild() {
         allowedRanges[1].max = radiuses.r2;
 
     var validRange = allowedRanges.filter(function(range) {
-        return (r + INFINITESIMAL_FOR_RADIUSES) >= range.min && (r - INFINITESIMAL_FOR_RADIUSES) <= range.max;
+        return r >= ((1 - INFINITESIMAL_FACTOR) * range.min) && r <= ((1 + INFINITESIMAL_FACTOR) * range.max);
     });
     if (!validRange.length) {
+        if (initialConditions.siUnits) {
+            allowedRanges = allowedRanges.map(function(range) {
+                return { min: rSchwarzschildToRSi(a, range.min) , max: rSchwarzschildToRSi(a, range.max) };
+            });
+        }
+        
         var allowedRangesStr = allowedRanges
             .map(function(range) { return "<br/>[ " + range.min + " , " + range.max + " ]"; })
             .join("");
@@ -56,11 +62,11 @@ function runSchwarzschild() {
     }
 
     var stepData = initializeStepDataSchwarzschild(initialConditions);
-    var steps  = initialConditions.stepsCount;
+    var steps  = initialConditions.stepsCount + 1;
     var dtau   = initialConditions.totalProperTimeAdim / steps;
     var points = { 'paso': [] };
-    var RAdim;
     var minR = SCHWARZSCHILD_RADIUS;
+    var RAdim = rSiToRSchwarzschild(a, R);
     if (initialConditions.siUnits) {
         points['tauSi'] = [];
         points['tSi']   = [];
@@ -68,7 +74,6 @@ function runSchwarzschild() {
         points['ySi'] = [];
         points['rSi'] = [];
         points['phiSi'] = [];
-        RAdim = rSiToRSchwarzschild(initialConditions.a, R);
         minR = Math.max(minR, RAdim);
     } else {
         points['tau'] = [];
@@ -84,18 +89,21 @@ function runSchwarzschild() {
         var tau = i * dtau;
         var E = Math.sqrt(1 + initialConditions.epsilonAdim)
         var t = (E / (1 - (1/stepData.r))) * tau;
-        var x = stepData.r*Math.cos(stepData.phi);
-        var y = stepData.r*Math.sin(stepData.phi);
         
         points.paso.push(i);
         if (initialConditions.siUnits) {
-            points.xSi.push(rSchwarzschildToRSi(initialConditions.a, x));
-            points.ySi.push(rSchwarzschildToRSi(initialConditions.a, y));
-            points.rSi.push(rSchwarzschildToRSi(initialConditions.a, stepData.r));
-            points.phiSi.push(stepData.phi);
+            var r = rSchwarzschildToRSi(a, stepData.r);
+            var x = r*Math.cos(stepData.phi);
+            var y = r*Math.sin(stepData.phi);
             points.tauSi.push(tSchwarzschildToTSi(a, tau));
             points.tSi.push(tSchwarzschildToTSi(a, t));
+            points.xSi.push(x);
+            points.ySi.push(y);
+            points.rSi.push(r);
+            points.phiSi.push(stepData.phi);
         } else {
+            var x = stepData.r*Math.cos(stepData.phi);
+            var y = stepData.r*Math.sin(stepData.phi);
             points.tau.push(tau);
             points.t.push(t);
             points.x.push(x);
@@ -139,19 +147,19 @@ function runSchwarzschild() {
         }
         
         if (nextVr == 0) {
-            if (radiuses.r0 && Math.abs(nextR - radiuses.r0) <= INFINITESIMAL_FOR_RADIUSES && nextVrSign == 1) {
+            if (radiuses.r0 && areValuesEqual(nextR, radiuses.r0) && nextVrSign == 1) {
                 nextR = radiuses.r0 - INFINITESIMAL;
                 nextVrSign = -1;
                 recalculateBecauseRadius = true;
             }
 
-            if (radiuses.r1 && Math.abs(nextR - radiuses.r1) <= INFINITESIMAL_FOR_RADIUSES && nextVrSign == -1) {
+            if (radiuses.r1 && areValuesEqual(nextR, radiuses.r1) && nextVrSign == -1) {
                 nextR = radiuses.r1 + INFINITESIMAL;
                 nextVrSign = 1;
                 recalculateBecauseRadius = true;
             }
 
-            if (radiuses.r2 && Math.abs(nextR - radiuses.r2) <= INFINITESIMAL_FOR_RADIUSES && nextVrSign == 1) {
+            if (radiuses.r2 && areValuesEqual(nextR, radiuses.r2) && nextVrSign == 1) {
                 nextR = radiuses.r2 - INFINITESIMAL;
                 nextVrSign = -1;
                 recalculateBecauseRadius = true;
@@ -182,13 +190,12 @@ function runSchwarzschild() {
     }
 
     if (initialConditions.siUnits) {
-        plotTrajectory(points.xSi, points.ySi, R, rSchwarzschildToRSi(initialConditions.a, 1));
+        plotTrajectory(points.xSi, points.ySi, R, rSchwarzschildToRSi(a, 1));
     } else {
         plotTrajectory(points.x, points.y, RAdim, 1);
     }
     
     printPointsData(points, steps);
-    lastRunPoints = points;
     
     return {
         caso: radiuses.caso,
@@ -245,7 +252,7 @@ function fillMissingInitialConditionsSchwarzschild(initialConditions) {
                 throw InvalidInitialConditionsError('El signo de vr no es coherente con el valor de vr');
 
             var rSolutions = solveCubic(Math.pow(vr, 2) - epsilon, -1, Math.pow(L, 2), -Math.pow(L, 2));
-            r = getMax(rSolutions);
+            r = 2 * getMax(rSolutions);  // TODO 2 * ????
             vphi = L/Math.pow(r, 2);
             if (vr != 0)
                 vrSign = vr/Math.abs(vr);
@@ -320,45 +327,45 @@ function initializeStepDataSchwarzschild(initialConditions) {
 }
 
 function plotSchwarzschildPotentialChart(initialConditions) {
-    var L = initialConditions.LAdim;
-    var epsilon = initialConditions.epsilonAdim;
-
-    var radiuses = getSchwarzschildRadiuses(initialConditions);
+    var radiuses = getSchwarzschildRadiuses(initialConditions);  // TODO DRY
+    
     var definedRadiuses = [ radiuses.r0, radiuses.r1, radiuses.r2 ]
         .filter(function(r) { return r !== undefined; });
 
     if (definedRadiuses.length == 0) {
-        definedRadiuses = [5 * initialConditions.rAdim];
+        definedRadiuses = [POTENTIAL_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR * initialConditions.rAdim];
     }
     
-    var maxXRange = (TRAJECTORY_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR * TRAJECTORY_PLOT_MARGIN_FACTOR * getMax(definedRadiuses));
+    var maxXRange = (POTENTIAL_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR * POTENTIAL_PLOT_MARGIN_FACTOR * getMax(definedRadiuses));
     if (!radiuses.r2 || radiuses.r1 == radiuses.r2)
-        maxXRange *= 5;
+        maxXRange *= POTENTIAL_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR;
 
-    var xRange = [0, maxXRange/TRAJECTORY_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR];
 
     var potential_plot_resolution = (maxXRange / POTENTIAL_PLOT_POINTS_COUNT);
     var plotXValues = range(0, POTENTIAL_PLOT_POINTS_COUNT)
         .map(function(r) { return (r * potential_plot_resolution) + INFINITESIMAL; });
 
-    var plotYValues = plotXValues
-        .map(function(x) { return getEinsteinPotential(x, L); });
+    var L = initialConditions.LAdim;
+    var plotYValues = plotXValues.map(function(x) { return getEinsteinPotential(x, L); });
 
+    var epsilon = initialConditions.epsilonAdim;
     var energyValues = plotXValues.map(function() { return epsilon; });
-
+    yRangeValue = POTENTIAL_PLOT_MARGIN_FACTOR * Math.abs(epsilon);
+    
+    if (initialConditions.siUnits) {
+        plotXValues = plotXValues.map(function(x) { return rSchwarzschildToRSi(initialConditions.a, x); });
+        plotYValues = plotYValues.map(function(x) { return epsilonSchwarzschildToEpsilonSi(initialConditions.m, x); });
+        energyValues = energyValues.map(function(x) { return epsilonSchwarzschildToEpsilonSi(initialConditions.m, x); });
+        maxXRange = rSchwarzschildToRSi(initialConditions.a, maxXRange);
+        yRangeValue = epsilonSchwarzschildToEpsilonSi(initialConditions.m, yRangeValue);
+    }
+    
+    var xRange = [0, maxXRange/POTENTIAL_PLOT_DRAW_OUTSIDE_ZOOM_FACTOR];
+    var yRange = [ -yRangeValue, yRangeValue ];
     var potentialData = [
         { x: plotXValues, y: plotYValues },
         { x: plotXValues, y: energyValues },
     ];
-    
-    // var minL = Math.abs(getMin(plotYValues));
-    // var maxL = Math.abs(getMax(plotYValues));
-    // var minLExtremeValue = Math.min(minL, maxL);
-    // var yRangeValue = Math.max(minLExtremeValue, Math.abs(epsilon));
-    // yRangeValue *= TRAJECTORY_PLOT_MARGIN_FACTOR;
-    
-    yRangeValue = TRAJECTORY_PLOT_MARGIN_FACTOR * Math.abs(epsilon);
-    var yRange = [ -yRangeValue, yRangeValue ];
     
     var layout = {
       title: 'Energía Potencial',
@@ -519,11 +526,11 @@ function getSchwarzschildRadiuses(initialConditions) {
         var minimumPotential = getEinsteinPotential(rc2, L);
         var maximumPotential = getEinsteinPotential(rc1, L);
 
-        if (epsilon < minimumPotential - INFINITESIMAL_FOR_RADIUSES) {
+        if (areValuesEqual(epsilon, minimumPotential)) {
             r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 5;
 
-        } else if (Math.abs(epsilon - minimumPotential) < INFINITESIMAL_FOR_RADIUSES) {
+        } else if (areValuesEqual(epsilon, minimumPotential)) {
             r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             r1 = rc2;
             r2 = rc2;
@@ -535,7 +542,7 @@ function getSchwarzschildRadiuses(initialConditions) {
             r2 = einsteinianBisection(rc2, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 3; // 3b
 
-        } else if (Math.abs(epsilon - maximumPotential) < INFINITESIMAL_FOR_RADIUSES) {
+        } else if (areValuesEqual(epsilon, maximumPotential)) {
             r0 = rc1;
             r1 = rc1;
             r2 = einsteinianBisection(rc2, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
@@ -556,13 +563,13 @@ function getSchwarzschildRadiuses(initialConditions) {
             r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             caso = 10;
 
-        } else if (Math.abs(epsilon - minimumPotential) < INFINITESIMAL_FOR_RADIUSES) {
+        } else if (areValuesEqual(epsilon, minimumPotential)) {
             r0 = einsteinianBisection(MIN_RADIUSES_FOR_BISECTION, MAX_RADIUSES_FOR_BISECTION, L, epsilon);
             r1 = rc2;
             r2 = rc2;
             caso = 9;
 
-        } else if (Math.abs(epsilon - maximumPotential) < INFINITESIMAL_FOR_RADIUSES) {
+        } else if (areValuesEqual(epsilon, maximumPotential)) {
             r0 = rc1;
             r1 = rc1;
             caso = 8;
@@ -581,6 +588,11 @@ function getSchwarzschildRadiuses(initialConditions) {
     }
 
     return { r0: r0, r1: r1, r2: r2, rc1: rc1, rc2: rc2, caso: caso };
+}
+
+function areValuesEqual(v1, v2) {
+    var vRatio = v1 / v2;
+    return vRatio < (1 + INFINITESIMAL_FACTOR) && vRatio > (1 - INFINITESIMAL_FACTOR);
 }
 
 function einsteinianBisection(a, b, L, epsilon) {

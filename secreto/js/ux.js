@@ -112,7 +112,9 @@ function handleException(ex) {
     if (ex.name != 'InvalidInitialConditionsError')
         throw ex;
 
+    pointsShown = 0;
     lastRunPoints = undefined;
+    csvData = '';
     $('form input[readonly="readonly"]').val('');
     $('#trajectoryPlot').html('');
     $('#errorMsg').html(ex.message);
@@ -236,7 +238,8 @@ function printPointsData(points, dataLength) {
     var theadCells = pointTypes.map(function(pointType) { return $('<td>').html(pointType); });
     var thead = $('<thead>').append($('<tr>').append(theadCells));
 
-    var tbodyRows = range(0, Math.min(dataLength, MAX_POINTS_TO_PRINT)).map(function(i) {
+    var pointsToPrint = Math.min(dataLength, MAX_POINTS_TO_PRINT);
+    var tbodyRows = range(0, pointsToPrint).map(function(i) {
         return pointsRow = $('<tr>').append(
             pointTypes.map(function(pointType) {
                 return $('<td>').html(points[pointType][i]);
@@ -247,36 +250,106 @@ function printPointsData(points, dataLength) {
     });
 
     var tbody = $('<tbody>').append(tbodyRows);
+    var tfoot = $('<tfoot>');
 
     if (dataLength > MAX_POINTS_TO_PRINT) {
-        tbody.append(
+        tfoot.append(
             $('<tr>').append(
                 $('<td>')
                     .prop('colspan', pointTypes.length)
-                    .addClass('not-all-data-printed-msg')
-                    .append('Sólo se muestran los primeros ' + MAX_POINTS_TO_PRINT + ' valores')
+                    .addClass('data-table-msg')
+                    .append($('<button/>').html('Cargar más').click(loadMoreData))
+                    .append('Sólo se muestran los primeros ' + MAX_POINTS_TO_PRINT + ' pasos (total ' + (dataLength-1) + ' pasos)')
+            )
+        );
+    } else {
+        tfoot.append(
+            $('<tr>').append(
+                $('<td>')
+                    .prop('colspan', pointTypes.length)
+                    .addClass('data-table-msg')
+                    .append('Simulación finalizada tras ' + (dataLength-1) + ' pasos')
             )
         );
     }
 
     var tableCssClass = 'table-' + pointTypes.length + '-cols';
-    $('#pointsDataTableTitles').html('').append(thead).attr('class', tableCssClass);
-    $('#pointsDataTable').html('').append(tbody).attr('class', tableCssClass);
+    $('#pointsDataTableTitles').html('').attr('class', tableCssClass).append(thead);
+    $('#pointsDataTable').html('').attr('class', tableCssClass).append(tbody).append(tfoot);
     
     var csvTitles = pointTypes.join(";");
-    var csvData = range(0, Math.min(dataLength, MAX_POINTS_TO_PRINT))
+    var csvRowsData = range(0, pointsToPrint)
         .map(function(i) {
             return pointTypes.map(function(pointType) { return points[pointType][i]; }).join(";")
         })
         .join("\n");
     
-    var csv = csvTitles + "\n" + csvData;
+    csvData = csvTitles + "\n" + csvRowsData;
     
     $('#downloadDataBtn')
-        .attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv))
+        .attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csvData))
         .attr('download', 'simulation.csv');
         
     $('#downloadData').fadeIn();
+    pointsShown = pointsToPrint + 1;
+    lastRunPoints = points;
+}
+
+function loadMoreData() {
+    if (!lastRunPoints) return;
+    
+    var dataLength = lastRunPoints.paso.length;
+    if (dataLength <= pointsShown) return;
+    
+    var pointTypes = Object.keys(lastRunPoints);
+    var printPointsUntil = Math.min(dataLength, pointsShown + MAX_POINTS_TO_PRINT) - 1;
+    var pointsRange = range(pointsShown, printPointsUntil);
+    var tbodyRows = pointsRange.map(function(i) { // TODO DRY
+        return pointsRow = $('<tr>').append(
+            pointTypes.map(function(pointType) {
+                return $('<td>').html(lastRunPoints[pointType][i]);
+            })
+        );
+
+        return pointsRow;
+    });
+    
+    $('#pointsDataTable tbody').append(tbodyRows);
+    
+    var csvRowsData = pointsRange // TODO DRY
+        .map(function(i) {
+            return pointTypes.map(function(pointType) { return lastRunPoints[pointType][i]; }).join(";")
+        })
+        .join("\n");
+    
+    csvData = csvData + "\n" + csvRowsData;
+    
+    $('#downloadDataBtn')
+        .attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csvData))
+        .attr('download', 'simulation.csv');
+        
+    pointsShown = printPointsUntil + 1;
+    
+    var tfootRow;
+    if (dataLength > pointsShown) {
+       tfootRow = $('<tr>').append(
+            $('<td>')
+                .prop('colspan', pointTypes.length)
+                .addClass('data-table-msg')
+                .append($('<button/>').html('Cargar más').click(loadMoreData))
+                .append('Sólo se muestran los primeros ' + printPointsUntil + ' pasos (total ' + (dataLength-1) + ' pasos)')
+        );
+    } else {
+       tfootRow = $('<tr>').append(
+            $('<td>')
+                .prop('colspan', pointTypes.length)
+                .addClass('data-table-msg')
+                .append('Simulación finalizada tras ' + (dataLength-1) + ' pasos')
+        );
+    }
+    
+    $('#pointsDataTable tfoot').html('').append(tfootRow);
+    $('#pointsDataTableDiv').scrollTop($('#pointsDataTableDiv').prop("scrollHeight"));
     
 }
 
