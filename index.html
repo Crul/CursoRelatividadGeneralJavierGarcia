@@ -228,6 +228,10 @@
           <a href="#capitulo-45">Capítulo 45</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=g-P2aTiKykI&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
         </li>
+        <li>
+          <a href="#capitulo-46">Capítulo 46</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=g-cB3Rx-19SkE&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
+        </li>
       </ul>
       </ul>
       <div class="fold-buttons">
@@ -3322,6 +3326,153 @@
       <span class="wolfram-alpha-link">
         <a target="_blank" href="https://www.wolframalpha.com/input/?i=y+%3D+sqrt(1+%2B+x%5E2)">ver en Wolfram Alpha</a>
         <div class="only-for-print">https://www.wolframalpha.com/input/?i=y+%3D+sqrt(1+%2B+x%5E2)</div>
+      </span>
+    </div>
+  </div>
+
+  <h2 id="capitulo-46"><a href="#capitulo-46" class="formulas-title">Capítulo 46: Agujero de Gusano de Einstein-Rosen</a></h2>
+  <div class="capitulo-46 formulas">
+    <div class="grupo-formulas">
+      <a class="no-formula" target="_blank" href="Zonas Agujero Negro.m">
+        Código MATLAB: Zonas Agujero Negro
+        <div class="only-for-print">https://crul.github.io/CursoRelatividadGeneralJavierGarcia/Zonas Agujero Negro.m</div>
+      </a>
+    </div>
+    <br/>
+    <div class="grupo-formulas">
+      <a class="no-formula" target="_blank" href="https://sci-hub.tw/10.1103/PhysRev.48.73">
+        Einstein, A., & Rosen, N. (1935). The Particle Problem in the General Theory of Relativity (Sci-Hub) 
+        <div class="only-for-print">https://sci-hub.tw/10.1103/PhysRev.48.73</div>
+      </a>
+    </div>
+    <br/>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.1) Cambio de coordenadas en la zona I
+      </span>
+      <span class="formula">
+        T = \sqrt{ r - 1 } e^\frac{r}{2} \sinh{ \frac{t}{2} }
+      </span>
+      <span class="formula">
+        X = \sqrt{ r - 1 } e^\frac{r}{2} \cosh{ \frac{t}{2} }
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.2) Cambio de coordenadas en la zona II
+      </span>
+      <span class="formula">
+        T = \sqrt{ 1 - r } e^\frac{r}{2} \cosh{ \frac{t}{2} }
+      </span>
+      <span class="formula">
+        X = \sqrt{ 1 - r } e^\frac{r}{2} \sinh{ \frac{t}{2} }
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.3) Cambio de coordenadas en la zona III
+      </span>
+      <span class="formula">
+        T = - \sqrt{ r - 1 } e^\frac{r}{2} \sinh{ \frac{t}{2} }
+      </span>
+      <span class="formula">
+        X = - \sqrt{ r - 1 } e^\frac{r}{2} \cosh{ \frac{t}{2} }
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.4) Cambio de coordenadas en la zona IV
+      </span>
+      <span class="formula">
+        T = - \sqrt{ 1 - r } e^\frac{r}{2} \cosh{ \frac{t}{2} }
+      </span>
+      <span class="formula">
+        X = - \sqrt{ 1 - r } e^\frac{r}{2} \sinh{ \frac{t}{2} }
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.5) Métrica de Einstein-Rosen
+      </span>
+      <span class="formula">
+        ds^2 = - \frac{ u^2 }{ 4 + u^2 } dt^2
+          + \frac{ 4 + u^2 }{4} du^2
+          + \left( 1 + \frac{u^2}{4} \right)^2
+            \left( d\theta^2 + \sin^2 \theta d\phi^2 \right)
+      </span>
+      <span class="formula-titulo">
+        Cambio de coordenadas:
+      </span>
+      <span class="formula">
+          r = 1 + \frac{u^2}{4}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.7) Aplicando a al fórmula (46.6)<br/>
+        el siguiente cambio de coordenadas:
+      </span>
+      <span class="formula">
+        T = \frac{u}{2} e^{ \frac{1}{2} + \frac{u^2}{8} } \sinh{ \frac{t}{2} }
+      </span>
+      <span class="formula">
+        X = \frac{u}{2} e^{ \frac{1}{2} + \frac{u^2}{8} } \cosh{ \frac{t}{2} }
+      </span>
+      <span class="formula-titulo">
+        Obtenemos:
+      </span>
+      <span class="formula">
+        ds^2 = \frac{4}{ 1 + \frac{u^2}{4} } e^{ - \left( 1 + \frac{u^2}{4} \right) }
+          \left( -dT^2 + dX^2 \right) + r^2 d\Omega^2
+      </span>
+      <span class="formula">
+        X^2 - T^2 = \frac{u^2}{4} e^{ 1 + \frac{u^2}{4} }
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.8) Fijando &theta; y &phi;:
+      </span>
+      <span class="formula">
+        ds^2 = - f dt^2 + g du^2
+      </span>
+      <span class="formula-titulo">
+        Con:
+      </span>
+      <span class="formula">
+        f = \frac{u^2}{4 + u^2}
+      </span>
+      <span class="formula">
+        g = \frac{4 + u^2}{4}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.9) Geodésicas radiales
+      </span>
+      <span class="formula">
+        \frac{dt}{d\tau} = \frac{1}{f}
+      </span>
+      <span class="formula">
+        \frac{du}{d\tau} = \frac{-4}{ u \sqrt{ 4 + u^2 } }
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.10) Velocidad radial observada<br/>
+        por un observador lejano:
+      </span>
+      <span class="formula">
+        v = - \frac{4u}{ \left( 4 + u^2 \right)^{ \frac{3}{2} } }
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (46.11) Velocidad radial observada<br/>
+        por un observador estático:
+      </span>
+      <span class="formula">
+        v = \frac{2}{ \sqrt{ 4 + u^2 } }
       </span>
     </div>
   </div>
