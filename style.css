@@ -85,7 +85,7 @@ ul {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  height: 381px; /* =27x14+3 | 14 = 53/4 */
+  height: 381px; /* =27x14+3 | 14 = 54/4 */
   margin: 0;
   padding: 16px 16px 4px 16px;
   vertical-align: top;
@@ -319,7 +319,7 @@ h2 {
 
 @media screen and (max-width: 1000px) {
   ul {
-    height: 489px; /* =27x18+3 | 18 = 53/3 */
+    height: 489px; /* =27x18+3 | 18 = 54/3 */
   }
 }
 
@@ -344,7 +344,7 @@ h2 {
 
 @media screen and (max-width: 582px) {
   ul {
-    height: 732px; /* =27x27+3 | 27 = 53/2 */
+    height: 732px; /* =27x27+3 | 27 = 54/2 */
   }
 }
 
