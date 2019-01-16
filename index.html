@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="favicon.png" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.css" integrity="sha384-VEnyslhHLHiYPca9KFkBB3CMeslnM9CzwjxsEbZTeA21JBm7tdLwKoZmCt3cZTYD" crossorigin="anonymous" />
-  <link rel="stylesheet" href="style.css?v=20181229" />
+  <link rel="stylesheet" href="style.css?v=20190116" />
 </head>
 
 <body>
@@ -231,6 +231,10 @@
         <li>
           <a href="#capitulo-46">Capítulo 46</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=g-cB3Rx-19SkE&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
+        </li>
+        <li>
+          <a href="#capitulo-47">Capítulo 47</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=g-cB3Rx-3d88IVE1eME&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
         </li>
       </ul>
       </ul>
@@ -3477,9 +3481,93 @@
     </div>
   </div>
 
+  <h2 id="capitulo-47"><a href="#capitulo-47" class="formulas-title">Capítulo 47: Diagramas de Penrose</a></h2>
+  <div class="capitulo-47 formulas">
+    <div class="grupo-formulas">
+      <a class="no-formula" target="_blank" href="Diagrama de Penrose.m">
+        Código MATLAB: Diagrama de Penrose
+        <div class="only-for-print">https://crul.github.io/CursoRelatividadGeneralJavierGarcia/Diagrama de Penrose.m</div>
+      </a>
+    </div>
+    <br/>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (47.1) Cuadri-momento de la luz fijando &theta; = <sup>&pi;</sup>/<sub>2</sub>:
+      </span>
+      <span class="formula">
+        \underline{k} = A e_0 + \sqrt{ A^2 - \frac{1}{r^2} B^2 } e_1 + \frac{B}{r^2} e_3
+      </span>
+      <span class="formula-titulo">
+        Con:
+      </span>
+      <span class="formula">
+        \frac{dt}{d\lambda} = A
+      </span>
+      <span class="formula">
+        \frac{dr}{d\lambda} = \sqrt{ A^2 - \frac{1}{r^2} B^2 } 
+      </span>
+      <span class="formula">
+        \frac{dt}{d\lambda} = \frac{B}{r^2}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (47.2) Geodésica de la luz:
+      </span>
+      <span class="formula">
+        t - t_0 = \sqrt{ r^2 - \left( \frac{B}{A} \right)^2 }
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (47.3) Métrica en las coordenadas del diagrama de Penrose:
+      </span>
+      <span class="formula">
+        ds^2 = \frac{ -dT^2 + dX^2 }
+          {
+            \left( 1 - \left( T + X \right)^2 \right)
+            \left( 1 - \left( T - X \right)^2 \right)
+          }
+      </span>
+      <span class="formula-titulo">
+        Siendo:
+      </span>
+      <span class="subgrupo-horiz-formulas">
+        <span class="formula">
+          u = T + X
+        </span>
+        <span class="formula">
+          v = T - X
+        </span>
+      </span>
+      <span class="formula-titulo">
+        Siendo:
+      </span>
+      <span class="subgrupo-horiz-formulas">
+        <span class="formula">
+          u = \tanh{q}
+        </span>
+        <span class="formula">
+          v = \tanh{p}
+        </span>
+      </span>
+      <span class="formula-titulo">
+        Siendo:
+      </span>
+      <span class="subgrupo-horiz-formulas">
+        <span class="formula">
+          p = t - r
+        </span>
+        <span class="formula">
+          q = t + r
+        </span>
+      </span>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js" integrity="sha384-O4hpKqcplNCe+jLuBVEXC10Rn1QEqAmX98lKAIFBEDxZI0a+6Z2w2n8AEtQbR4CD" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script type="text/javascript" src="script.js?v=20181229"></script>
+  <script type="text/javascript" src="script.js?v=20190116"></script>
 
 </body>
 </html>
