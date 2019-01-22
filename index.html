@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="favicon.png" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.css" integrity="sha384-VEnyslhHLHiYPca9KFkBB3CMeslnM9CzwjxsEbZTeA21JBm7tdLwKoZmCt3cZTYD" crossorigin="anonymous" />
-  <link rel="stylesheet" href="style.css?v=20190116" />
+  <link rel="stylesheet" href="style.css?v=20190121" />
 </head>
 
 <body>
@@ -243,6 +243,10 @@
         <li>
           <a href="#capitulo-49">Capítulo 49</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=g-cB3Rx-7p_qoHZD62A&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
+        </li>
+        <li>
+          <a href="#capitulo-50">Capítulo 50</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=g-cB3Rx-B6tzPhAli7g&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
         </li>
       </ul>
       <div class="fold-buttons">
@@ -3640,9 +3644,236 @@
     </div>
   </div>
 
+  <h2 id="capitulo-50"><a href="#capitulo-50" class="formulas-title">Capítulo 50: Tensor Energía - Momento</a></h2>
+  <div class="capitulo-50 formulas">
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.1) Divergencia de un cuadri-vector
+      </span>
+      <span class="formula">
+        div \underline{A} = Tr \left( \nabla_\alpha A^\beta \right) = \nabla_\alpha A^\alpha
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.2) Métrica de Minkowski en coordenadas polares (2D)
+      </span>
+      <span class="formula">
+        ds^2 = -c^2 dt^2 + dr^2 + r^2 d\theta^2
+      </span>
+      <span class="formula-titulo">
+        Símbolos de Christoffel
+      </span>
+      <span class="formula">
+        \Gamma^r_{\theta\theta} = -r
+      </span>
+      <span class="formula">
+        \Gamma^\theta_{\theta r} = \frac{1}{r}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.3) Divergencia de un cuadri-vector en coordenadas polares
+      </span>
+      <span class="formula">
+        div \underline{A} = \partial_r A^r + \partial_\theta A^\theta + \frac{1}{r} A^r
+      </span>
+      <span class="formula-titulo">
+        La versión de los libros
+      </span>
+      <span class="formula">
+        div \underline{A} = \frac{1}{r} \frac{\partial}{\partial r} \left( r a^r \right)
+          + \frac{1}{r} \frac{\partial a^\theta}{\partial \theta}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.4) Ecuación de continuidad<br/>
+        para cualquier conjunto de coordenadas
+      </span>
+      <span class="formula">
+        \nabla_\alpha J^\alpha = 0
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.5) Ecuación de continuidad<br/>
+        de un cuadri-vector en coordenadas polares
+      </span>
+      <span class="formula">
+        \underline{J} = \rho c e_0 + \rho v^r e_r + \rho v^\theta e_\theta
+      </span>
+      <span class="formula">
+        \nabla_\alpha J^\alpha = \partial_0 \left( \rho c \right) + \partial_r A^r + \partial_\theta A^\theta + \frac{1}{r} A^r = 0
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.6) Ecuación de continuidad<br/>
+        de un cuadri-vector en coordenadas cilíndricas
+      </span>
+      <span class="formula">
+        \underline{J} = \rho c e_0 + \rho v^r e_r + \rho v^\theta e_\theta + \rho v^z e_z
+      </span>
+      <span class="formula">
+        \nabla_\alpha J^\alpha = \partial_0 \left( \rho c \right) + \partial_r A^r + \partial_\theta A^\theta + \frac{1}{r} A^r + \partial_z A^z = 0
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.7) Vector cuadri-momento
+        <br/>en un espacio-tiempo de Minkowski
+      </span>
+      <span class="formula">
+        \underline{p} = m \gamma c e_0 + m \gamma v e_1
+      </span>
+      <span class="formula-titulo">
+        <a href="#capitulo-26" class="formula-link">Ver fórmula (26.4)</a>
+      </span>
+      <span class="formula">
+        \gamma = \frac{1}{ \sqrt{ 1 - \frac{v^2}{c^2} } }
+      </span>
+      <span class="formula">
+        u^0 = c \gamma
+      </span>
+      <span class="formula">
+        u^1 = v \gamma
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.8) Energía
+        <br/>de un cuerpo en
+        <br/>caída libre en un
+        <br/>espacio-tiempo
+        <br/>de Minkowski
+      </span>
+      <span class="formula">
+        E = m \gamma c^2
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.9) Cantidad
+        <br/>de movimiento
+        <br/>de un cuerpo en
+        <br/>caída libre en un
+        <br/>espacio-tiempo
+        <br/>de Minkowski
+      </span>
+      <span class="formula">
+        p = m \gamma v
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.10) Densidad de masa
+        <br/>de un grupo de partículas
+        <br/>en reposo medido en su
+        <br/>sistema de referencia
+        <br/>(rest frame)
+      </span>
+      <span class="formula">
+        \rho_0 = \frac{Nm}{L_0}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.11) Densidad de energía
+        <br/>de un grupo de partículas
+        <br/>en reposo medido en su
+        <br/>sistema de referencia
+        <br/>(rest frame)
+      </span>
+      <span class="formula">
+        \varepsilon_0 = \rho_0 c^2
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.12) Densidad de masa
+        <br/>de un grupo de partículas
+        <br/>en reposo medido en un
+        <br/>sistema de referencia
+        <br/>inercial (lab frame)
+      </span>
+      <span class="formula">
+        \rho = \rho_0 \gamma
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.13) Densidad de energía
+        <br/>de un grupo de partículas
+        <br/>en reposo medido en un
+        <br/>sistema de referencia
+        <br/>inercial (lab frame)
+      </span>
+      <span class="formula">
+        \varepsilon = \varepsilon_0 \gamma^2
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.14) Cuadri-momento <u>p</u>
+        <br/>expresado en términos de
+        <br/>la energía y el momento
+      </span>
+      <span class="formula">
+        \underline{p} = \frac{E}{c} e_0 + p e_1
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.15) Conservación local
+        <br/>de la energía (&epsilon;)
+      </span>
+      <span class="formula">
+        \partial_\mu \mathbb{T}^{\mu 0} = 0
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.16) Densidad de
+        <br/>candidad de movimiento
+      </span>
+      <span class="formula">
+        \pi = \frac{Np}{L}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (50.17) Tensor de Energía-Momento
+      </span>
+      <span class="formula">
+        \mathbb{T} = \rho_0 \underline{u} \otimes \underline{u}
+      </span>
+      <span class="formula-titulo">
+        A partir de:
+      </span>
+      <span class="formula">
+        \mathbb{T} = \frac{\varepsilon_0}{c^2} \left(
+          u^0 u^0 e_0 \otimes e_0 +
+          u^0 u^1 e_0 \otimes e_1 +
+          u^1 u^0 e_1 \otimes e_0 +
+          u^! u^1 e_1 \otimes e_1
+        \right)
+      </span>
+      <span class="formula-titulo">
+        A partir de:
+      </span>
+      <span class="formula">
+        \mathbb{T} = \varepsilon_0 \gamma^2 e_0 \otimes e_0
+          + \varepsilon_0 \gamma^2 \frac{v}{c}
+          \left( e_0 \otimes e_1 + e_1 \otimes e_0 \right)
+          + \varepsilon_0 \gamma^2 \frac{v}{c} e_1 \otimes e_1
+      </span>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js" integrity="sha384-O4hpKqcplNCe+jLuBVEXC10Rn1QEqAmX98lKAIFBEDxZI0a+6Z2w2n8AEtQbR4CD" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script type="text/javascript" src="script.js?v=20190116"></script>
+  <script type="text/javascript" src="script.js?v=20190121"></script>
 
 </body>
 </html>
