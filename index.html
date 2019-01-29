@@ -3682,6 +3682,9 @@
         La versión de los libros
       </span>
       <span class="formula">
+        \underline{A} = a^r \hat{e}_r + a^\theta \hat{e}_\theta
+      </span>
+      <span class="formula">
         div \underline{A} = \frac{1}{r} \frac{\partial}{\partial r} \left( r a^r \right)
           + \frac{1}{r} \frac{\partial a^\theta}{\partial \theta}
       </span>
@@ -3689,7 +3692,7 @@
     <div class="grupo-formulas">
       <span class="formula-titulo">
         (50.4) Ecuación de continuidad<br/>
-        para cualquier conjunto de coordenadas
+        para coordenadas de Minkowski
       </span>
       <span class="formula">
         \nabla_\alpha J^\alpha = 0
@@ -3704,7 +3707,11 @@
         \underline{J} = \rho c e_0 + \rho v^r e_r + \rho v^\theta e_\theta
       </span>
       <span class="formula">
-        \nabla_\alpha J^\alpha = \partial_0 \left( \rho c \right) + \partial_r A^r + \partial_\theta A^\theta + \frac{1}{r} A^r = 0
+        \nabla_\alpha J^\alpha =
+          \partial_0 \left( \rho c \right)
+          + \partial_r \left( \rho v^r \right)
+          + \partial_\theta \left( \rho v^\theta \right)
+          + \frac{1}{r} \rho v^r = 0
       </span>
     </div>
     <div class="grupo-formulas">
@@ -3716,7 +3723,12 @@
         \underline{J} = \rho c e_0 + \rho v^r e_r + \rho v^\theta e_\theta + \rho v^z e_z
       </span>
       <span class="formula">
-        \nabla_\alpha J^\alpha = \partial_0 \left( \rho c \right) + \partial_r A^r + \partial_\theta A^\theta + \frac{1}{r} A^r + \partial_z A^z = 0
+        \nabla_\alpha J^\alpha =
+          \partial_0 \left( \rho c \right)
+          + \partial_r \left( \rho v^r \right)
+          + \partial_\theta \left( \rho v^\theta \right)
+          + \frac{1}{r} \rho v^r
+          + \partial_z \left( \rho v^z \right) = 0
       </span>
     </div>
     <div class="grupo-formulas">
@@ -3826,7 +3838,7 @@
     <div class="grupo-formulas">
       <span class="formula-titulo">
         (50.15) Conservación local
-        <br/>de la energía (&epsilon;)
+        <br/>de la energía (&epsilon;) en Minkowski
       </span>
       <span class="formula">
         \partial_\mu \mathbb{T}^{\mu 0} = 0
@@ -3843,30 +3855,12 @@
     </div>
     <div class="grupo-formulas">
       <span class="formula-titulo">
-        (50.17) Tensor de Energía-Momento
+        (50.17) Tensor de enegía momento
+        <br/>de partículas en reposo
+        <br/>y sin interacción entre ellas
       </span>
       <span class="formula">
         \mathbb{T} = \rho_0 \underline{u} \otimes \underline{u}
-      </span>
-      <span class="formula-titulo">
-        A partir de:
-      </span>
-      <span class="formula">
-        \mathbb{T} = \frac{\varepsilon_0}{c^2} \left(
-          u^0 u^0 e_0 \otimes e_0 +
-          u^0 u^1 e_0 \otimes e_1 +
-          u^1 u^0 e_1 \otimes e_0 +
-          u^! u^1 e_1 \otimes e_1
-        \right)
-      </span>
-      <span class="formula-titulo">
-        A partir de:
-      </span>
-      <span class="formula">
-        \mathbb{T} = \varepsilon_0 \gamma^2 e_0 \otimes e_0
-          + \varepsilon_0 \gamma^2 \frac{v}{c}
-          \left( e_0 \otimes e_1 + e_1 \otimes e_0 \right)
-          + \varepsilon_0 \gamma^2 \frac{v}{c} e_1 \otimes e_1
       </span>
     </div>
   </div>
