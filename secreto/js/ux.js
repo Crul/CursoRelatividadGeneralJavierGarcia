@@ -566,6 +566,7 @@ function onInitialConditionsChange() {
         return true;
 
     } catch(ex) {
+        $('#loading').hide();
         handleException(ex);
     }
 }
