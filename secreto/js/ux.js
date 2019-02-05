@@ -103,6 +103,7 @@ function run() {
         var results = physicsConfigs[currentPhysics].run();
         console.debug('run', results);
     } catch(ex) {
+        $('#loading').hide();
         handleException(ex);
     }
     $('#loading').hide();
