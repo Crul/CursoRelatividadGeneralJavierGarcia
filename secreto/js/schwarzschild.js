@@ -32,17 +32,33 @@ function runSchwarzschild() {
     var L       = initialConditions.LAdim;
     var epsilon = initialConditions.epsilonAdim;
     var a       = initialConditions.a;
+    var RAdim = R ? rSiToRSchwarzschild(a, R) : SCHWARZSCHILD_RADIUS;
 
     var radiuses = getSchwarzschildRadiuses(initialConditions);
-    var allowedRanges = [ { min: 1, max: MAX_RADIUS }];
-    if (radiuses.r0)
-        allowedRanges[0].max = radiuses.r0;
+    var minRadius = Math.max(RAdim, SCHWARZSCHILD_RADIUS);
+    var allowedRanges = [ { min: minRadius, max: MAX_RADIUS }];
+    if (radiuses.r0) {
+        if (radiuses.r0 < minRadius) {
+            allowedRanges = [];
+        } else {
+            allowedRanges[0].max = radiuses.r0;
+        }
+    }
 
-    if (radiuses.r1)
-        allowedRanges.push({ min: radiuses.r1, max: MAX_RADIUS })
+    if (radiuses.r1) {
+        var minRadius2 = Math.max(RAdim, radiuses.r1);
 
-    if (radiuses.r2)
-        allowedRanges[1].max = radiuses.r2;
+        if (radiuses.r2) {
+            if (radiuses.r2 < minRadius2) {
+                allowedRanges = [];
+            } else {
+                allowedRanges.push({ min: minRadius2, max: MAX_RADIUS });
+                allowedRanges[allowedRanges.length-1].max = radiuses.r2;
+            }
+        } else {
+            allowedRanges.push({ min: minRadius2, max: MAX_RADIUS });
+        }
+    }
 
     var validRange = allowedRanges.filter(function(range) {
         return r >= ((1 - INFINITESIMAL_FACTOR) * range.min) && r <= ((1 + INFINITESIMAL_FACTOR) * range.max);
@@ -58,15 +74,24 @@ function runSchwarzschild() {
             .map(function(range) { return "<br/>[ " + range.min + " , " + range.max + " ]"; })
             .join("");
 
-        throw InvalidInitialConditionsError('El valor de r no es válido. Ha de estar en los intervalos: ' + allowedRangesStr);
+        var errorMsg;
+        if (!allowedRangesStr) {
+            errorMsg = 'Con los datos indicados no hay ningún valor de r válido; revisa los datos (pista: mira el radio del planeta).';
+        } else {
+            errorMsg = 'El valor de r no es válido. Ha de estar en los intervalos: ' + allowedRangesStr;
+            if (initialConditions.inputFormat != 'L-epsilon-r') {
+                errorMsg += '<br/>Si vas a cambiar el valor de r, <strong>selecciona antes la opción "L, &epsilon;, r" en "Datos de Entrada"</strong>.';
+            }
+        }
+
+        throw InvalidInitialConditionsError(errorMsg);
     }
 
     var stepData = initializeStepDataSchwarzschild(initialConditions);
     var steps  = initialConditions.stepsCount + 1;
     var dtau   = initialConditions.totalProperTimeAdim / steps;
     var points = { 'paso': [] };
-    var minR = SCHWARZSCHILD_RADIUS;
-    var RAdim = rSiToRSchwarzschild(a, R);
+    var minR = Math.max(RAdim, SCHWARZSCHILD_RADIUS + DELTA_ERROR);
     if (initialConditions.siUnits) {
         points['tauSi'] = [];
         points['tSi']   = [];
@@ -74,7 +99,6 @@ function runSchwarzschild() {
         points['ySi'] = [];
         points['rSi'] = [];
         points['phiSi'] = [];
-        minR = Math.max(minR, RAdim);
     } else {
         points['tau'] = [];
         points['t'] = [];
@@ -83,7 +107,6 @@ function runSchwarzschild() {
         points['r'] = [];
         points['phi'] = [];
     }
-    minR += DELTA_ERROR;
     
     for (var i=0; i < steps; i++) {
         var tau = i * dtau;
@@ -184,7 +207,7 @@ function runSchwarzschild() {
             for (pointsArray in points)
                 points[pointsArray].pop();
 
-            console.warn('Integrator skipped at r=%0.5frs, next iteration r=%0.5frs');
+            console.warn('Colisión: ' + stepData.r + ' < ' + minR);
             break;
         }
     }

@@ -25,6 +25,7 @@ function runNewton() {
 
     var radiuses = getNewtonRadiuses(L, epsilon);
     var stepData = initializeStepDataNewton(r, vr, phi, radiuses);
+    
 
     var dt     = initialConditions.properTimeIncrementAdim;
     var steps  = initialConditions.stepsCount + 1;
@@ -44,6 +45,13 @@ function runNewton() {
         points['phi'] = [];
     }
 
+    if (r < minR) {
+        var errorMsg = "El valor de r no es válido. El valor mínimo es " +
+            (initialConditions.siUnits ? R : minR);
+
+        throw InvalidInitialConditionsError(errorMsg);
+    }
+    
     for (var i=0; i < steps; i++) {
         movePointRungeKutta(radiuses, stepData, epsilon, L, dt, getNewtonPotential);
 

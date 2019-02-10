@@ -2,7 +2,8 @@ var currentVrSign = 1;
 var currentPhysics = 'schwarzschild';
 var lastManuallySetHash = '';
 var MAX_POINTS_TO_PRINT = 200;
-var MAX_STEPS = 5e5;
+var MIN_STEPS = 1e3;
+var MAX_STEPS = 1e9;
 
 var physicsConfigs = {
     newton: {
@@ -92,6 +93,9 @@ function run() {
     $('#loading').show();
     try {
         var steps = Number($('#stepsCount').val());
+        if (steps < MIN_STEPS)
+            throw InvalidInitialConditionsError('El mínimo número de pasos es ' + MAX_STEPS);
+
         if (steps > MAX_STEPS)
             throw InvalidInitialConditionsError('El máximo número de pasos es ' + MAX_STEPS);
 
@@ -236,6 +240,7 @@ function getHashValue(data, prop) {
 
 function printPointsData(points, dataLength) {
     var pointTypes = Object.keys(points);
+    dataLength = Math.min(dataLength, points[pointTypes[0]].length);
     var theadCells = pointTypes.map(function(pointType) { return $('<td>').html(pointType); });
     var thead = $('<thead>').append($('<tr>').append(theadCells));
 
@@ -366,7 +371,7 @@ function plotTrajectory(xPoints, yPoints, planetRadius, schwarzschildRadius) {
         auxValues2.push(-schwarzschildRadius);
     }
     
-    var maxLimit = 0;
+    var maxLimit = Number.MAX_VALUE;
     if (xPoints.length) {
         maxLimit = TRAJECTORY_PLOT_MAXLIMIT_FACTOR * getMax(auxValues1.concat([xPoints[0], yPoints[0]]));
     }
