@@ -108,6 +108,14 @@ function runSchwarzschild() {
         points['phi'] = [];
     }
     
+    if (dtau > MAX_TIME_STEP) {
+        showWarning(
+            'El intervalo de tiempo de cada paso de la simulación es muy grande; ' 
+            + 'si ves resultados extraños prueba a<br/>subir el valor de "Número de pasos" '
+            + 'o a bajar el valor de "Tiempo propio total"'
+        );
+    }
+    
     for (var i=0; i < steps; i++) {
         var tau = i * dtau;
         var E = Math.sqrt(1 + initialConditions.epsilonAdim)

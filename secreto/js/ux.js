@@ -125,6 +125,10 @@ function handleException(ex) {
     $('#errorMsg').html(ex.message);
 }
 
+function showWarning(msg) {
+    $('#warningMsg').html(msg);
+}
+
 ////////////////////////////////////////////////////// FORM DATA
 function getFormData(data) {
     return {
@@ -449,6 +453,7 @@ function plotTrajectory(xPoints, yPoints, planetRadius, schwarzschildRadius) {
 
 function handleInitialConditionsAndRun() {
     $('#errorMsg').html('');
+    $('#warningMsg').html('');
     $('#loading').show();
     setTimeout(function(){
         if (onInitialConditionsChange())

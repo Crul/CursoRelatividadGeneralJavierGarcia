@@ -363,6 +363,12 @@ input[readonly] {
     text-align: center;
 }
 
+#warningMsg {
+    background-color: #ffad00;
+    color: #aa0000;
+    text-align: center;
+}
+
 #potentialPlot,
 #trajectoryPlot {
     display: inline-block;

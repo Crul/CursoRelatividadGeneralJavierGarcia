@@ -26,7 +26,6 @@ function runNewton() {
     var radiuses = getNewtonRadiuses(L, epsilon);
     var stepData = initializeStepDataNewton(r, vr, phi, radiuses);
     
-
     var dt     = initialConditions.properTimeIncrementAdim;
     var steps  = initialConditions.stepsCount + 1;
     var points = { 'paso': [] };
@@ -43,6 +42,14 @@ function runNewton() {
         points['y'] = [];
         points['r'] = [];
         points['phi'] = [];
+    }
+    
+    if (dt > MAX_TIME_STEP) {
+        showWarning(
+            'El intervalo de tiempo de cada paso de la simulación es muy grande; ' 
+            + 'si ves resultados extraños prueba a<br/>subir el valor de "Número de pasos" '
+            + 'o a bajar el valor de "Tiempo propio total"'
+        );
     }
 
     if (r < minR) {
