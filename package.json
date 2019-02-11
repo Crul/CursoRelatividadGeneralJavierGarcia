@@ -1,0 +1,11 @@
+{
+  "name": "CursoRelatividadGeneralJavierGarcia",
+  "author": "Crul (https://github.com/crul)",
+  "description": "Repositorio de fórmulas para el Curso de Relatividad General de Javier García",
+  "version": "0.0.1",
+  "homepage": "https://crul.github.io/CursoRelatividadGeneralJavierGarcia",
+  "dependencies": {
+    "jquery": "3.3.1",
+    "katex": "0.9.0"
+  }
+}
