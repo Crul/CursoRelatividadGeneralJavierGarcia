@@ -166,6 +166,7 @@ h2 {
   display: inline-block;
   vertical-align: top;
   border: dotted 1px #ccc;
+  border-top: solid 1px #35516c;
   margin-bottom: 8px;
 }
 
