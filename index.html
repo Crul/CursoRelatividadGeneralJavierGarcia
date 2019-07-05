@@ -260,6 +260,10 @@
           <a href="#capitulo-53">Capítulo 53</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=aU1J3NvWQZM&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
         </li>
+        <li>
+          <a href="#capitulo-54">Capítulo 54</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=w4J5AegxHcU&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
+        </li>
       </ul>
       <div class="fold-buttons">
         <div id="unfoldAllBtn">
@@ -961,6 +965,17 @@
           \partial_\gamma {T^\alpha}_\beta
           + \Gamma_{\sigma \gamma}^\alpha {T^\sigma}_\beta
           - \Gamma_{\gamma \beta}^\delta {T^\alpha}_\delta
+      </span>
+      <span class="formula-titulo">
+        (14.4b) Derivada covariante de un Tensor tipo (1,2)
+        <br/>Ver <a target="_blank" href="https://www.youtube.com/watch?v=w4J5AegxHcU&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">vídeo del Capítulo 54</a>
+      </span>
+      <span class="formula">
+        \nabla_\alpha T^\beta_{\gamma \delta} \equiv
+          \partial_\alpha T^\beta_{\gamma \delta}
+          + \Gamma_{\alpha \lambda}^\beta T^\lambda_{\gamma \delta}
+          - \Gamma_{\alpha \gamma}^\lambda T^\beta_{\lambda \delta}
+          - \Gamma_{\alpha \delta}^\lambda T^\beta_{\gamma \lambda}
       </span>
     </div>
     <div class="grupo-formulas">
@@ -4018,6 +4033,83 @@
       </span>
       <span class="formula">
         \Gamma_{\mu \nu}^{\mu} = \frac{1}{ \sqrt{-g} } \partial_\nu \sqrt{-g}
+      </span>
+    </div>
+  </div>
+
+  <h2 id="capitulo-54"><a href="#capitulo-54" class="formulas-title">Capítulo 54: Acción de Hilbert-Einstein 3</a></h2>
+  <div class="capitulo-54 formulas">
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (54.1) Tensor de Ricci en coordenadas relativistas
+        <br/><a href="#capitulo-16" class="formula-link">Ver fórmula (16.1)</a>
+      </span>
+      <span class="formula">
+        R_{\sigma \nu} 
+          = \partial_\mu \Gamma^\mu_{\nu \sigma}
+          - \partial_\nu \Gamma^\mu_{\mu \sigma}
+          + \Gamma^\mu_{\mu \lambda} \Gamma^\lambda_{\nu \sigma}
+          - \Gamma^\mu_{\nu \lambda} \Gamma^\lambda_{\mu \sigma}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (54.2) Identidad de Palatini
+        <br/>(variación del tensor de Ricci):
+      </span>
+      <span class="formula">
+        \delta R_{\alpha \beta} =
+          \nabla_\lambda \left( \delta \Gamma^\lambda_{\alpha \beta} \right)
+          - \nabla_\beta \left( \delta \Gamma^\lambda_{\lambda \alpha} \right)
+      </span>
+      <span class="formula-titulo">
+        Usando la <a href="#capitulo-14" class="formula-link">fórmula (14.4b)</a>, con:
+      </span>
+      <span class="formula">
+        T^\alpha_{\beta \gamma} \equiv \delta \Gamma^\alpha_{\beta \gamma}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (54.3) Variación de la curvatura escalar:
+      </span>
+      <span class="formula">
+        \delta R = R_{\alpha \beta} \delta g^{\alpha \beta} + \nabla_a J^a
+      </span>
+      <span class="formula-titulo">
+        Con:
+      </span>
+      <span class="formula">
+        J \equiv g^{\alpha \beta} \delta \Gamma^a_{\alpha \beta} 
+          - g^{\alpha a} \delta \Gamma^\lambda_{\lambda \alpha} 
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (54.4) Variación de la acción:
+      </span>
+      <span class="formula">
+        \delta S = \int d^4 x \sqrt{-g}
+          \left[ R_{\alpha \beta} - \frac{1}{2} g_{\alpha \beta} R \right] \delta g^{\alpha \beta}
+          + \int d^4 x \ \partial_\lambda \left( \sqrt{-g} \ J^\lambda \right)
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (54.5) En una variedad (espacio-tiempo)
+        <br/>cerrada (sin frontera) se cumple:
+      </span>
+      <span class="formula">
+        \int d^4 x \ \partial_\lambda \left( \sqrt{-g} \ J^\lambda \right) = 0
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (54.6) Ecuaciones de campo
+        <br/>de Einstein en el vacío:
+      </span>
+      <span class="formula">
+        R_{\alpha \beta} - \frac{1}{2} g_{\alpha \beta} R = 0
       </span>
     </div>
   </div>
