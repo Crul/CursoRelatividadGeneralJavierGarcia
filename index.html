@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="favicon.png" />
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.css" integrity="sha384-VEnyslhHLHiYPca9KFkBB3CMeslnM9CzwjxsEbZTeA21JBm7tdLwKoZmCt3cZTYD" crossorigin="anonymous" />
-  <link rel="stylesheet" href="style.css?v=20190712" />
+  <link rel="stylesheet" href="style.css?v=20190714" />
 </head>
 
 <body>
@@ -279,6 +279,10 @@
         <li>
           <a href="#capitulo-58">Capítulo 58</a>
           <a target="_blank" href="https://www.youtube.com/watch?v=XXEfE4bezlk&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
+        </li>
+        <li>
+          <a href="#capitulo-59">Capítulo 59</a>
+          <a target="_blank" href="https://www.youtube.com/watch?v=HI3m80zLo24&list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">&#9658;</a>
         </li>
       </ul>
       <div class="fold-buttons">
@@ -4311,9 +4315,113 @@
     </div>
   </div>
 
+  <h2 id="capitulo-59"><a href="#capitulo-59" class="formulas-title">Capítulo 59: Ecuaciones de Campo & Constante Cosmológica</a></h2>
+  <div class="capitulo-59 formulas">
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (59.1) Métrica de un campo
+        <br/>gravitatorio uniforme y débil:
+      </span>
+      <span class="formula">
+        g_{00} = -1 - \frac{2V}{c^2}
+      </span>
+      <span class="formula">
+        g_{11} = g_{22} = g_{33} = 1
+      </span>
+      <span class="formula">
+        \text{\footnotesize resto } = 0
+      </span>
+      <span class="formula-titulo">
+        Asumiendo:
+      </span>
+      <span class="formula">
+        \frac{V}{c^2} <<< 1
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (59.2) Símbolos de Christoffel de (59.1):
+      </span>
+      <span class="formula">
+        \Gamma^\alpha_{00} = \frac{1}{c^2} g^{\alpha \mu} \partial_\mu V
+      </span>
+      <span class="formula">
+        \Gamma^0_{\beta 0} = \frac{1}{c^2} \frac{1}{ 1 + \frac{2V}{c^2} } \partial_\beta V
+      </span>
+      <span class="formula">
+        \text{\footnotesize resto } = 0
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (59.3) Ejercicio propuesto:
+      </span>
+      <span class="formula formula-texto">
+        \text{Calcular el resto de componentes}
+      </span>
+      <span class="formula formula-texto">
+        \text{de la aproximación del tensor}
+      </span>
+      <span class="formula formula-texto">
+        \text{de Ricci para la métrica (59.1)}
+      </span>
+      <span class="formula-titulo">
+        Componente R<sub>00</sub>:
+      </span>
+      <span class="formula">
+        R_{00} \simeq \frac{1}{c^2} \nabla^2 V
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (59.4) Ecuación de campo de Einstein:
+      </span>
+      <span class="formula">
+        R_{\alpha \beta} - \frac{1}{2} g_{\alpha \beta} R = \frac{8 \pi G}{c^4} T_{\alpha \beta}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (59.5) Acción de (59.4):
+      </span>
+      <span class="formula">
+        S[g] = - \frac{c^4}{16 \pi G} \int d^4 x \sqrt{-g} \ R
+          - \frac{c^4}{8 \pi G} \int d^3 y \sqrt{|h|} \ K
+          + \int d^4 x \sqrt{-g} \ \mathscr{L}_m
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (59.6) Ecuación de campo de Einstein
+        <br/>con la constante cosmológica:
+      </span>
+      <span class="formula">
+        R_{\alpha \beta} - \frac{1}{2} g_{\alpha \beta} R + g_{\alpha \beta} \Lambda = \frac{8 \pi G}{c^4} T_{\alpha \beta}
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (59.7) Acción de (59.6):
+      </span>
+      <span class="formula">
+        S[g] = - \frac{c^4}{16 \pi G} \int d^4 x \sqrt{-g} \ \left( R - 2 \Lambda \right)
+          - \frac{c^4}{8 \pi G} \int d^3 y \sqrt{|h|} \ K
+          + \int d^4 x \sqrt{-g} \ \mathscr{L}_m
+      </span>
+    </div>
+    <div class="grupo-formulas">
+      <span class="formula-titulo">
+        (59.8) Ejercicio propuesto:
+      </span>
+      <span class="formula formula-texto">
+        \text{Calcular la variación de la acción de (59.7)}
+      </span>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js" integrity="sha384-O4hpKqcplNCe+jLuBVEXC10Rn1QEqAmX98lKAIFBEDxZI0a+6Z2w2n8AEtQbR4CD" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
-  <script type="text/javascript" src="script.js?v=20190712"></script>
+  <script type="text/javascript" src="script.js?v=20190713"></script>
 
 </body>
 </html>
