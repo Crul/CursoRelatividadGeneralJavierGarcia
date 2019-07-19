@@ -1,0 +1,94 @@
+<!doctype html>
+
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+
+  <title>[Fórmulas] Curso de Relatividad General de Javier García</title>
+  <meta name="description" content="Repositorio de fórmulas para el Curso de Relatividad General de Javier García">
+  <meta name="author" content="Raúl J. Vila">
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <link rel="stylesheet" href="style.css?v=20190116" />
+
+  <style>
+    #topContent h1 {
+      background-color: #35516c;
+    }
+    #topContent p {
+      display: block;
+      background-color: #fff;
+      font-size: 110%;
+      padding: 20px 72px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1 id="top">
+    Repositorio de fórmulas para
+    el <a target="_blank" href="https://www.youtube.com/playlist?list=PLAnA8FVrBl8DF03y6o-AIYPLK12F1IA25">Curso de Relatividad General</a>
+    de <a target="_blank" href="https://www.youtube.com/user/jamesjamesbondbond">Javier García</a>
+  </h1>
+  <h3><a href="https://github.com/Crul/CursoRelatividadGeneralJavierGarcia">Repositorio en GitHub</a></h3>
+
+  <div id="topContent">
+    <h1>404 Página no encontrada</h2>
+    
+    <p id="noDocUrlMsg" style="display: none;">
+      Algunos documentos han sido movidos de sitio, prueba a pinchar en el siguiente enlace:
+      <br/>
+      <a id="alternativeUrl" href="https://crul.github.io/CursoRelatividadGeneralJavierGarcia">
+        https://crul.github.io/CursoRelatividadGeneralJavierGarcia
+      </a>
+    </p>
+    
+    <p id="docUrlMsg" style="display: none;">
+      El documento al que intentas acceder no existe.
+      <br/>
+      <a href="https://crul.github.io/CursoRelatividadGeneralJavierGarcia">Pulsa aquí para volver al formulario</a>
+    </p>
+  </div>
+
+  <script>
+    var documentNames = [
+      'Diagrama de Penrose Agujero Negro.m',
+      'Diagrama de Penrose.m',
+      'Hugo Labella - Christoffel, Riemann, Ricci en un TORO.pdf',
+      'Miguel Cañizares - 46 Resumen-Zonas y Agujeros gusano.pdf',
+      'Miguel Cañizares - 47 Resumen-Diagrama Penrose Minkowski.pdf',
+      'Miguel Cañizares - 48 Resumen-Diagrama Penrose Kruskal.pdf',
+      'Miguel Cañizares - 49 Resumen-Ecuación Continuidad.pdf',
+      'Miguel Cañizares - 50 Resumen-Tensor Energía-Momento.pdf',
+      'Miguel Cañizares - Christofel Agujero negro.pdf',
+      'Miguel Cañizares - Riemann Schwarzschild.pdf',
+      'Pablo Bueno - Seminario Correspondencia AdS-CFT.pdf',
+      'Pierre Mihalic - Christoffel, Riemann, Ricci en un TORO.pdf',
+      'Roger Balsach - Métrica Toroidal.pdf',
+      'Zonas Agujero Negro.m',
+    ];
+
+    var cleanUrl = document.location.href.replace(/%20/g, ' ');
+    for (var i = 0; i < documentNames.length; i++) {
+      var docName = documentNames[i];
+      if (cleanUrl.indexOf(docName) >= 0) {
+        document.location.href = 'docs/' + docName;
+        break;
+      }
+    }
+
+    if (cleanUrl.indexOf('/docs/') >= 0) {
+      document.getElementById('docUrlMsg').style.display = 'block';
+    } else {
+      var baseUrl = 'crul.github.io/';
+      var altUrl = cleanUrl.replace(baseUrl, baseUrl + "docs/");
+      var altUrlElem = document.getElementById('alternativeUrl');
+      document.getElementById('noDocUrlMsg').style.display = 'block';
+      altUrlElem.href = altUrl;
+      altUrlElem.innerHTML = altUrl;
+    }
+  </script>
+
+</body>
+</html>
