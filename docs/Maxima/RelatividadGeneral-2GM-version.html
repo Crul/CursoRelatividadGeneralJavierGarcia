@@ -1,0 +1,356 @@
+<!DOCTYPE HTML>
+<HTML>
+ <HEAD>
+  <TITLE>RelatividadGeneral-2GM-version</TITLE>
+  <META NAME="generator" CONTENT="wxMaxima">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    displayAlign: "left",
+    context: "MathJax",
+    TeX: {TagSide: "left"}
+  })
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML">
+</script>
+  <link rel="stylesheet" type="text/css" href="RelatividadGeneral-2GM-version_htmlimg/RelatividadGeneral-2GM-version.css"/>
+ </HEAD>
+ <BODY>
+
+<!-- ***************************************************** -->
+<!--          Created with wxMaxima version 19.05.7         -->
+<!-- ***************************************************** -->
+<noscript><div class="error message">    Please enable JavaScript in order to get a 2d display of the equations embedded in this web page.</div></noscript>\(      \DeclareMathOperator{\abs}{abs}
+      \newcommand{\ensuremath}[1]{\mbox{$#1$}}
+\)
+
+<!-- Title cell -->
+
+
+<P CLASS="title">
+Métrica de Schwarzschild
+</P>
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ &nbsp;1 Inicializar Coordenadas esféricas para el espacio-tiempo:
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_function">load</span>(<span class="code_variable">ctensor</span>)<span class="code_endofline">$</span><BR>
+<span class="code_variable">ct_coords</span><span class="code_operator">:</span>[<span class="code_variable">ct</span>,<span class="code_variable">r</span>,<span class="code_variable">theta</span>,<span class="code_variable">phi</span>]<span class="code_endofline">$</span><BR>
+<span class="code_variable">ct_coords</span><span class="code_endofline">;</span><BR>
+<span class="code_variable">dim</span><span class="code_endofline">;</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%o3} [\mathit{ct},r,theta,phi]\]
+\[\tag{%o4} 4\]
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ &nbsp;2 Introducir métrica de Schwarzschild
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_variable">lg</span><span class="code_operator">:</span><span class="code_function">ident</span>(<span class="code_number">4</span>)<span class="code_endofline">$</span><BR>
+<span class="code_variable">lg</span>[<span class="code_number">1</span>,<span class="code_number">1</span>]<span class="code_operator">:</span><span class="code_operator">−</span>(<span class="code_number">1</span><span class="code_operator">−</span>(<span class="code_number">2</span>·<span class="code_variable">GM</span><span class="code_operator">/</span><span class="code_variable">c</span><span class="code_operator">^</span><span class="code_number">2</span>)<span class="code_operator">/</span><span class="code_variable">r</span>)<span class="code_endofline">$</span><BR>
+<span class="code_variable">lg</span>[<span class="code_number">2</span>,<span class="code_number">2</span>]<span class="code_operator">:</span><span class="code_number">1</span><span class="code_operator">/</span>(<span class="code_number">1</span><span class="code_operator">−</span>(<span class="code_number">2</span>·<span class="code_variable">GM</span><span class="code_operator">/</span>(<span class="code_variable">r</span>·<span class="code_variable">c</span><span class="code_operator">^</span><span class="code_number">2</span>)))<span class="code_endofline">$</span><BR>
+<span class="code_variable">lg</span>[<span class="code_number">3</span>,<span class="code_number">3</span>]<span class="code_operator">:</span><span class="code_variable">r</span><span class="code_operator">^</span><span class="code_number">2</span><span class="code_endofline">$</span><BR>
+<span class="code_variable">lg</span>[<span class="code_number">4</span>,<span class="code_number">4</span>]<span class="code_operator">:</span><span class="code_variable">r</span><span class="code_operator">^</span><span class="code_number">2</span>·<span class="code_function">sin</span>(<span class="code_variable">theta</span>)<span class="code_operator">^</span><span class="code_number">2</span><span class="code_endofline">$</span><BR>
+<span class="code_variable">lg</span><span class="code_endofline">;</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%o154} \begin{bmatrix}\frac{2 \mathit{GM}}{{{c}^{2}} r}-1 & 0 & 0 & 0\\
+0 & \frac{1}{1-\frac{2 \mathit{GM}}{{{c}^{2}} r}} & 0 & 0\\
+0 & 0 & {{r}^{2}} & 0\\
+0 & 0 & 0 & {{r}^{2}}\, {{\sin{(theta)}}^{2}}\end{bmatrix}\]
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">&nbsp;
+Cálculo de la métrica inversa:<BR>
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_function">cmetric</span>()<span class="code_endofline">$</span><BR>
+<span class="code_variable">ug</span><span class="code_endofline">;</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%o156} \begin{bmatrix}\frac{1}{\frac{2 \mathit{GM}}{{{c}^{2}} r}-1} & 0 & 0 & 0\\
+0 & 1-\frac{2 \mathit{GM}}{{{c}^{2}} r} & 0 & 0\\
+0 & 0 & \frac{1}{{{r}^{2}}} & 0\\
+0 & 0 & 0 & \frac{1}{{{r}^{2}}\, {{\sin{(theta)}}^{2}}}\end{bmatrix}\]
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ &nbsp;3 Símbolos de Christoffel
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">&nbsp;
+Cálculo de símbolos de Christoffel de primera especie lcs y de segunda especie mcs (m, mixed indices, el tercer índice es el superior). Se muestran los términos no nulos y omitiendo los simétricos:<BR>
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_function">christof</span>(<span class="code_variable">all</span>)<span class="code_endofline">$</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%t157} {{\mathit{lcs}}_{1,1,2}}=\frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{2}}}\]
+\[\tag{%t158} {{\mathit{lcs}}_{1,2,1}}=-\frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{2}}}\]
+\[\tag{%t159} {{\mathit{lcs}}_{2,2,2}}=-\frac{\mathit{GM}}{{{c}^{2}}\, {{\left( 1-\frac{2 \mathit{GM}}{{{c}^{2}} r}\right) }^{2}}\, {{r}^{2}}}\]
+\[\tag{%t160} {{\mathit{lcs}}_{2,3,3}}=r\]
+\[\tag{%t161} {{\mathit{lcs}}_{2,4,4}}=r\, {{\sin{(theta)}}^{2}}\]
+\[\tag{%t162} {{\mathit{lcs}}_{3,3,2}}=-r\]
+\[\tag{%t163} {{\mathit{lcs}}_{3,4,4}}={{r}^{2}} \cos{(theta)} \sin{(theta)}\]
+\[\tag{%t164} {{\mathit{lcs}}_{4,4,2}}=-r\, {{\sin{(theta)}}^{2}}\]
+\[\tag{%t165} {{\mathit{lcs}}_{4,4,3}}=-{{r}^{2}} \cos{(theta)} \sin{(theta)}\]
+\[\tag{%t166} {{\mathit{mcs}}_{1,1,2}}=\frac{\mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}}{{{c}^{4}}\, {{r}^{3}}}\]
+\[\tag{%t167} {{\mathit{mcs}}_{1,2,1}}=\frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r}\]
+\[\tag{%t168} {{\mathit{mcs}}_{2,2,2}}=-\frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r}\]
+\[\tag{%t169} {{\mathit{mcs}}_{2,3,3}}=\frac{1}{r}\]
+\[\tag{%t170} {{\mathit{mcs}}_{2,4,4}}=\frac{1}{r}\]
+\[\tag{%t171} {{\mathit{mcs}}_{3,3,2}}=-\frac{{{c}^{2}} r-2 \mathit{GM}}{{{c}^{2}}}\]
+\[\tag{%t172} {{\mathit{mcs}}_{3,4,4}}=\frac{\cos{(theta)}}{\sin{(theta)}}\]
+\[\tag{%t173} {{\mathit{mcs}}_{4,4,2}}=-\frac{\left( {{c}^{2}} r-2 \mathit{GM}\right) \, {{\sin{(theta)}}^{2}}}{{{c}^{2}}}\]
+\[\tag{%t174} {{\mathit{mcs}}_{4,4,3}}=-\cos{(theta)} \sin{(theta)}\]
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">&nbsp;
+La correspondencia de subíndices es, dado mcs x,y,z es:<BR><BR> &nbsp;&nbsp;x = 1 + 1er (¿o 2º?) subíndice de Christoffel<BR><BR> &nbsp;&nbsp;y = 1 + 2o (¿o 1er?) subíndice de Christoffel<BR><BR> &nbsp;&nbsp;z = 1 + superíndice de Christoffel<BR>
+</P>
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ &nbsp;4 Tensor de Riemann:
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_function">riemann</span>(true),<span class="code_variable">ratriemann</span><span class="code_operator">=</span>true<span class="code_endofline">$</span><span class="code_function">ratsimp</span>(<span class="code_variable">%</span>)<span class="code_endofline">;</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%t175} {{\mathit{riem}}_{1,2,1,2}}=\frac{2 \mathit{GM}\, \left( \mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}\right) }{{{c}^{4}}\, {{r}^{3}}\, \left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }+\frac{3 \left( \mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}\right) }{{{c}^{4}}\, {{r}^{4}}}-\frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{3}}}\]
+\[\tag{%t176} {{\mathit{riem}}_{1,3,1,3}}=-\frac{\mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}}{{{c}^{4}}\, {{r}^{4}}}\]
+\[\tag{%t177} {{\mathit{riem}}_{1,4,1,4}}=-\frac{\mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}}{{{c}^{4}}\, {{r}^{4}}}\]
+\[\tag{%t178} {{\mathit{riem}}_{2,2,1,1}}=\frac{2 \mathit{GM}}{{{c}^{2}}\, {{r}^{3}}-2 \mathit{GM}\, {{r}^{2}}}\]
+\[\tag{%t179} {{\mathit{riem}}_{2,3,2,3}}=\frac{\mathit{GM}}{r\, \left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }\]
+\[\tag{%t180} {{\mathit{riem}}_{2,4,2,4}}=\frac{\mathit{GM}}{r\, \left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }\]
+\[\tag{%t181} {{\mathit{riem}}_{3,3,1,1}}=-\frac{\mathit{GM}}{{{c}^{2}} r}\]
+\[\tag{%t182} {{\mathit{riem}}_{3,3,2,2}}=-\frac{\mathit{GM}}{{{c}^{2}} r}\]
+\[\tag{%t183} {{\mathit{riem}}_{3,4,3,4}}=\frac{{{c}^{2}} r-2 \mathit{GM}}{{{c}^{2}} r}-1\]
+\[\tag{%t184} {{\mathit{riem}}_{4,4,1,1}}=-\frac{\mathit{GM}\, {{\sin{(theta)}}^{2}}}{{{c}^{2}} r}\]
+\[\tag{%t185} {{\mathit{riem}}_{4,4,2,2}}=-\frac{\mathit{GM}\, {{\sin{(theta)}}^{2}}}{{{c}^{2}} r}\]
+\[\tag{%t186} {{\mathit{riem}}_{4,4,3,3}}=\frac{2 \mathit{GM}\, {{\sin{(theta)}}^{2}}}{{{c}^{2}} r}\]
+\[\tag{%o187} \mathit{done}\]
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">&nbsp;
+Usando los índices de los Riemann del Capítulo 33:<BR><BR>(ver fórmulas 16.4)<BR>
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_variable">riem</span>[<span class="code_number">1</span>,<span class="code_number">1</span>,<span class="code_number">2</span>,<span class="code_number">2</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">1</span>,<span class="code_number">1</span>,<span class="code_number">3</span>,<span class="code_number">3</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">1</span>,<span class="code_number">1</span>,<span class="code_number">4</span>,<span class="code_number">4</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">2</span>,<span class="code_number">1</span>,<span class="code_number">2</span>,<span class="code_number">1</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">2</span>,<span class="code_number">3</span>,<span class="code_number">2</span>,<span class="code_number">3</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">2</span>,<span class="code_number">4</span>,<span class="code_number">2</span>,<span class="code_number">4</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">3</span>,<span class="code_number">1</span>,<span class="code_number">3</span>,<span class="code_number">1</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">3</span>,<span class="code_number">3</span>,<span class="code_number">2</span>,<span class="code_number">2</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">3</span>,<span class="code_number">4</span>,<span class="code_number">3</span>,<span class="code_number">4</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">4</span>,<span class="code_number">1</span>,<span class="code_number">4</span>,<span class="code_number">1</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">4</span>,<span class="code_number">4</span>,<span class="code_number">2</span>,<span class="code_number">2</span>]<span class="code_endofline">;</span><BR>
+<span class="code_variable">riem</span>[<span class="code_number">4</span>,<span class="code_number">4</span>,<span class="code_number">3</span>,<span class="code_number">3</span>]<span class="code_endofline">;</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%o188} -\frac{2 \mathit{GM}\, \left( \mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}\right) }{{{c}^{4}}\, {{r}^{3}}\, \left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }-\frac{3 \left( \mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}\right) }{{{c}^{4}}\, {{r}^{4}}}+\frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{3}}}\]
+\[\tag{%o189} \frac{\mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}}{{{c}^{4}}\, {{r}^{4}}}\]
+\[\tag{%o190} \frac{\mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}}{{{c}^{4}}\, {{r}^{4}}}\]
+\[\tag{%o191} -\frac{2 \mathit{GM}}{{{c}^{2}}\, {{r}^{3}}-2 \mathit{GM}\, {{r}^{2}}}\]
+\[\tag{%o192} \frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{3}}-2 \mathit{GM}\, {{r}^{2}}}\]
+\[\tag{%o193} \frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{3}}-2 \mathit{GM}\, {{r}^{2}}}\]
+\[\tag{%o194} \frac{\mathit{GM}}{{{c}^{2}} r}\]
+\[\tag{%o195} -\frac{\mathit{GM}}{{{c}^{2}} r}\]
+\[\tag{%o196} -\frac{2 \mathit{GM}}{{{c}^{2}} r}\]
+\[\tag{%o197} \frac{\mathit{GM}\, {{\sin{(theta)}}^{2}}}{{{c}^{2}} r}\]
+\[\tag{%o198} -\frac{\mathit{GM}\, {{\sin{(theta)}}^{2}}}{{{c}^{2}} r}\]
+\[\tag{%o199} \frac{2 \mathit{GM}\, {{\sin{(theta)}}^{2}}}{{{c}^{2}} r}\]
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">&nbsp;
+Para algún caso hay que indicar ratsimp(%) si queremos ver la versión simplificada:<BR>
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_variable">riem</span>[<span class="code_number">1</span>,<span class="code_number">1</span>,<span class="code_number">2</span>,<span class="code_number">2</span>]<span class="code_endofline">$</span><span class="code_function">ratsimp</span>(<span class="code_variable">%</span>)<span class="code_endofline">;</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%o201} -\frac{2 \mathit{GM}\, {{c}^{2}} r-4 {{\mathit{GM}}^{2}}}{{{c}^{4}}\, {{r}^{4}}}\]
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ &nbsp;5 Tensor de Ricci
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">&nbsp;
+La solución de Schwarzschild es para el vacío, debe anularse:<BR>
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_function">ricci</span>(true)<span class="code_endofline">$</span>  </SPAN></TD>
+</TR></TABLE>
+\[\mbox{}\\\mbox{ARRSTORE: use\_ fast\_ arrays=false; allocate a new property hash table for \$ RIC}\]
+\[\tag{%t202} {{\mathit{ric}}_{1,1}}=-\frac{2 \mathit{GM}\, \left( \mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}\right) }{{{c}^{4}}\, {{r}^{3}}\, \left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }-\frac{\mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}}{{{c}^{4}}\, {{r}^{4}}}+\frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{3}}}\]
+\[\tag{%t203} {{\mathit{ric}}_{2,2}}=-\frac{2 \mathit{GM}}{r\, \left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }+\frac{\mathit{GM}\, \left( 2 {{c}^{2}} r-2 \mathit{GM}\right) }{{{\left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }^{2}}}-\frac{2 {{\mathit{GM}}^{2}}}{{{\left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }^{2}}}\]
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_variable">ric</span>[<span class="code_number">1</span>,<span class="code_number">1</span>]<span class="code_endofline">;</span> <span class="code_function">ratsimp</span>(<span class="code_variable">%</span>)<span class="code_endofline">;</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%o204} -\frac{2 \mathit{GM}\, \left( \mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}\right) }{{{c}^{4}}\, {{r}^{3}}\, \left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }-\frac{\mathit{GM}\, {{c}^{2}} r-2 {{\mathit{GM}}^{2}}}{{{c}^{4}}\, {{r}^{4}}}+\frac{\mathit{GM}}{{{c}^{2}}\, {{r}^{3}}}\]
+\[\tag{%o205} 0\]
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_variable">ric</span>[<span class="code_number">2</span>,<span class="code_number">2</span>]<span class="code_endofline">;</span> <span class="code_function">ratsimp</span>(<span class="code_variable">%</span>)<span class="code_endofline">;</span>  </SPAN></TD>
+</TR></TABLE>
+\[\tag{%o206} -\frac{2 \mathit{GM}}{r\, \left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }+\frac{\mathit{GM}\, \left( 2 {{c}^{2}} r-2 \mathit{GM}\right) }{{{\left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }^{2}}}-\frac{2 {{\mathit{GM}}^{2}}}{{{\left( {{c}^{2}}\, {{r}^{2}}-2 \mathit{GM} r\right) }^{2}}}\]
+\[\tag{%o207} 0\]
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">&nbsp;
+Con parámetro &quot;ratfac&quot; para simplificar directamente:<BR>
+</P>
+
+
+<!-- Code cell -->
+
+
+<TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+ -->	
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+<span class="code_function">ricci</span>(true),<span class="code_variable">ratfac</span><span class="code_operator">=</span>true<span class="code_endofline">$</span>  </SPAN></TD>
+</TR></TABLE>
+\[\mbox{}\\THIS SPACETIME IS EMPTY AND/OR FLAT \]
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">&nbsp;
+(Dice que es un espacio-tiempo plano o vacío. En este caso está vacío, fuera de la distribución con simetría esférica de masa se entiende, que es donde es aplicable la métrica de Schwarzschild, pero sólo es plano para M=0)﻿<BR>
+</P>
+
+ <HR>
+ <SMALL> Created with <A HREF="https://wxMaxima-developers.github.io/wxmaxima/">wxMaxima</A>.</SMALL>
+ </BODY>
+</HTML>
