@@ -70,7 +70,7 @@ h3 {
     background-color: #ffffff88;
     margin: 8px 20px 18px 20px;
     font-size: 125%;
-    text-align: center;
+    display: inline-block;
   }
     #topContent a.no-formula:hover {
       background-color: #00f;
@@ -231,13 +231,14 @@ h2 {
 
 .no-formula {
   font-family: "Times New Roman", Times, serif;
-  display: inline-block;
+  display: block;
+  text-align: center;
   padding: 2px 6px;
   background-color: #ddd;
 }
   a.no-formula {
     padding: 4px 9px;
-    background-color: #d2dade;
+    background-color: #fff;
     color: #00f;
   }
   a.no-formula:visited {
