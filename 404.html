@@ -37,7 +37,7 @@
     <h1>404 Página no encontrada</h2>
     
     <p id="noDocUrlMsg" style="display: none;">
-      Algunos documentos han sido movidos de sitio, prueba a pinchar en el siguiente enlace:
+      Algunos documentos han sido movidos de sitio. Si el archivo no se descargar automáticamente, prueba a pinchar en el siguiente enlace:
       <br/>
       <a id="alternativeUrl" href="https://crul.github.io/CursoRelatividadGeneralJavierGarcia">
         https://crul.github.io/CursoRelatividadGeneralJavierGarcia
@@ -69,7 +69,7 @@
       'Zonas Agujero Negro.m',
     ];
 
-    var cleanUrl = document.location.href.replace(/%20/g, ' ');
+    var cleanUrl = decodeURI(document.location.href);
     for (var i = 0; i < documentNames.length; i++) {
       var docName = documentNames[i];
       if (cleanUrl.indexOf(docName) >= 0) {
