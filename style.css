@@ -4,7 +4,6 @@ html, body {
   margin: 0;
   padding: 0;
   background-color: #d6d6d6;
-  min-height: 10000px; /* reset in JS after load */
 }
 body {
   margin-bottom: 50%;

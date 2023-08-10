@@ -41,8 +41,6 @@ function bootstrap() {
   $('.formula-link').mousedown(unfoldTarget);
 
   $('.spoiler-btn').click(showSpoiler);
-
-  $('html, body').css('min-height', 0);
   
   handleInitialSection();
 }
